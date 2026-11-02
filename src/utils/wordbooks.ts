@@ -56,3 +56,36 @@ export const wordBooksData = new Proxy({} as Record<string, WordItem[]>, {
         return [];
     }
 });
+
+
+/**
+ * 创建具有防连续重复缓冲池的单词随机抽取器
+ * @param maxHistory 最大防重复历史容量（默认 30）
+ */
+export function createWordRandomizer(maxHistory = 30) {
+    const recentHistory: string[] = [];
+
+    return {
+        pick(list: WordItem[]): WordItem | null {
+            if (!list || list.length === 0) return null;
+            if (list.length <= 5) {
+                return list[Math.floor(Math.random() * list.length)];
+            }
+            let candidate = list[Math.floor(Math.random() * list.length)];
+            let attempts = 0;
+            while (recentHistory.includes(candidate.w.toLowerCase()) && attempts < 10) {
+                candidate = list[Math.floor(Math.random() * list.length)];
+                attempts++;
+            }
+            recentHistory.push(candidate.w.toLowerCase());
+            const limit = Math.min(maxHistory, Math.floor(list.length * 0.5));
+            if (recentHistory.length > limit) {
+                recentHistory.shift();
+            }
+            return candidate;
+        },
+        reset() {
+            recentHistory.length = 0;
+        },
+    };
+}

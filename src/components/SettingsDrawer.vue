@@ -23,8 +23,6 @@ const emit = defineEmits<{
     (e: 'change-tts', enabled: boolean): void;
 }>();
 
-declare const wx: any;
-
 const closeDrawer = () => {
     emit('update:show', false);
 };
@@ -34,56 +32,11 @@ const GITHUB_URL = 'https://github.com/lanzm/HandyCards';
 const GITHUB_ICON_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZmZmZiI+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMiAyQzYuNDc3IDIgMiA2LjQ4NCAyIDEyLjAxN2MwIDQuNDI1IDIuODY1IDguMTggNi44MzkgOS41MDQuNS4wOTIuNjgyLS4yMTcuNjgyLS40ODMgMC0uMjM3LS4wMDgtLjg2OC0uMDEzLTEuNzAzLTIuNzgyLjYwNS0zLjM2OS0xLjM0My0zLjM2OS0xLjM0My0uNDU0LTEuMTU4LTEuMTEtMS40NjYtMS4xMS0xLjQ2Ni0uOTA4LS42Mi4wNjktLjYwOC4wNjktLjYwOCAxLjAwMy4wNyAxLjUzIDEuMDMyIDEuNTMgMS4wMzIuODkyIDEuNTMgMi4zNDEgMS4wODggMi45MS44MzIuMDkyLS42NDcuMzUtMS4wODguNjM2LTEuMzM4LTIuMjItLjI1My00LjU1NS0xLjExMy00LjU1NS00Ljk1MSAwLTEuMDkzLjM5LTEuOTg4IDEuMDI5LTIuNjg4LS4xMDMtLjI1My0uNDQ2LTEuMjcyLjA5OC0yLjY1IDAgMCAuODQtLjI3IDIuNzUgMS4wMjZBOS41NjQgOS41NjQgMCAwMTEyIDYuODQ0Yy44NS4wMDQgMS43MDUuMTE1IDIuNTA0LjMzNyAxLjkwOS0xLjI5NiAyLjc0Ny0xLjAyNyAyLjc0Ny0xLjAyNy41NDYgMS4zNzkuMjAyIDIuMzk4LjEgMi42NTEuNjQuNyAxLjAyOCAxLjU5NSAxLjAyOCAyLjY4OCAwIDMuODQ4LTIuMzM5IDQuNjk1LTQuNTY2IDQuOTQzLjM1OS4zMDkuNjc4LjkyLjY3OCAxLjg1NSAwIDEuMzM4LS4wMTIgMi40MTktLjAxMiAyLjc0NyAwIC4yNjguMTguNTguNjg4LjQ4MkExMC4wMTkgMTAuMDE5IDAgMDAyMiAxMi4wMTdDMjIgNi40ODQgMTcuNTIyIDIgMTIgMnoiLz48L3N2Zz4=';
 
 const handlePreviewQrCode = () => {
-    // #ifdef MP-WEIXIN
-    // 微信小程序端：通过文件系统将内置静态资源转存至本地临时目录，实现 100% 纯离线全屏预览
-    try {
-        if (typeof wx !== 'undefined' && wx.getFileSystemManager && wx.env && wx.env.USER_DATA_PATH) {
-            const fs = wx.getFileSystemManager();
-            const targetPath = `${wx.env.USER_DATA_PATH}/handycards_qr_preview.jpg`;
-            
-            let needWrite = true;
-            try {
-                fs.accessSync(targetPath);
-                needWrite = false; // 已缓存，无需重复写入
-            } catch {
-                needWrite = true;
-            }
-
-            if (needWrite) {
-                let buffer;
-                try {
-                    buffer = fs.readFileSync('static/wechat-mp-qrcode.jpg');
-                } catch {
-                    buffer = fs.readFileSync('/static/wechat-mp-qrcode.jpg');
-                }
-                fs.writeFileSync(targetPath, buffer, 'binary');
-            }
-
-            uni.previewImage({
-                current: targetPath,
-                urls: [targetPath]
-            });
-            return;
-        }
-    } catch (err) {
-        console.warn('[QR Preview] 本地文件转存预览失败:', err);
-    }
-    // #endif
-
-    // H5 / 其他端降级使用
-    uni.previewImage({
-        current: qrCodeUrl,
-        urls: [qrCodeUrl]
-    });
+    commonUtil.previewLocalImage(qrCodeUrl, 'handycards_qr_preview.jpg');
 };
 
 const handleCopyGithub = () => {
-    uni.setClipboardData({
-        data: GITHUB_URL,
-        success: () => {
-            commonUtil.msg(props.i18n.githubCopiedMsg || '已复制链接', 'success');
-        }
-    });
+    commonUtil.copyText(GITHUB_URL, props.i18n.githubCopiedMsg || '已复制链接');
 };
 </script>
 

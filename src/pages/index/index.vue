@@ -3,7 +3,8 @@ import { ref, onMounted, onUnmounted, computed, watch, nextTick, getCurrentInsta
 // import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 // import { SHARE_TITLE, DEFAULT_SHARE_COVER, renderShareCardOnDemand } from "@/utils/shareCard";
 import commonUtil from "@/utils/commonUtil";
-import { wordBooksData } from "@/utils/wordbooks";
+import { wordBooksData, createWordRandomizer } from "@/utils/wordbooks";
+import { getInitialTheme, setNavigationBarTheme, type ThemeMode } from "@/utils/themeUtil";
 import { getTranslations, type Language } from "@/utils/i18n";
 import { getWordAnatomy, getUniquePos, getPosIcon, formatDefinitionPos, formatDefinitionContent } from "@/utils/anatomy";
 import SettingsDrawer from "@/components/SettingsDrawer.vue";
@@ -11,20 +12,7 @@ import { useWordAudio } from "@/composables/useWordAudio";
 import { useFloatingGear } from "@/composables/useFloatingGear";
 import type { WordItem, WordBookMeta, WordAnatomy } from "@/types/word";
 
-const getInitialTheme = (): 'dark' | 'light' => {
-    try {
-        const savedTheme = uni.getStorageSync('theme');
-        if (savedTheme === 'dark' || savedTheme === 'light') {
-            return savedTheme;
-        }
-        const systemTheme = uni.getSystemInfoSync().theme;
-        return systemTheme === 'dark' ? 'dark' : 'light';
-    } catch {
-        return 'light';
-    }
-};
-
-const isDark = ref<'dark' | 'light'>(getInitialTheme());
+const isDark = ref<ThemeMode>(getInitialTheme());
 const wordObj = ref<WordItem | null>(null);
 const scrollTop = ref(0);
 const detailScrollTop = ref(0);
@@ -84,26 +72,8 @@ const bgWordObj = ref<WordItem | null>(null);
 const bgKnowFlag = ref(false);
 const bgCardTransitionClass = ref('');
 
-// Recent word history to prevent immediate repeats
-const recentWordHistory: string[] = [];
-
-const pickRandomWord = (): WordItem | null => {
-    if (wordList.value.length === 0) return null;
-    if (wordList.value.length <= 5) {
-        return wordList.value[Math.floor(Math.random() * wordList.value.length)];
-    }
-    let candidate = wordList.value[Math.floor(Math.random() * wordList.value.length)];
-    let attempts = 0;
-    while (recentWordHistory.includes(candidate.w.toLowerCase()) && attempts < 10) {
-        candidate = wordList.value[Math.floor(Math.random() * wordList.value.length)];
-        attempts++;
-    }
-    recentWordHistory.push(candidate.w.toLowerCase());
-    if (recentWordHistory.length > Math.min(30, Math.floor(wordList.value.length * 0.5))) {
-        recentWordHistory.shift();
-    }
-    return candidate;
-};
+const wordRandomizer = createWordRandomizer();
+const pickRandomWord = (): WordItem | null => wordRandomizer.pick(wordList.value);
 
 // Swiping down states (when dragging previous word from top)
 const isSwipingDownActive = ref(false);
@@ -213,19 +183,7 @@ const handleCardTap = () => {
 };
 
 const updateNavBarColor = () => {
-    if (isDark.value === 'dark') {
-        uni.setNavigationBarColor({
-            frontColor: '#ffffff',
-            backgroundColor: '#09090B',
-            animation: { duration: 200, timingFunc: 'linear' }
-        });
-    } else {
-        uni.setNavigationBarColor({
-            frontColor: '#000000',
-            backgroundColor: '#E9EEF4',
-            animation: { duration: 200, timingFunc: 'linear' }
-        });
-    }
+    setNavigationBarTheme(isDark.value);
 };
 
 const setTheme = (theme: 'dark' | 'light') => {
@@ -256,6 +214,7 @@ const setTtsEnabled = (enabled: boolean) => {
 
 const loadWordBook = () => {
     wordBook.value = commonUtil.getCurrWordBook();
+    wordRandomizer.reset();
     wordList.value = [];
     historyWords.value = [];
     historyIndex.value = -1;
