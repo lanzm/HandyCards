@@ -9,6 +9,7 @@
 <sub>一款回归记忆抽认卡（Flashcards）本质的极简背单词微信小程序</sub>
 
 <p align="center">
+  <a href="https://lanzm.github.io/HandyCards/"><img src="https://img.shields.io/badge/Website-Official%20Site-2563eb?style=flat-square" /></a>
   <a href="https://mp.weixin.qq.com/"><img src="https://img.shields.io/badge/Platform-WeChat%20MiniProgram-07C160?style=flat-square&logo=wechat&logoColor=white" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-red?style=flat-square" /></a>
   <a href="docs/BRAND.md"><img src="https://img.shields.io/badge/Brand-Design%20Assets-8250df?style=flat-square" /></a>
@@ -24,7 +25,7 @@
 
 - ⚡ **开屏即用**：零商业广告插播、免登录注册、无社交打卡绑定，打开就是背单词。
 - 📦 **真 · 纯离线**：全部词库本地打包内置，断网飞行模式、地铁通勤毫无阻碍。
-- 🃏 **指尖翻卡流**：正面单词自测、轻触立体翻转揭晓释义，像刷短动态一样顺畅轻快。
+- 🃏 **指尖翻卡流**：正面单词自测、轻触立体翻转揭晓释义，像刷短视频一样顺畅轻快。
 - 🎯 **双刷词模式**：支持「自测遮挡模式」与「高效速览模式」随时一键无缝切换。
 - 🎓 **学术构词剖析**：音节智能测算、1~5 星词汇难度评估、派生词缀深度拆解。
 - 🌓 **暗黑模式与双语**：自动跟随系统深色主题，支持中英双语界面即时切换。

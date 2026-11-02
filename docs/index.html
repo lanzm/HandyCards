@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>随手词卡 · HandyCards | 纯粹 · 开源 · 离线的极简背单词微信小程序</title>
+  <meta name="description" content="随手词卡 (HandyCards) 是一款回归抽认卡（Flashcards）本质的背单词微信小程序。像刷短视频一样上下滑动刷单词，零广告、免登录、纯离线，开启沉浸式背词心流。" />
+  <meta name="keywords" content="随手词卡,HandyCards,背单词小程序,抽认卡,Flashcards,四六级背单词,考研英语,雅思词汇,离线背单词,开源背单词" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="随手词卡 · HandyCards - 极简开源单词抽认卡小程序" />
+  <meta property="og:description" content="像刷短视频一样刷单词。开源 · 零广告 · 免登录 · 纯离线 · 打开即背。" />
+  <meta property="og:image" content="images/share-cover.jpg" />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo-blue-white.png" />
+
+  <!-- 100% 免费商用字体 (OFL 协议): 思源宋体 (Noto Serif SC) + 思源黑体 (Noto Sans SC) + Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&family=Noto+Serif+SC:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: {
+              50: '#FDFDFC',
+              100: '#FAF9F5',
+              200: '#F4F2EC',
+              300: '#E9E6DE',
+              400: '#D6D2C6',
+              border: '#E7E4DC',
+            },
+            ink: {
+              DEFAULT: '#18181A',
+              pure: '#0F0F10',
+              secondary: '#4A4A4F',
+              muted: '#71717A',
+              light: '#A1A1AA',
+            },
+            terracotta: {
+              50: '#fdf4f2',
+              500: '#C84B31',
+              600: '#B03A22',
+            },
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#2563EB',
+              600: '#1D4ED8',
+              900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            // 中文：思源宋体 (100%免费商用 OFL)；英文：Newsreader / 系统衬线
+            serif: ['"Noto Serif SC"', 'Newsreader', '"Songti SC"', 'STSong', 'serif'],
+            // 中文：思源黑体 (100%免费商用 OFL)；英文：Plus Jakarta Sans (OFL)
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans SC"', '-apple-system', 'BlinkMacSystemFont', '"PingFang SC"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+          boxShadow: {
+            'paper': '0 1px 3px rgba(30, 27, 24, 0.04), 0 8px 24px -4px rgba(30, 27, 24, 0.06)',
+            'paper-hover': '0 2px 6px rgba(30, 27, 24, 0.06), 0 16px 36px -6px rgba(30, 27, 24, 0.1)',
+            'card-lift': '0 1px 2px rgba(0,0,0,0.05), 0 20px 40px -15px rgba(28,25,23,0.12)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 纸感物理底纹（Warm Paper Atmosphere） */
+    body {
+      background-color: #FAF9F6;
+      background-image: radial-gradient(#E8E5DD 0.75px, transparent 0.75px);
+      background-size: 20px 20px;
+    }
+
+    /* 手工索引分割线 */
+    .index-rule {
+      background-image: linear-gradient(to right, transparent, rgba(113, 113, 122, 0.25) 20%, rgba(113, 113, 122, 0.25) 80%, transparent);
+    }
+  </style>
+</head>
+<body class="text-ink font-sans antialiased selection:bg-stone-200 selection:text-ink-pure min-h-screen flex flex-col">
+
+  <!-- Header / Minimalist Masthead -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-[#FAF9F6]/90 border-b border-paper-border">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo + Brand Title -->
+      <a href="#" class="flex items-center gap-3 group">
+        <img src="images/logo-blue-white.png" alt="HandyCards Logo" class="w-8 h-8 rounded-xl shadow-sm border border-stone-200/80 group-hover:scale-105 transition-transform" />
+        <div class="flex items-center gap-2">
+          <span class="font-serif font-bold text-base sm:text-lg tracking-tight text-ink-pure">
+            随手词卡
+          </span>
+          <span class="font-sans text-xs text-ink-muted bg-paper-200 border border-paper-border px-2 py-0.5 rounded-full font-medium hidden sm:inline">
+            HandyCards
+          </span>
+        </div>
+      </a>
+
+      <!-- Center Navigation -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-ink-secondary">
+        <a href="#philosophy" class="hover:text-ink-pure transition">克制设计</a>
+        <a href="#vocab" class="hover:text-ink-pure transition">内置词库</a>
+        <a href="#contrast" class="hover:text-ink-pure transition">喧闹与纯粹</a>
+        <a href="BRAND.md" class="hover:text-ink-pure transition">视觉规范</a>
+      </nav>
+
+      <!-- Right Action Icons: GitHub 纯图标 + 微信纯图标 (统一 36x36px 白底精工圆钮，内嵌精准光学配重图标) -->
+      <div class="flex items-center gap-2.5">
+        <!-- GitHub 纯图标按钮 -->
+        <a href="https://github.com/lanzm/HandyCards" target="_blank" rel="noopener noreferrer" 
+           title="在 GitHub 查看源码与点赞 (Star on GitHub)" aria-label="GitHub 仓库" 
+           class="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-paper-100 text-ink-secondary hover:text-ink-pure border border-paper-border shadow-sm transition">
+          <svg class="w-[18px] h-[18px] fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        
+        <!-- 微信纯图标按钮 (统一白底+纸感灰边+微信绿图标，解决实心膨胀感与内标偏小问题) -->
+        <a href="#qrcode" title="微信扫码使用小程序" aria-label="微信扫码使用小程序"
+           class="w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-paper-100 text-[#07C160] hover:text-[#06AD56] border border-paper-border shadow-sm transition">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8.691 2.188C3.891 2.188 0 5.478 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-5.522 2.658-6.983 1.378-.804 2.96-1.144 4.508-1.037-.803-3.79-4.22-6.608-7.967-6.608zm-2.42 4.195a1.206 1.206 0 1 1 0 2.412 1.206 1.206 0 0 1 0-2.412zm5.405 0a1.206 1.206 0 1 1 0 2.412 1.206 1.206 0 0 1 0-2.412zm4.185 3.864c-3.954 0-7.16 2.71-7.16 6.052 0 3.344 3.206 6.054 7.16 6.054.764 0 1.503-.105 2.197-.294a.715.715 0 0 1 .593.082l1.574.921a.27.27 0 0 0 .138.045c.133 0 .24-.11.24-.245 0-.06-.024-.118-.04-.176l-.323-1.224a.488.488 0 0 1 .176-.55c1.514-1.113 2.48-2.76 2.48-4.61 0-3.343-3.206-6.053-7.16-6.053zm-2.074 3.473a.998.998 0 1 1 0 1.996.998.998 0 0 1 0-1.996zm4.47 0a.998.998 0 1 1 0 1.996.998.998 0 0 1 0-1.996z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1">
+
+    <!-- Hero Section / The Editorial Bookstand -->
+    <section class="pt-14 pb-20 md:pt-20 md:pb-24">
+      <div class="max-w-5xl mx-auto px-5 sm:px-8">
+        
+        <!-- Top Editorial Category Pill -->
+        <div class="flex justify-center mb-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-stone-100 border border-stone-200/90 text-xs font-sans text-ink-secondary tracking-wide">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+            <span>开源 · 纯离线 · 零商业广告 · 开屏即背</span>
+          </div>
+        </div>
+
+        <!-- Big Editorial Headline (规范字体分层与行高) -->
+        <div class="text-center max-w-3xl mx-auto mb-14">
+          <h1 class="text-3xl sm:text-5xl font-serif font-semibold tracking-tight text-ink-pure leading-[1.25] mb-5">
+            回归抽认卡本质，<br />
+            <span class="font-serif font-normal text-stone-600">像刷短视频一样刷单词。</span>
+          </h1>
+          <p class="text-sm sm:text-base text-ink-secondary max-w-2xl mx-auto leading-relaxed font-sans">
+            告别传统背单词软件的满屏弹窗、社交打卡与繁琐签到。<br class="hidden sm:block"/>
+            上下滑动翻阅卡片，全部官方词库本地打包，随时随地开启沉浸式记忆心流。
+          </p>
+        </div>
+
+        <!-- Showcase: Physical Index Card & Titanium Device Mockup -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-stretch justify-center max-w-4xl mx-auto">
+          
+          <!-- Left: Real Mobile Device Mockup (6 Cols) -->
+          <div class="md:col-span-6 flex flex-col items-center justify-center">
+            <div class="relative w-full max-w-[280px]">
+              
+              <!-- Subtle warm ambient shadow under device -->
+              <div class="absolute -inset-2 bg-stone-300/40 rounded-[2.8rem] blur-xl -z-10"></div>
+
+              <!-- Refined Titanium Device Frame -->
+              <div class="bg-[#F3F2ED] p-3 rounded-[2.8rem] border border-stone-300/80 shadow-card-lift">
+                <!-- Inner Screen Container -->
+                <div class="overflow-hidden rounded-[2.1rem] bg-black shadow-inner aspect-[360/631]">
+                  <img src="images/demo-flip.gif" alt="随手词卡 真实翻卡刷词操作实录" class="w-full h-full object-cover block" />
+                </div>
+              </div>
+
+              <!-- Caption -->
+              <div class="text-center mt-3 text-xs text-ink-muted font-sans flex items-center justify-center gap-2">
+                <span class="text-stone-400">❖</span>
+                <span>真机实录 · 3D 立体翻卡与顺畅切词</span>
+                <span class="text-stone-400">❖</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Handcrafted Library Index Card / 实体藏书票式接入卡 (6 Cols) -->
+          <div id="qrcode" class="md:col-span-6 flex flex-col items-center justify-center">
+            <div class="w-full max-w-sm bg-white border border-paper-border rounded-3xl p-7 shadow-paper flex flex-col justify-between relative overflow-hidden text-center group hover:shadow-paper-hover transition-all">
+              
+              <div>
+                <!-- High-res QR Code styled as an Embossed Stamp -->
+                <div class="p-3 bg-paper-100 rounded-2xl border border-paper-border inline-block mb-4 shadow-sm group-hover:scale-102 transition-transform">
+                  <img src="images/wechat-mp-qrcode.jpg" alt="随手词卡 微信小程序码" class="w-44 h-44 rounded-xl object-contain block mix-blend-multiply" />
+                </div>
+
+                <h3 class="text-xl font-serif font-semibold text-ink-pure mb-1.5">随手词卡 · 微信小程序</h3>
+                <p class="text-xs text-ink-secondary leading-relaxed font-sans">
+                  用微信扫一扫，放进口袋随时翻两张。<br/>
+                  零广告 · 免注册 · 纯离线全词库支持
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Index Divider -->
+    <div class="max-w-4xl mx-auto h-px index-rule my-6"></div>
+
+    <!-- Philosophy Section / 6 项克制设计 (Editorial Spread) -->
+    <section id="philosophy" class="py-20">
+      <div class="max-w-5xl mx-auto px-5 sm:px-8">
+        
+        <!-- Section Header (统一规范标题阶梯) -->
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <span class="text-xs font-mono uppercase tracking-widest text-terracotta-500 font-semibold mb-2 block">Designed with Restraint</span>
+          <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-ink-pure tracking-tight">为专注心流而生的 6 项克制设计</h2>
+          <p class="text-sm text-ink-muted mt-2.5 font-sans">除去一切喧闹与功利，还给你原本沉静的记忆环境。</p>
+        </div>
+
+        <!-- 6 Refined Editorial Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <!-- Item 1 -->
+          <div class="bg-white border border-paper-border p-6 sm:p-7 rounded-2xl shadow-paper hover:shadow-paper-hover transition-all">
+            <div class="text-xs font-mono text-terracotta-500 font-bold mb-3">01 / 开屏即入</div>
+            <h3 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">零开屏广告，绝不打扰</h3>
+            <p class="text-xs sm:text-sm text-ink-secondary leading-relaxed font-sans">
+              没有 5 秒开屏商业广告，没有烦人的营销优惠券，没有强迫发圈的打卡机制。每次点开，就是一张等待检验的抽认卡。
+            </p>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="bg-white border border-paper-border p-6 sm:p-7 rounded-2xl shadow-paper hover:shadow-paper-hover transition-all">
+            <div class="text-xs font-mono text-terracotta-500 font-bold mb-3">02 / 纯离线全包</div>
+            <h3 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">真 · 纯离线本地词库</h3>
+            <p class="text-xs sm:text-sm text-ink-secondary leading-relaxed font-sans">
+              四六级、考研、雅思词库全量打包在本地。无网深山、地铁早晚高峰、飞行模式下，断网随心翻阅，无需等待网络加载。
+            </p>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="bg-white border border-paper-border p-6 sm:p-7 rounded-2xl shadow-paper hover:shadow-paper-hover transition-all">
+            <div class="text-xs font-mono text-terracotta-500 font-bold mb-3">03 / 指尖触感</div>
+            <h3 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">像刷短视频一样刷单词</h3>
+            <p class="text-xs sm:text-sm text-ink-secondary leading-relaxed font-sans">
+              正面单词主动提取，轻触立体翻转揭晓音标、考法与真题例句。上下滑动自然切词，形成轻松自然的指尖肌肉记忆。
+            </p>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="bg-white border border-paper-border p-6 sm:p-7 rounded-2xl shadow-paper hover:shadow-paper-hover transition-all">
+            <div class="text-xs font-mono text-terracotta-500 font-bold mb-3">04 / 双刷词模式</div>
+            <h3 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">精细自测与考前速览</h3>
+            <p class="text-xs sm:text-sm text-ink-secondary leading-relaxed font-sans">
+              强化记忆的主动遮挡自测模式，与考前冲刺的高效速览模式。两种心流状态，在设置抽屉中随时一键平滑切换。
+            </p>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="bg-white border border-paper-border p-6 sm:p-7 rounded-2xl shadow-paper hover:shadow-paper-hover transition-all">
+            <div class="text-xs font-mono text-terracotta-500 font-bold mb-3">05 / 语言学拆解</div>
+            <h3 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">音节节奏与词根词缀</h3>
+            <p class="text-xs sm:text-sm text-ink-secondary leading-relaxed font-sans">
+              智能音节数统计、1~5 星词汇考试难度评级、派生前缀后缀深度拆解，从构词法与形态学深度吃透词汇内核。
+            </p>
+          </div>
+
+          <!-- Item 6 -->
+          <div class="bg-white border border-paper-border p-6 sm:p-7 rounded-2xl shadow-paper hover:shadow-paper-hover transition-all">
+            <div class="text-xs font-mono text-terracotta-500 font-bold mb-3">06 / 轻盈包体</div>
+            <h3 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">1.75MB 极致轻巧</h3>
+            <p class="text-xs sm:text-sm text-ink-secondary leading-relaxed font-sans">
+              全量词库打包体积仅 1.75MB，秒开即用不占手机内存。原生跟随 iOS / Android 系统深色模式，中英双语即时生效。
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Vocabularies Section / 典藏内置词库 -->
+    <section id="vocab" class="py-20 bg-paper-100 border-y border-paper-border">
+      <div class="max-w-5xl mx-auto px-5 sm:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="text-xs font-mono uppercase tracking-widest text-ink-muted font-semibold mb-2 block">Built-in Editions</span>
+          <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-ink-pure tracking-tight">四大官方经典词库 · 本地直装</h2>
+          <p class="text-sm text-ink-secondary mt-2.5 font-sans">全部打包内置在小程序中，无需联网下载，开箱即刷。</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          
+          <!-- Book 1 -->
+          <div class="bg-white border border-paper-border p-6 rounded-2xl shadow-paper flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
+            <div>
+              <span class="text-[11px] font-mono text-brand-600 bg-brand-50 px-2 py-0.5 rounded border border-brand-100 font-semibold mb-3 inline-block">CET-4</span>
+              <h4 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">四级核心词汇</h4>
+              <p class="text-xs text-ink-secondary leading-relaxed font-sans">精选大学英语四级历年真题高频核心考点词，扫清听力与阅读基本盘。</p>
+            </div>
+            <div class="pt-4 mt-5 border-t border-paper-border flex items-center justify-between text-xs">
+              <span class="text-ink-muted font-sans">词汇总量</span>
+              <span class="font-mono font-bold text-ink-pure">1,162 词</span>
+            </div>
+          </div>
+
+          <!-- Book 2 -->
+          <div class="bg-white border border-paper-border p-6 rounded-2xl shadow-paper flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
+            <div>
+              <span class="text-[11px] font-mono text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 font-semibold mb-3 inline-block">CET-6</span>
+              <h4 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">六级进阶词汇</h4>
+              <p class="text-xs text-ink-secondary leading-relaxed font-sans">六级拔高必背学术难词与真题高分词汇，彻底扫清长难句生词阻碍。</p>
+            </div>
+            <div class="pt-4 mt-5 border-t border-paper-border flex items-center justify-between text-xs">
+              <span class="text-ink-muted font-sans">词汇总量</span>
+              <span class="font-mono font-bold text-ink-pure">1,199 词</span>
+            </div>
+          </div>
+
+          <!-- Book 3 -->
+          <div class="bg-white border border-paper-border p-6 rounded-2xl shadow-paper flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
+            <div>
+              <span class="text-[11px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 font-semibold mb-3 inline-block">KRA</span>
+              <h4 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">考研英语必背</h4>
+              <p class="text-xs text-ink-secondary leading-relaxed font-sans">覆盖全国硕士研究生招生考试（英语一/英语二）历年大纲精选核心词。</p>
+            </div>
+            <div class="pt-4 mt-5 border-t border-paper-border flex items-center justify-between text-xs">
+              <span class="text-ink-muted font-sans">词汇总量</span>
+              <span class="font-mono font-bold text-ink-pure">2,019 词</span>
+            </div>
+          </div>
+
+          <!-- Book 4 -->
+          <div class="bg-white border border-paper-border p-6 rounded-2xl shadow-paper flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
+            <div>
+              <span class="text-[11px] font-mono text-terracotta-500 bg-terracotta-50 px-2 py-0.5 rounded border border-terracotta-50 font-semibold mb-3 inline-block">IELTS</span>
+              <h4 class="text-base sm:text-lg font-serif font-semibold text-ink-pure mb-2">雅思学术核心</h4>
+              <p class="text-xs text-ink-secondary leading-relaxed font-sans">雅思听说读写四大科目高频学术词汇，助力雅思考生冲击 7+ 高分段。</p>
+            </div>
+            <div class="pt-4 mt-5 border-t border-paper-border flex items-center justify-between text-xs">
+              <span class="text-ink-muted font-sans">词汇总量</span>
+              <span class="font-mono font-bold text-ink-pure">3,427 词</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Contrast Table / 喧闹与沉静的对比 -->
+    <section id="contrast" class="py-20">
+      <div class="max-w-4xl mx-auto px-5 sm:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="text-xs font-mono uppercase tracking-widest text-ink-muted font-semibold mb-2 block">A Quiet Choice</span>
+          <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-ink-pure tracking-tight">为什么选择「随手词卡」？</h2>
+          <p class="text-sm text-ink-muted mt-2.5 font-sans">少一点商业干扰，多一点真正记在脑海里的单词。</p>
+        </div>
+
+        <div class="bg-white border border-paper-border rounded-2xl shadow-paper overflow-hidden">
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-paper-border bg-paper-100 text-xs font-mono text-ink-muted uppercase tracking-wider">
+                <th class="py-4 px-6 font-semibold">体验维度</th>
+                <th class="py-4 px-6 text-ink-pure font-serif font-bold text-sm sm:text-base">随手词卡 (HandyCards)</th>
+                <th class="py-4 px-6 text-stone-400 font-normal">传统商业背单词 App</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-paper-border text-ink-secondary font-sans text-xs sm:text-sm">
+              <tr class="hover:bg-paper-50 transition-colors">
+                <td class="py-4 px-6 font-medium text-ink-pure">商业广告</td>
+                <td class="py-4 px-6 text-emerald-700 font-semibold flex items-center gap-1.5">
+                  <span class="text-emerald-600 font-bold">✓</span> 纯粹 0 广告，开屏秒入
+                </td>
+                <td class="py-4 px-6 text-stone-400">5 秒开屏广告、横幅弹窗不断</td>
+              </tr>
+              <tr class="hover:bg-paper-50 transition-colors">
+                <td class="py-4 px-6 font-medium text-ink-pure">隐私授权</td>
+                <td class="py-4 px-6 text-emerald-700 font-semibold">
+                  <span class="text-emerald-600 font-bold">✓</span> 免登录、无需手机号与多余权限
+                </td>
+                <td class="py-4 px-6 text-stone-400">强制手机号验证码、读取设备信息</td>
+              </tr>
+              <tr class="hover:bg-paper-50 transition-colors">
+                <td class="py-4 px-6 font-medium text-ink-pure">离线能力</td>
+                <td class="py-4 px-6 text-emerald-700 font-semibold">
+                  <span class="text-emerald-600 font-bold">✓</span> 全量离线包，飞行模式随时刷词
+                </td>
+                <td class="py-4 px-6 text-stone-400">强依赖服务器，断网无法加载数据</td>
+              </tr>
+              <tr class="hover:bg-paper-50 transition-colors">
+                <td class="py-4 px-6 font-medium text-ink-pure">社交绑架</td>
+                <td class="py-4 px-6 text-emerald-700 font-semibold">
+                  <span class="text-emerald-600 font-bold">✓</span> 零打卡压力，无强制朋友圈分享
+                </td>
+                <td class="py-4 px-6 text-stone-400">诱导打卡发圈，打断背词心流</td>
+              </tr>
+              <tr class="hover:bg-paper-50 transition-colors">
+                <td class="py-4 px-6 font-medium text-ink-pure">应用体积</td>
+                <td class="py-4 px-6 text-emerald-700 font-semibold">
+                  <span class="text-emerald-600 font-bold">✓</span> 仅 1.75MB，即开即走
+                </td>
+                <td class="py-4 px-6 text-stone-400">动辄 100MB~300MB 庞大安装包</td>
+              </tr>
+              <tr class="hover:bg-paper-50 transition-colors">
+                <td class="py-4 px-6 font-medium text-ink-pure">收费机制</td>
+                <td class="py-4 px-6 text-emerald-700 font-semibold">
+                  <span class="text-emerald-600 font-bold">✓</span> 100% 永久免费学习使用
+                </td>
+                <td class="py-4 px-6 text-stone-400">各种会员订阅费、付费真题词库</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Bottom Call-out / 实体书签式行动卡 -->
+    <section class="py-16 bg-paper-100 border-t border-paper-border text-center">
+      <div class="max-w-2xl mx-auto px-5 sm:px-8">
+        <h3 class="text-2xl sm:text-3xl font-serif font-semibold text-ink-pure mb-3">开启你的纯粹背词之旅</h3>
+        <p class="text-sm text-ink-secondary mb-8 font-sans">像翻阅一本精美的口袋手账，在碎片时间里沉淀词汇。</p>
+        
+        <div class="inline-flex flex-col sm:flex-row items-center gap-3">
+          <a href="#qrcode" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#07C160] hover:bg-[#06AD56] text-white font-medium px-6 py-2.5 rounded-xl shadow-paper hover:shadow-paper-hover transition-all text-sm">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8.691 2.188C3.891 2.188 0 5.478 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-5.522 2.658-6.983 1.378-.804 2.96-1.144 4.508-1.037-.803-3.79-4.22-6.608-7.967-6.608zm-2.42 4.195a1.206 1.206 0 1 1 0 2.412 1.206 1.206 0 0 1 0-2.412zm5.405 0a1.206 1.206 0 1 1 0 2.412 1.206 1.206 0 0 1 0-2.412zm4.185 3.864c-3.954 0-7.16 2.71-7.16 6.052 0 3.344 3.206 6.054 7.16 6.054.764 0 1.503-.105 2.197-.294a.715.715 0 0 1 .593.082l1.574.921a.27.27 0 0 0 .138.045c.133 0 .24-.11.24-.245 0-.06-.024-.118-.04-.176l-.323-1.224a.488.488 0 0 1 .176-.55c1.514-1.113 2.48-2.76 2.48-4.61 0-3.343-3.206-6.053-7.16-6.053zm-2.074 3.473a.998.998 0 1 1 0 1.996.998.998 0 0 1 0-1.996zm4.47 0a.998.998 0 1 1 0 1.996.998.998 0 0 1 0-1.996z"/></svg>
+            前往微信扫码直达
+          </a>
+          <a href="https://github.com/lanzm/HandyCards" target="_blank" rel="noopener noreferrer" 
+             class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-paper-50 text-ink-pure font-medium px-6 py-2.5 rounded-xl border border-paper-border shadow-sm transition text-sm">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            Star on GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Colophon / Footer -->
+  <footer class="border-t border-paper-border py-8 bg-[#F4F2EC] text-xs text-ink-muted">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 font-serif">
+        <img src="images/logo-blue-white.png" alt="Logo" class="w-5 h-5 rounded-md border border-stone-200" />
+        <span>随手词卡 · HandyCards © 2026 lanzm. 遵循 <a href="https://github.com/lanzm/HandyCards/blob/master/LICENSE" class="hover:underline text-ink-pure">CC BY-NC 4.0</a> 协议开源.</span>
+      </div>
+      <div class="flex items-center gap-6 font-sans font-medium text-ink-secondary">
+        <a href="BRAND.md" class="hover:text-ink-pure transition">品牌设计资产</a>
+        <a href="https://github.com/lanzm/HandyCards" class="hover:text-ink-pure transition">GitHub 仓库</a>
+        <a href="#qrcode" class="hover:text-ink-pure transition">小程序体验</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
