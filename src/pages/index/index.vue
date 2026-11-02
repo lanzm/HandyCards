@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch, nextTick, getCurrentInstance } from 'vue'
 // import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// import { SHARE_TITLE, DEFAULT_SHARE_COVER, renderShareCardOnDemand } from "@/utils/shareCard";
 import commonUtil from "@/utils/commonUtil";
 import { wordBooksData } from "@/utils/wordbooks";
 import { getTranslations, type Language } from "@/utils/i18n";
@@ -614,289 +615,37 @@ onUnmounted(() => {
 });
 
 /*
-// --- Dynamic Share Card (Canvas 2D) --- [Temporarily disabled]
-const SHARE_TITLE = '随手词卡 · HandyCards - 打开即用的极简翻卡背单词小程序';
-const cachedShareImageUrl = ref<string>('/static/share-cover.jpg');
-const isGeneratingShareCard = ref(false);
-let lastRenderedShareWord = '';
-let shareCardDebounceTimer: ReturnType<typeof setTimeout> | null = null;
-
-const drawRoundRect = (
-    ctx: any,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    r: number
-) => {
-    if (w < 2 * r) r = w / 2;
-    if (h < 2 * r) r = h / 2;
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-};
-
-const renderShareCard = (word: string, phonetic?: string): Promise<string> => {
-    return new Promise((resolve) => {
-        if (!word) {
-            return resolve('/static/share-cover.jpg');
-        }
-
-        // #ifdef MP-WEIXIN
-        const query = uni.createSelectorQuery();
-        const instanceProxy = (instance?.proxy) ? query.in(instance.proxy) : query;
-        (instanceProxy.select('#shareCanvas') as any)
-            .node()
-            .exec((res: any[]) => {
-                const canvas = res?.[0]?.node;
-                if (!canvas) {
-                    return resolve('/static/share-cover.jpg');
-                }
-
-                const ctx = canvas.getContext('2d');
-                if (!ctx) {
-                    return resolve('/static/share-cover.jpg');
-                }
-
-                const width = 1000;
-                const height = 800;
-                canvas.width = width;
-                canvas.height = height;
-
-                // 1. Clean Background
-                ctx.fillStyle = '#F8FAFC';
-                ctx.fillRect(0, 0, width, height);
-
-                // 2. Subtle radial glow
-                try {
-                    const grad = ctx.createRadialGradient(
-                        width / 2,
-                        height / 2 - 40,
-                        50,
-                        width / 2,
-                        height / 2 - 40,
-                        450
-                    );
-                    grad.addColorStop(0, 'rgba(43, 130, 246, 0.04)');
-                    grad.addColorStop(1, 'rgba(248, 250, 252, 0)');
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(0, 0, width, height);
-                } catch {
-                    // ignore
-                }
-
-                // 3. Logo in Top-Left (Squircle + E + Sprout)
-                const lx = 64;
-                const ly = 56;
-                const ls = 76;
-
-                ctx.save();
-                ctx.shadowColor = 'rgba(43, 130, 246, 0.28)';
-                ctx.shadowBlur = 16;
-                ctx.shadowOffsetY = 6;
-                ctx.fillStyle = '#2B82F6';
-                drawRoundRect(ctx, lx, ly, ls, ls, 18);
-                ctx.fill();
-                ctx.restore();
-
-                // Draw Floating Dual Cards (Scheme B) inside Logo Box
-                ctx.save();
-                ctx.translate(lx, ly);
-                const scale = ls / 512;
-                ctx.scale(scale, scale);
-
-                // Back Card (Tilted -10deg)
-                ctx.save();
-                ctx.translate(256, 256);
-                ctx.rotate(-10 * Math.PI / 180);
-                ctx.translate(-256, -256);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-                drawRoundRect(ctx, 156, 140, 180, 232, 28);
-                ctx.fill();
-                ctx.restore();
-
-                // Front Card (Tilted +6deg)
-                ctx.save();
-                ctx.translate(256, 256);
-                ctx.rotate(6 * Math.PI / 180);
-                ctx.translate(-256, -256);
-                ctx.fillStyle = '#FFFFFF';
-                drawRoundRect(ctx, 166, 140, 180, 232, 28);
-                ctx.fill();
-
-                // Card headline bar & dot
-                ctx.fillStyle = '#2B82F6';
-                drawRoundRect(ctx, 198, 202, 82, 18, 9);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(300, 211, 9, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Card secondary definition bar
-                ctx.fillStyle = 'rgba(43, 130, 246, 0.45)';
-                drawRoundRect(ctx, 198, 234, 116, 12, 6);
-                ctx.fill();
-                ctx.restore();
-
-                ctx.restore();
-
-                // 4. Central Large Word
-                ctx.save();
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                let fontSize = 96;
-                if (word.length > 13) fontSize = 68;
-                else if (word.length > 10) fontSize = 80;
-
-                ctx.font = `800 ${fontSize}px sans-serif`;
-                ctx.fillStyle = '#0F172A';
-                ctx.fillText(word, width / 2, height / 2 - 40);
-
-                // 5. Phonetic
-                if (phonetic) {
-                    ctx.font = 'italic 34px serif';
-                    ctx.fillStyle = '#64748B';
-                    ctx.fillText(phonetic, width / 2, height / 2 + 35);
-                }
-                ctx.restore();
-
-                // 6. Bottom Capsule Tagline: 开源 · 无广 · 无登录 · 打开即用
-                ctx.save();
-                const tagText = '开源 · 无广 · 无登录 · 打开即用';
-                ctx.font = '600 24px sans-serif';
-                const textWidth = ctx.measureText(tagText).width;
-                const pillPadX = 32;
-                const pillW = textWidth + pillPadX * 2;
-                const pillH = 50;
-                const pillX = (width - pillW) / 2;
-                const pillY = height - 120;
-
-                // Pill shadow
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.03)';
-                ctx.shadowBlur = 12;
-                ctx.shadowOffsetY = 4;
-
-                ctx.fillStyle = '#FFFFFF';
-                drawRoundRect(ctx, pillX, pillY, pillW, pillH, 999);
-                ctx.fill();
-
-                // Pill border
-                ctx.shadowColor = 'transparent';
-                ctx.strokeStyle = '#E2E8F0';
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-
-                // Pill text
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillStyle = '#1E293B';
-                ctx.fillText(tagText, width / 2, pillY + pillH / 2);
-                ctx.restore();
-
-                // Export to temporary file
-                (uni.canvasToTempFilePath as any)({
-                    canvas: canvas,
-                    canvasId: 'shareCanvas',
-                    destWidth: 1000,
-                    destHeight: 800,
-                    fileType: 'jpg',
-                    quality: 0.92,
-                    success: (tempRes: any) => {
-                        lastRenderedShareWord = word;
-                        cachedShareImageUrl.value = tempRes.tempFilePath;
-                        resolve(tempRes.tempFilePath);
-                    },
-                    fail: (err: any) => {
-                        console.error('[useShareCard] canvasToTempFilePath fail:', err);
-                        resolve('/static/share-cover.jpg');
-                    }
-                });
-            });
-        // #endif
-
-        // #ifndef MP-WEIXIN
-        resolve('/static/share-cover.jpg');
-        // #endif
-    });
-};
-
-const updateShareCard = (word?: string, phonetic?: string) => {
-    if (!word || word === lastRenderedShareWord) return;
-
-    if (shareCardDebounceTimer) {
-        clearTimeout(shareCardDebounceTimer);
-    }
-
-    shareCardDebounceTimer = setTimeout(() => {
-        if (isGeneratingShareCard.value) return;
-        isGeneratingShareCard.value = true;
-        renderShareCard(word, phonetic)
-            .catch((e) => console.warn('[useShareCard] render error:', e))
-            .finally(() => {
-                isGeneratingShareCard.value = false;
-            });
-    }, 350);
-};
-
-// WeChat share to friends / groups
+// --- WeChat Share Hooks --- [Temporarily disabled]
+// 微信分享给好友 / 群聊（纯按需懒生成：仅在点击分享时动态绘制当前单词专属 5:4 高清海报）
 onShareAppMessage(() => {
     const word = wordObj.value?.w;
     const phonetic = wordObj.value?.p;
 
-    // Fast-path: if dynamically rendered for current word, return immediately (0ms)
-    if (cachedShareImageUrl.value && cachedShareImageUrl.value !== '/static/share-cover.jpg') {
-        return {
+    const promise = renderShareCardOnDemand(instance?.proxy, word, phonetic)
+        .then((imageUrl) => ({
             title: SHARE_TITLE,
             path: '/pages/index/index',
-            imageUrl: cachedShareImageUrl.value,
-        };
-    }
-
-    // Async Promise for WeChat Mini Program 2.13.0+
-    const promise = new Promise<{ title: string; path: string; imageUrl: string }>((resolve) => {
-        if (!word) {
-            return resolve({
-                title: SHARE_TITLE,
-                path: '/pages/index/index',
-                imageUrl: '/static/share-cover.jpg',
-            });
-        }
-        renderShareCard(word, phonetic)
-            .then((url) => {
-                resolve({
-                    title: SHARE_TITLE,
-                    path: '/pages/index/index',
-                    imageUrl: url,
-                });
-            })
-            .catch(() => {
-                resolve({
-                    title: SHARE_TITLE,
-                    path: '/pages/index/index',
-                    imageUrl: '/static/share-cover.jpg',
-                });
-            });
-    });
+            imageUrl,
+        }))
+        .catch(() => ({
+            title: SHARE_TITLE,
+            path: '/pages/index/index',
+            imageUrl: DEFAULT_SHARE_COVER,
+        }));
 
     return {
         title: SHARE_TITLE,
         path: '/pages/index/index',
         promise,
-        imageUrl: '/static/share-cover.jpg',
+        imageUrl: DEFAULT_SHARE_COVER,
     };
 });
 
-// WeChat share to Moments (Timeline)
+// 微信分享到朋友圈（官方规范：朋友圈为 1:1 正方形缩略图，不传 imageUrl 微信自动使用小程序官方 1:1 Logo 图标）
 onShareTimeline(() => {
     return {
         title: SHARE_TITLE,
         query: '',
-        imageUrl: cachedShareImageUrl.value || '/static/share-cover.jpg',
     };
 });
 */
