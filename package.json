@@ -2,7 +2,7 @@
   "name": "handycards",
   "version": "1.0.0",
   "description": "一个完全离线、发布即用的英文学习单词微信小程序，最纯粹的背单词应用。",
-  "license": "MIT",
+  "license": "CC-BY-NC-4.0",
   "scripts": {
     "dev:custom": "uni -p",
     "dev:h5": "uni",
