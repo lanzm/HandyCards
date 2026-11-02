@@ -120,7 +120,7 @@ export function useWordAudio() {
 
         uni.request({
             url: 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(currentWord) + '&type=1',
-            headers: {},
+            header: {},
             responseType: 'arraybuffer',
             success: (res) => {
                 if (thisVersion !== speechRequestVersion) {

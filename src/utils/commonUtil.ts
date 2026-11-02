@@ -14,7 +14,7 @@ const wordBookList: WordBookMeta[] = [
     {
         label: '考研词汇',
         value: 'KaoYanluan_1',
-        count: 1341,
+        count: 1340,
     },
     {
         label: '雅思词汇',
