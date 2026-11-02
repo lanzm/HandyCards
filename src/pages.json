@@ -3,13 +3,13 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "EnglishJoy"
+				"navigationBarTitleText": "随手词卡"
 			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "@navigationBarTextStyle",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "随手词卡",
 		"navigationBarBackgroundColor": "@navigationBarBackgroundColor",
 		"backgroundColor": "@backgroundColor"
 	}

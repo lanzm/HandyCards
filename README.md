@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="docs/images/logo-blue-white.png" width="76" alt="EnglishJoy Logo" style="border-radius: 16px;" />
+<img src="docs/images/logo-blue-white.png" width="76" alt="随手词卡 · HandyCards" style="border-radius: 16px;" />
 
-# EnglishJoy
+# 随手词卡 · HandyCards
 **纯粹 · 极简 · 离线的卡片背单词微信小程序**
 
 [![Platform](https://img.shields.io/badge/Platform-WeChat%20MiniProgram-07C160?style=flat-square&logo=wechat&logoColor=white)](https://mp.weixin.qq.com/)
@@ -17,7 +17,7 @@
 <table border="0" width="100%">
   <tr>
     <td width="72%" valign="middle">
-      <p><b>EnglishJoy</b>（小程序名称：<b>EnglishJoyApp</b>）是一款回归记忆卡片（Flashcards）本质的背单词工具。像刷短视频一样上下滑动卡片，带给你专注顺滑的背词心流。</p>
+      <p><b>随手词卡</b>（英文名：<b>HandyCards</b>）是一款回归记忆卡片（Flashcards）本质的随身背单词工具。像刷短视频一样滑动翻阅卡片，带给你专注顺滑的背词心流。</p>
       <ul>
         <li>⚡ <b>开屏即用</b>：无任何广告插播、无社交打卡、无需登录注册</li>
         <li>📦 <b>真·纯离线</b>：内置四级、六级、考研、雅思词库，断网随心背</li>
@@ -29,7 +29,7 @@
     <td width="28%" align="center" valign="middle">
       <img src="docs/images/wechat-mp-qrcode.jpg" width="130" alt="WeChat MiniProgram QR Code" style="border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" /><br/>
       <sub>📱 <b>微信扫码体验</b></sub><br/>
-      <sub><small>EnglishJoyApp</small></sub>
+      <sub><small>随手词卡 · HandyCards</small></sub>
     </td>
   </tr>
 </table>
@@ -56,8 +56,8 @@
 ### 1. 克隆与安装
 
 ```bash
-git clone https://github.com/lanzm/EnglishJoy.git
-cd EnglishJoy
+git clone https://github.com/lanzm/HandyCards.git
+cd HandyCards
 npm install   # 或 pnpm install
 ```
 

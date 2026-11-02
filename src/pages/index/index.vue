@@ -615,7 +615,7 @@ onUnmounted(() => {
 
 /*
 // --- Dynamic Share Card (Canvas 2D) --- [Temporarily disabled]
-const SHARE_TITLE = '发现一个极简背单词小程序，打开即用';
+const SHARE_TITLE = '随手词卡 · HandyCards - 打开即用的极简翻卡背单词小程序';
 const cachedShareImageUrl = ref<string>('/static/share-cover.jpg');
 const isGeneratingShareCard = ref(false);
 let lastRenderedShareWord = '';
