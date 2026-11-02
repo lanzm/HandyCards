@@ -36,7 +36,8 @@ const {
     dockSide,
     onGearChange,
     onGearTouchStart,
-    onGearTouchEnd
+    onGearTouchEnd,
+    wakeUpGear
 } = useFloatingGear(showDrawer);
 type DetailSectionKey = 'definitions' | 'examples' | 'anatomy';
 
@@ -488,6 +489,7 @@ const onDetailTouchEnd = () => {
 };
 
 const handleGearClick = () => {
+    wakeUpGear();
     showDrawer.value = true;
 };
 
