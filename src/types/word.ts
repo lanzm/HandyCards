@@ -3,6 +3,7 @@ export interface WordItem {
     p: string;                  // 音标
     t: [string, string][];      // [词性, 释义][]
     s?: [string, string][];     // [英文例句, 中文翻译][]
+    cardIndex?: number;         // 词卡在洗牌序列中的编号 (1 ~ N)
 }
 
 export interface WordBookMeta {

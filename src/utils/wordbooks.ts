@@ -150,7 +150,12 @@ export function createWordShuffler(bookKey: string, list: WordItem[]): WordShuff
         if (list.length === 0) return null;
         const targetCursor = cursor >= order.length ? 0 : cursor;
         const index = order[targetCursor];
-        return list[index] ?? null;
+        const raw = list[index];
+        if (!raw) return null;
+        return {
+            ...raw,
+            cardIndex: targetCursor + 1
+        };
     };
 
     const pickNext = (): { word: WordItem | null; isNewRound: boolean } => {
@@ -160,11 +165,13 @@ export function createWordShuffler(bookKey: string, list: WordItem[]): WordShuff
             reshuffle();
             isNewRound = true;
         }
+        const currentSeq = cursor + 1;
         const index = order[cursor];
         cursor += 1;
         saveState();
+        const raw = list[index];
         return {
-            word: list[index] ?? null,
+            word: raw ? { ...raw, cardIndex: currentSeq } : null,
             isNewRound
         };
     };

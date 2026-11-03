@@ -108,8 +108,8 @@ const currentWordAnatomy = computed(() => {
           @touchmove="!isBackground ? emit('touch-move', $event) : undefined"
           @touchend="!isBackground ? emit('touch-end') : undefined"
         >
-            <view class="flex justify-between items-center">
-                <view class="flex flex-col gap-1 flex-1 min-w-0">
+            <view class="flex justify-between items-start gap-2">
+                <view class="flex flex-col gap-1 flex-1 min-w-0 pr-1">
                     <text 
                       class="word-large-text" 
                       @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
@@ -125,6 +125,11 @@ const currentWordAnatomy = computed(() => {
                           :class="{ 'playing': playFlag && !isBackground }"
                         ></text>
                     </view>
+                </view>
+
+                <!-- Top-right minimalist card sequence badge (#158) -->
+                <view v-if="word?.cardIndex" class="card-seq-badge shrink-0">
+                    <text class="card-seq-text">#{{ word.cardIndex }}</text>
                 </view>
             </view>
             
@@ -365,6 +370,25 @@ const currentWordAnatomy = computed(() => {
 }
 
 /* Word Info Top Section */
+.card-seq-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 2px;
+    user-select: none;
+}
+
+.card-seq-text {
+    font-size: 12px;
+    font-weight: 500;
+    font-style: italic;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ej-text-primary);
+    opacity: 0.22;
+    line-height: 1;
+    letter-spacing: 0.5px;
+}
+
 .word-large-text {
     font-size: 36px;
     font-weight: 800;
