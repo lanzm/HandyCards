@@ -6,11 +6,11 @@ import commonUtil from "@/utils/commonUtil";
 import { wordBooksData, createWordRandomizer } from "@/utils/wordbooks";
 import { getInitialTheme, setNavigationBarTheme, type ThemeMode } from "@/utils/themeUtil";
 import { getTranslations, type Language } from "@/utils/i18n";
-import { getWordAnatomy, getUniquePos, getPosIcon, formatDefinitionPos, formatDefinitionContent } from "@/utils/anatomy";
 import SettingsDrawer from "@/components/SettingsDrawer.vue";
+import WordCard from "@/components/WordCard.vue";
 import { useWordAudio } from "@/composables/useWordAudio";
 import { useFloatingGear } from "@/composables/useFloatingGear";
-import type { WordItem, WordBookMeta, WordAnatomy } from "@/types/word";
+import type { WordItem, WordBookMeta, DetailSectionKey } from "@/types/word";
 
 const isDark = ref<ThemeMode>(getInitialTheme());
 const wordObj = ref<WordItem | null>(null);
@@ -39,8 +39,6 @@ const {
     onGearTouchEnd,
     wakeUpGear
 } = useFloatingGear(showDrawer);
-type DetailSectionKey = 'definitions' | 'examples' | 'anatomy';
-
 const createDefaultDetailSections = () => ({
     definitions: true,
     examples: false,
@@ -156,15 +154,6 @@ const syncBgCard = () => {
     bgWordObj.value = getNextWord();
     bgKnowFlag.value = studyMode.value === 'browse';
 };
-
-const currentWordAnatomy = computed(() => {
-    const w = wordObj.value?.w ?? '';
-    const anatomy = getWordAnatomy(w, wordBook.value?.value, lang.value);
-    return {
-        ...anatomy,
-        wordLength: w.length,
-    };
-});
 
 const nextWord = () => {
     nextWordDirectional('up');
@@ -621,101 +610,16 @@ onShareTimeline(() => {
         :class="[bgCardTransitionClass]"
         :style="bgCardStyle"
       >
-          <!-- Word & Audio Section (Fixed) -->
-          <view v-if="bgWordObj" class="px-5 mb-3 shrink-0">
-              <view class="flex justify-between items-center">
-                  <view class="flex flex-col gap-1 flex-1 min-w-0">
-                      <text class="word-large-text">{{ bgWordObj.w }}</text>
-                      <view class="inline-flex flex-wrap items-center gap-2">
-                          <text class="phonetic-small-text">/{{ bgWordObj.p }}/</text>
-                          <text v-if="!ttsDisabled" class="phonetic-speaker-inline"></text>
-                      </view>
-                  </view>
-              </view>
-              
-              <!-- Part of Speech Tabs/Pills -->
-              <view class="flex flex-wrap gap-2 mt-3.5" v-if="bgWordObj?.t && bgWordObj.t.length > 0">
-                  <view 
-                    v-for="(item, index) in getUniquePos(bgWordObj.t)" 
-                    :key="index"
-                    class="pos-pill"
-                  >
-                      <text class="text-[13px]">{{ getPosIcon(item) }}</text>
-                      <text class="pos-pill-text">{{ item }}</text>
-                  </view>
-              </view>
-          </view>
-
-          <!-- Divider -->
-          <view class="px-5 w-full box-border shrink-0">
-              <view class="card-divider"></view>
-          </view>
-
-          <!-- Scrollable details container (Background card) -->
-          <view 
-            v-if="bgWordObj" 
-            class="relative flex flex-col justify-between flex-1 w-full min-h-0 box-border overflow-hidden"
-          >
-              <view 
-                class="w-full flex-1 px-5 box-border select-none pointer-events-none overflow-hidden card-details-content"
-                :class="{ 'card-details-blurred': !bgKnowFlag }"
-              >
-                  <!-- Definitions -->
-                  <view class="detail-section mb-3">
-                      <view class="detail-section-header">
-                          <text class="section-header-title">{{ i18n.definitionsTitle }}</text>
-                          <text class="section-toggle-icon">-</text>
-                      </view>
-                      <view class="detail-section-body">
-                          <view class="flex flex-col gap-2.5">
-                              <view
-                                v-for="(item, index) in bgWordObj.t"
-                                :key="index"
-                                class="flex flex-col gap-0.5"
-                              >
-                                  <text class="item-number-prefix">
-                                      {{ index + 1 }}.<template v-if="formatDefinitionPos(item[0])"> ({{ formatDefinitionPos(item[0]) }})</template>
-                                  </text>
-                                  <text class="item-definition-content">{{ formatDefinitionContent(item) }}</text>
-                              </view>
-                          </view>
-                      </view>
-                  </view>
-
-                  <!-- Examples -->
-                  <view v-if="bgWordObj?.s && bgWordObj.s.length > 0" class="detail-section mb-3">
-                      <view class="detail-section-header">
-                          <text class="section-header-title">{{ i18n.examplesTitle }}</text>
-                          <text class="section-toggle-icon">+</text>
-                      </view>
-                  </view>
-
-                  <!-- Word Anatomy Section -->
-                  <view v-if="bgWordObj?.w" class="detail-section mb-3">
-                      <view class="detail-section-header">
-                          <text class="section-header-title">{{ i18n.wordAnatomyTitle }}</text>
-                          <text class="section-toggle-icon">+</text>
-                      </view>
-                  </view>
-
-                  <!-- Bottom breathing spacer -->
-                  <view class="h-8 w-full shrink-0"></view>
-              </view>
-
-              <!-- Bottom subtle hint mock (visible when !bgKnowFlag && showQuizPrompt) -->
-              <view v-if="!bgKnowFlag && showQuizPrompt" class="flex items-center justify-center gap-1.5 py-1.5 px-5 shrink-0 pointer-events-none">
-                  <text class="text-[11px] text-[var(--ej-text-secondary)] opacity-75 tracking-wide font-normal">
-                      💡 {{ i18n.quizPrompt }}
-                  </text>
-              </view>
-          </view>
-
-          <!-- Footer Buttons (Static mock) -->
-          <view class="mt-4 px-5 shrink-0">
-              <view class="w-full">
-                  <view class="card-btn btn-primary text-base">{{ i18n.nextBtn }}</view>
-              </view>
-          </view>
+          <WordCard
+            :word="bgWordObj"
+            :is-background="true"
+            :is-revealed="bgKnowFlag"
+            :show-quiz-prompt="showQuizPrompt"
+            :tts-disabled="ttsDisabled"
+            :i18n="i18n"
+            :book-value="wordBook?.value || ''"
+            :lang="lang"
+          />
       </view>
 
       <!-- Large Container Card with Swipe Gestures and Dynamic Inline styles -->
@@ -724,198 +628,34 @@ onShareTimeline(() => {
         :class="[cardTransitionClass]"
         :style="cardStyle"
       >
-          <view v-if="loading || !wordObj" class="flex flex-col h-full w-full box-border flex-1 px-5">
-              <view class="flex flex-col items-center justify-center gap-3 mb-7 pt-2.5">
-                  <view class="skeleton-shimmer w-[160px] h-[36px] rounded-md"></view>
-                  <view class="skeleton-shimmer w-[100px] h-[18px] rounded"></view>
-                  <view class="skeleton-shimmer w-[64px] h-[22px] rounded-full"></view>
-              </view>
-
-              <view class="card-divider shrink-0"></view>
-
-              <view class="flex-1 flex flex-col items-center justify-center gap-4 py-7">
-                  <view class="skeleton-shimmer w-[72px] h-[72px] rounded-full"></view>
-                  <view class="skeleton-shimmer w-[200px] h-4 rounded"></view>
-                  <view class="skeleton-shimmer w-[140px] h-4 rounded"></view>
-              </view>
-
-              <view class="flex gap-3 w-full mt-auto pb-1">
-                  <view class="skeleton-shimmer h-[48px] rounded-xl flex-[3]"></view>
-                  <view class="skeleton-shimmer h-[48px] rounded-xl flex-[7]"></view>
-              </view>
-          </view>
-
-          <!-- Word & Audio Section (Fixed) -->
-          <view 
-            v-else
-            class="px-5 mb-3 shrink-0"
-            @touchstart="onCardTouchStart"
-            @touchmove="onCardTouchMove"
-            @touchend="onCardTouchEnd"
-          >
-              <view class="flex justify-between items-center">
-                  <view class="flex flex-col gap-1 flex-1 min-w-0">
-                      <text class="word-large-text" @click.stop="!ttsDisabled && getSpeech()">{{ wordObj.w }}</text>
-                      <view class="inline-flex flex-wrap items-center gap-2" @click.stop="!ttsDisabled && getSpeech()">
-                          <text class="phonetic-small-text">/{{ wordObj.p }}/</text>
-                          <text v-if="!ttsDisabled" class="phonetic-speaker-inline" :class="{ 'playing': playFlag }"></text>
-                      </view>
-                  </view>
-              </view>
-              
-              <!-- Part of Speech Tabs/Pills -->
-              <view class="flex flex-wrap gap-2 mt-3.5" v-if="wordObj?.t && wordObj.t.length > 0">
-                  <view 
-                    v-for="(item, index) in getUniquePos(wordObj.t)" 
-                    :key="index"
-                    class="pos-pill"
-                  >
-                      <text class="text-[13px]">{{ getPosIcon(item) }}</text>
-                      <text class="pos-pill-text">{{ item }}</text>
-                  </view>
-              </view>
-          </view>
-
-          <!-- Divider -->
-          <view v-if="wordObj && !loading" class="px-5 w-full box-border shrink-0">
-              <view class="card-divider"></view>
-          </view>
-
-          <!-- Details container with real content camera focus blur -->
-          <view
-            v-if="wordObj && !loading"
-            class="relative flex flex-col justify-between flex-1 w-full min-h-0 box-border overflow-hidden cursor-pointer"
-            @click="!knowFlag && handleCardTap()"
-            @touchstart="!knowFlag ? onCardTouchStart($event) : undefined"
-            @touchmove="!knowFlag ? onCardTouchMove($event) : undefined"
-            @touchend="!knowFlag ? onCardTouchEnd() : undefined"
-          >
-              <!-- Scrollable details list with camera lens blur/focus transition -->
-              <scroll-view
-                :key="'detail-' + wordObj.w"
-                scroll-y="true"
-                :scroll-top="scrollTop"
-                class="card-scroll-view w-full flex-1 min-w-0 card-details-content"
-                :class="{ 
-                    'card-details-blurred': !knowFlag,
-                    'card-details-focusing': isRevealing 
-                }"
-                @scroll="onDetailScroll"
-                @touchstart="onDetailTouchStart"
-                @touchmove="onDetailTouchMove"
-                @touchend="onDetailTouchEnd"
-              >
-                  <view class="px-5 box-border w-full">
-                      <!-- Definitions -->
-                      <view class="detail-section mb-3">
-                          <view class="detail-section-header" @click.stop="toggleDetailSection('definitions')">
-                              <text class="section-header-title">{{ i18n.definitionsTitle }}</text>
-                              <text class="section-toggle-icon">{{ detailSections.definitions ? '-' : '+' }}</text>
-                          </view>
-                          <view v-if="detailSections.definitions" class="detail-section-body">
-                              <view class="flex flex-col gap-2.5">
-                              <view
-                                v-for="(item, index) in wordObj?.t"
-                                :key="index"
-                                class="flex flex-col gap-0.5"
-                              >
-                                  <text class="item-number-prefix">
-                                      {{ index + 1 }}.<template v-if="formatDefinitionPos(item[0])"> ({{ formatDefinitionPos(item[0]) }})</template>
-                                  </text>
-                                  <text class="item-definition-content">{{ formatDefinitionContent(item) }}</text>
-                              </view>
-                              </view>
-                          </view>
-                      </view>
-
-                      <!-- Examples / Translations -->
-                      <view v-if="wordObj?.s && wordObj.s.length > 0" class="detail-section mb-3">
-                          <view class="detail-section-header" @click.stop="toggleDetailSection('examples')">
-                              <text class="section-header-title">{{ i18n.examplesTitle }}</text>
-                              <text class="section-toggle-icon">{{ detailSections.examples ? '-' : '+' }}</text>
-                          </view>
-                          <view v-if="detailSections.examples" class="detail-section-body">
-                              <view class="example-list">
-                              <view
-                                v-for="(item, index) in wordObj.s"
-                                :key="index"
-                                class="example-item"
-                              >
-                                  <text class="example-en-text">{{ item[0] }}</text>
-                                  <text class="example-cn-text">{{ item[1] }}</text>
-                              </view>
-                              </view>
-                          </view>
-                      </view>
-
-                      <!-- Word Anatomy Section -->
-                      <view class="detail-section mb-3" v-if="wordObj?.w">
-                          <view class="detail-section-header" @click.stop="toggleDetailSection('anatomy')">
-                              <text class="section-header-title">{{ i18n.wordAnatomyTitle }}</text>
-                              <text class="section-toggle-icon">{{ detailSections.anatomy ? '-' : '+' }}</text>
-                          </view>
-                          <view v-if="detailSections.anatomy" class="detail-section-body">
-                              <view class="flex flex-wrap gap-2">
-                              <view class="anatomy-card-item">
-                                  <text class="anatomy-item-label">{{ i18n.difficultyLabel }}</text>
-                                  <view class="flex items-center gap-0.5">
-                                      <text
-                                        v-for="star in currentWordAnatomy.difficulty"
-                                        :key="'star-' + star"
-                                        class="text-sm"
-                                      >⭐</text>
-                                  </view>
-                              </view>
-                              <view class="anatomy-card-item">
-                                  <text class="anatomy-item-label">{{ i18n.syllablesLabel }}</text>
-                                  <text class="text-sm font-semibold text-[var(--ej-text-primary)]">{{ i18n.syllablesCountText(currentWordAnatomy.syllables) }}</text>
-                              </view>
-                              <view class="anatomy-card-item full-width" v-if="currentWordAnatomy.suffixInfo">
-                                  <text class="anatomy-item-label">{{ i18n.suffixLabel }}</text>
-                                  <view class="flex items-start gap-2">
-                                      <text class="suffix-badge">{{ currentWordAnatomy.suffixInfo.suffix }}</text>
-                                      <text class="suffix-meaning">{{ currentWordAnatomy.suffixInfo.meaning }}</text>
-                                  </view>
-                              </view>
-                              <view class="anatomy-card-item full-width" v-else>
-                                  <text class="anatomy-item-label">{{ i18n.lengthLabel }}</text>
-                                  <text class="text-sm font-semibold text-[var(--ej-text-primary)]">{{ i18n.wordLengthText(currentWordAnatomy.wordLength, currentWordAnatomy.vowelsCount, currentWordAnatomy.consonantsCount) }}</text>
-                              </view>
-                              </view>
-                          </view>
-                      </view>
-
-                      <!-- Bottom breathing spacer so last content line is fully visible and above feathering mask -->
-                      <view class="h-8 w-full shrink-0"></view>
-                  </view>
-              </scroll-view>
-
-              <!-- Bottom subtle hint (Clean, natural, visible only in quiz mode when !knowFlag && showQuizPrompt) -->
-              <view 
-                v-if="!knowFlag && showQuizPrompt" 
-                class="flex items-center justify-center gap-1.5 py-1.5 px-5 shrink-0 pointer-events-none"
-              >
-                  <text class="text-[11px] text-[var(--ej-text-secondary)] opacity-75 tracking-wide font-normal">
-                      💡 {{ i18n.quizPrompt }}
-                  </text>
-              </view>
-          </view>
-
-          <!-- Footer Buttons (Fixed inside the bottom of the card) -->
-          <view 
-            v-if="wordObj && !loading"
-            class="mt-4 px-5 shrink-0"
-            @touchstart="onCardTouchStart"
-            @touchmove="onCardTouchMove"
-            @touchend="onCardTouchEnd"
-          >
-              <view class="w-full">
-                  <view class="card-btn btn-primary text-base" @click.stop="nextWord()">
-                      {{ i18n.nextBtn }}
-                  </view>
-              </view>
-          </view>
+          <WordCard
+            :word="wordObj"
+            :loading="loading"
+            :is-background="false"
+            :is-revealed="knowFlag"
+            :is-revealing="isRevealing"
+            :show-quiz-prompt="showQuizPrompt"
+            :tts-disabled="ttsDisabled"
+            :play-flag="playFlag"
+            :i18n="i18n"
+            :book-value="wordBook?.value || ''"
+            :lang="lang"
+            :scroll-top="scrollTop"
+            :detail-sections="detailSections"
+            @play-audio="getSpeech"
+            @tap-card="handleCardTap"
+            @next-word="nextWord"
+            @toggle-section="toggleDetailSection"
+            @scroll="onDetailScroll"
+            @touch-start="onCardTouchStart"
+            @touch-move="onCardTouchMove"
+            @touch-end="onCardTouchEnd"
+            @detail-touch-start="onDetailTouchStart"
+            @detail-touch-move="onDetailTouchMove"
+            @detail-touch-end="onDetailTouchEnd"
+          />
       </view>
+
 
       <!-- Draggable floating gear settings button that snaps to edge and auto-hides -->
       <movable-view
@@ -974,6 +714,15 @@ onShareTimeline(() => {
 /* Global tap-highlight reset for mobile webviews to prevent white/grey flashing on tap */
 view, text, button, image, scroll-view, movable-area, movable-view {
     -webkit-tap-highlight-color: transparent !important;
+}
+
+::-webkit-scrollbar,
+.card-scroll-view::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+    color: transparent !important;
 }
 
 /* Page background and container (Acting as movable area) */
@@ -1053,300 +802,18 @@ view, text, button, image, scroll-view, movable-area, movable-view {
     background-color: #18181B;
 }
 
-/* Word Info Top Section */
-.word-large-text {
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    word-break: normal;
-    color: var(--ej-text-primary);
-}
-
-.phonetic-small-text {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--ej-text-muted);
-    font-family: monospace;
-    word-break: break-word;
-}
-
-.phonetic-speaker-inline {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 0;
-    background-color: var(--ej-color-brand);
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
-    opacity: 0.85;
-    transition: all 0.2s;
-}
-
-.phonetic-speaker-inline.playing {
-    transform: scale(1.2);
-    opacity: 1;
-}
-
-.playing {
-    position: relative;
-    animation: speaker-pulse 0.6s ease-in-out infinite;
-}
-
-.playing::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    border-radius: 50%;
-    border: 2px solid var(--ej-color-brand);
-    opacity: 0.8;
-    animation: speaker-ripple 0.6s cubic-bezier(0.25, 0, 0, 1) infinite;
-}
-
-/* POS tags */
-.pos-pill {
+.app-card > word-card,
+.app-card-bg > word-card,
+word-card,
+.word-card-host {
     display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    background-color: var(--ej-bg-pill);
-    border: 1px solid var(--ej-border);
-}
-
-.pos-pill-text {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ej-text-secondary);
-}
-
-.card-divider {
-    height: 1px;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
     width: 100%;
-    background-color: var(--ej-border);
-    margin: 16px 0;
-}
-
-/* Scroll Area inside Card */
-.card-scroll-view {
-    overflow-y: auto;
-    padding-right: 0;
-    width: 100%;
-    box-sizing: border-box;
-    -webkit-mask-image: linear-gradient(to bottom, #000000 0%, #000000 calc(100% - 36px), rgba(0, 0, 0, 0.4) calc(100% - 14px), transparent 100%);
-    mask-image: linear-gradient(to bottom, #000000 0%, #000000 calc(100% - 36px), rgba(0, 0, 0, 0.4) calc(100% - 14px), transparent 100%);
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
-}
-
-.card-scroll-view::-webkit-scrollbar {
-    display: none;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent;
-}
-
-/* Card details camera lens focus and blur transitions */
-.card-details-focusing {
-    transition: filter 0.28s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.22s ease;
-    will-change: filter, opacity;
-}
-
-.card-details-blurred {
-    filter: blur(10px);
-    opacity: 0.7;
-    user-select: none;
-    pointer-events: none;
-    -webkit-mask-image: linear-gradient(to bottom, #000000 0%, #000000 45%, rgba(0, 0, 0, 0.6) 70%, rgba(0, 0, 0, 0.2) 88%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000000 0%, #000000 45%, rgba(0, 0, 0, 0.6) 70%, rgba(0, 0, 0, 0.2) 88%, transparent 100%);
-}
-
-.card-details-blurred .detail-section {
-    background: transparent !important;
-    border-color: transparent !important;
-}
-
-/* Custom premium thin scrollbar styling for drawers/other pages */
-::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: rgba(15, 23, 42, 0.15);
-    border-radius: 10px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-
-.detail-section {
-    border-radius: 10px;
-    overflow: hidden;
-    background: var(--ej-bg-section);
-    border: 1px solid var(--ej-border-section);
-}
-
-.detail-section-header {
-    height: 44px;
-    min-height: 44px;
-    padding: 0 14px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
+    min-height: 0;
     justify-content: space-between;
 }
-
-.section-toggle-icon {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1;
-    flex-shrink: 0;
-    color: var(--ej-color-brand);
-    background: var(--ej-color-brand-light);
-}
-
-/* Definitions List */
-.section-header-title {
-    display: flex;
-    align-items: center;
-    font-size: 13.5px;
-    font-weight: 700;
-    color: var(--ej-text-muted);
-    margin: 0;
-    line-height: 1;
-    letter-spacing: 0.03em;
-}
-
-.detail-section-body {
-    padding: 2px 14px 14px 14px;
-    box-sizing: border-box;
-}
-
-.item-number-prefix {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--ej-color-brand);
-}
-
-.item-definition-content {
-    font-size: 15.5px;
-    font-weight: 600;
-    line-height: 1.5;
-    color: var(--ej-text-primary);
-}
-
-/* Word Anatomy Section */
-.anatomy-card-item {
-    flex: 1 1 calc(50% - 4px);
-    display: flex;
-    flex-direction: column;
-    padding: 8px 10px;
-    border-radius: 8px;
-    box-sizing: border-box;
-    background: var(--ej-border-section);
-    border: 1px solid var(--ej-border-section);
-}
-
-.anatomy-card-item.full-width {
-    flex: 1 1 100%;
-}
-
-.anatomy-item-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-    color: var(--ej-text-sub);
-}
-
-.suffix-badge {
-    font-size: 11px;
-    font-weight: 800;
-    padding: 2px 6px;
-    border-radius: 6px;
-    background: var(--ej-color-brand);
-    color: #FFFFFF;
-    flex-shrink: 0;
-}
-
-.suffix-meaning {
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--ej-text-primary);
-}
-
-/* Examples Section */
-.example-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.example-item {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.example-item + .example-item {
-    padding-top: 10px;
-    border-top: 1px dashed var(--ej-border-section);
-}
-
-.example-en-text {
-    font-size: 14.5px;
-    font-weight: 600;
-    line-height: 1.45;
-    color: var(--ej-text-primary);
-}
-
-.example-cn-text {
-    font-size: 12.5px;
-    line-height: 1.4;
-    color: var(--ej-text-secondary);
-}
-
-
-
-.btn-primary {
-    color: #FFFFFF;
-    background-color: var(--ej-color-brand);
-}
-.btn-primary:active {
-    background-color: var(--ej-color-brand-active);
-}
-
-.btn-secondary {
-    background-color: var(--ej-bg-btn-secondary);
-    border-color: var(--ej-border);
-    color: var(--ej-text-secondary);
-}
-.btn-secondary:active {
-    background-color: var(--ej-bg-btn-secondary-active);
-}
-
-
 
 .flex-center {
     display: flex;

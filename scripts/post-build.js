@@ -19,3 +19,21 @@ targets.forEach(target => {
     // ignore
   }
 });
+
+// Ensure WordCard component has virtualHost enabled in WeChat Mini Program
+const wordCardJsons = [
+  path.join(__dirname, '../dist/build/mp-weixin/components/WordCard.json'),
+  path.join(__dirname, '../dist/dev/mp-weixin/components/WordCard.json')
+];
+
+wordCardJsons.forEach(jsonPath => {
+  try {
+    if (fs.existsSync(jsonPath)) {
+      const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      data.virtualHost = true;
+      fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2), 'utf8');
+    }
+  } catch (err) {
+    // ignore
+  }
+});

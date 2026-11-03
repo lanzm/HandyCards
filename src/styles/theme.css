@@ -73,3 +73,12 @@ page,
   --ej-shadow-card-bg: 0 10px 20px -10px rgba(0, 0, 0, 0.4);
   --ej-shadow-gear: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
+
+/* Global scrollbar reset */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  color: transparent !important;
+}

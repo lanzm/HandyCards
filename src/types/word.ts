@@ -21,3 +21,5 @@ export interface WordAnatomy {
         meaning: string;
     };
 }
+
+export type DetailSectionKey = 'definitions' | 'examples' | 'anatomy';
