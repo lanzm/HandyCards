@@ -3,7 +3,7 @@ import type { Ref, ComputedRef } from 'vue';
 import type { WordItem, WordBookMeta } from '@/types/word';
 import type { Translations } from '@/utils/i18n';
 import commonUtil from '@/utils/commonUtil';
-import { wordBooksData, createWordRandomizer } from '@/utils/wordbooks';
+import { wordBooksData, createWordShuffler, type WordShuffler } from '@/utils/wordbooks';
 
 export interface UseWordDeckOptions {
     studyMode: Ref<'quiz' | 'browse'>;
@@ -45,13 +45,26 @@ export function useWordDeck(options: UseWordDeckOptions) {
         }
     };
 
-    const wordRandomizer = createWordRandomizer();
-    const pickRandomWord = (): WordItem | null => wordRandomizer.pick(wordList.value);
+    let wordShuffler: WordShuffler | null = null;
+
+    const pickNextWord = (): WordItem | null => {
+        if (!wordShuffler) return null;
+        const res = wordShuffler.pickNext();
+        if (res.isNewRound) {
+            commonUtil.msg(i18n.value.bookCompletedAlert, 'none', false, 2500);
+        }
+        return res.word;
+    };
+
+    const peekNextWord = (): WordItem | null => {
+        if (!wordShuffler) return null;
+        return wordShuffler.peekNext();
+    };
 
     const updatePreloadedNextWord = () => {
         if (wordList.value.length === 0) return;
         if (!preloadedNextWord.value) {
-            preloadedNextWord.value = pickRandomWord();
+            preloadedNextWord.value = peekNextWord();
         }
     };
 
@@ -93,19 +106,15 @@ export function useWordDeck(options: UseWordDeckOptions) {
             if (historyIndex.value < historyWords.value.length - 1) {
                 historyIndex.value += 1;
             } else {
-                if (preloadedNextWord.value) {
-                    historyWords.value.push(preloadedNextWord.value);
-                    preloadedNextWord.value = null;
-                } else {
-                    if (wordList.value.length === 0) {
-                        loadWordBook();
-                        return;
-                    }
-                    const newWord = pickRandomWord();
-                    if (newWord) {
-                        historyWords.value.push(newWord);
-                    }
+                if (wordList.value.length === 0) {
+                    loadWordBook();
+                    return;
                 }
+                const newWord = pickNextWord();
+                if (newWord) {
+                    historyWords.value.push(newWord);
+                }
+                preloadedNextWord.value = null;
                 historyIndex.value = historyWords.value.length - 1;
             }
         }
@@ -161,7 +170,7 @@ export function useWordDeck(options: UseWordDeckOptions) {
         }
 
         if (historyWords.value.length === 0) {
-            const firstWord = pickRandomWord();
+            const firstWord = pickNextWord();
             if (firstWord) {
                 historyWords.value.push(firstWord);
                 historyIndex.value = 0;
@@ -175,7 +184,6 @@ export function useWordDeck(options: UseWordDeckOptions) {
 
     const loadWordBook = () => {
         wordBook.value = commonUtil.getCurrWordBook();
-        wordRandomizer.reset();
         wordList.value = [];
         historyWords.value = [];
         historyIndex.value = -1;
@@ -185,6 +193,7 @@ export function useWordDeck(options: UseWordDeckOptions) {
         const data = bookVal ? wordBooksData[bookVal] : null;
         if (data && data.length > 0) {
             wordList.value = data;
+            wordShuffler = createWordShuffler(bookVal || 'default', data);
             randomWord();
             updatePreloadedNextWord();
             syncBgCard();
@@ -224,6 +233,8 @@ export function useWordDeck(options: UseWordDeckOptions) {
         nextWord,
         syncBgCard,
         updatePreloadedNextWord,
-        randomWord
+        randomWord,
+        getDeckProgress: () => wordShuffler?.getProgress() ?? { cursor: 0, total: 0, round: 1 },
+        reshuffleBook: () => wordShuffler?.reshuffle()
     };
 }

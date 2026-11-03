@@ -53,6 +53,7 @@ export interface Translations {
     alreadyAddedAlert: string;
     removedAlert: string;
     loadFailAlert: string;
+    bookCompletedAlert: string;
     
     langLabel: string;
     langZhText: string;
@@ -124,6 +125,7 @@ export const getTranslations = (lang: Language): Translations => {
         alreadyAddedAlert: isZh ? '已在生词本中' : 'Already in word list',
         removedAlert: isZh ? '已从生词本移除' : 'Removed from word list',
         loadFailAlert: isZh ? '加载词书失败' : 'Failed to load wordbook',
+        bookCompletedAlert: isZh ? '🎉 恭喜背完整本！已开启新一轮洗牌' : '🎉 Congratulations! Shuffled for the next round',
         
         // Language Selector
         langLabel: isZh ? '界面语言' : 'Language',
