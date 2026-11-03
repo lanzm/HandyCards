@@ -626,7 +626,7 @@ onShareTimeline(() => {
               <view class="flex justify-between items-center">
                   <view class="flex flex-col gap-1 flex-1 min-w-0">
                       <text class="word-large-text">{{ bgWordObj.w }}</text>
-                      <view class="inline-flex items-center gap-2">
+                      <view class="inline-flex flex-wrap items-center gap-2">
                           <text class="phonetic-small-text">/{{ bgWordObj.p }}/</text>
                           <text v-if="!ttsDisabled" class="phonetic-speaker-inline"></text>
                       </view>
@@ -756,7 +756,7 @@ onShareTimeline(() => {
               <view class="flex justify-between items-center">
                   <view class="flex flex-col gap-1 flex-1 min-w-0">
                       <text class="word-large-text" @click.stop="!ttsDisabled && getSpeech()">{{ wordObj.w }}</text>
-                      <view class="inline-flex items-center gap-2" @click.stop="!ttsDisabled && getSpeech()">
+                      <view class="inline-flex flex-wrap items-center gap-2" @click.stop="!ttsDisabled && getSpeech()">
                           <text class="phonetic-small-text">/{{ wordObj.p }}/</text>
                           <text v-if="!ttsDisabled" class="phonetic-speaker-inline" :class="{ 'playing': playFlag }"></text>
                       </view>
@@ -1068,14 +1068,16 @@ view, text, button, image, scroll-view, movable-area, movable-view {
     font-weight: 500;
     color: var(--ej-text-muted);
     font-family: monospace;
+    word-break: break-word;
 }
 
 .phonetic-speaker-inline {
     width: 18px;
     height: 18px;
+    flex-shrink: 0;
     display: inline-block;
     vertical-align: middle;
-    margin-left: 6px;
+    margin-left: 0;
     background-color: var(--ej-color-brand);
     -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
     mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
