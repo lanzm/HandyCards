@@ -340,7 +340,6 @@ const changeWordBook = (item: WordBookMeta) => {
     uni.setStorageSync('wordBook', item.value);
     wordBook.value = item;
     loadWordBook();
-    showDrawer.value = false;
 };
 
 const updateDetailOverflow = () => {
