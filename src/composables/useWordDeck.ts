@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import type { Ref, ComputedRef } from 'vue';
 import type { WordItem, WordBookMeta } from '@/types/word';
 import type { Translations } from '@/utils/i18n';
@@ -30,6 +30,20 @@ export function useWordDeck(options: UseWordDeckOptions) {
     const bgCardTransitionClass = ref('');
     const cardTransitionClass = ref('');
     const isSwipingDownActive = ref(false);
+    const isTransitioning = ref(false);
+    let transitionTimer: ReturnType<typeof setTimeout> | null = null;
+    let resetTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const clearTimers = () => {
+        if (transitionTimer) {
+            clearTimeout(transitionTimer);
+            transitionTimer = null;
+        }
+        if (resetTimer) {
+            clearTimeout(resetTimer);
+            resetTimer = null;
+        }
+    };
 
     const wordRandomizer = createWordRandomizer();
     const pickRandomWord = (): WordItem | null => wordRandomizer.pick(wordList.value);
@@ -60,6 +74,8 @@ export function useWordDeck(options: UseWordDeckOptions) {
     };
 
     const nextWordDirectional = (dir: 'up' | 'down') => {
+        if (isTransitioning.value) return;
+
         if (dir === 'down') {
             if (historyIndex.value <= 0) {
                 commonUtil.msg(i18n.value.firstWordAlert);
@@ -99,10 +115,13 @@ export function useWordDeck(options: UseWordDeckOptions) {
             knowFlag.value = studyMode.value === 'browse';
         }
 
+        isTransitioning.value = true;
+        clearTimers();
+
         cardTransitionClass.value = dir === 'up' ? 'card-slide-out-up' : 'card-slide-in-down';
         bgCardTransitionClass.value = dir === 'up' ? 'bg-card-to-active' : 'bg-card-to-back';
 
-        setTimeout(() => {
+        transitionTimer = setTimeout(() => {
             if (dir === 'up') {
                 knowFlag.value = studyMode.value === 'browse';
                 wordObj.value = historyWords.value[historyIndex.value];
@@ -110,10 +129,11 @@ export function useWordDeck(options: UseWordDeckOptions) {
                 cardTransitionClass.value = 'card-reset-center';
                 bgCardTransitionClass.value = 'bg-card-to-back-instant';
 
-                setTimeout(() => {
+                resetTimer = setTimeout(() => {
                     cardTransitionClass.value = '';
                     bgCardTransitionClass.value = '';
                     isSwipingDownActive.value = false;
+                    isTransitioning.value = false;
                     updatePreloadedNextWord();
                     syncBgCard();
                 }, 30);
@@ -121,6 +141,7 @@ export function useWordDeck(options: UseWordDeckOptions) {
                 cardTransitionClass.value = '';
                 bgCardTransitionClass.value = '';
                 isSwipingDownActive.value = false;
+                isTransitioning.value = false;
                 updatePreloadedNextWord();
                 syncBgCard();
             }
@@ -179,6 +200,10 @@ export function useWordDeck(options: UseWordDeckOptions) {
         loadWordBook();
     };
 
+    onUnmounted(() => {
+        clearTimers();
+    });
+
     return {
         wordBook,
         wordList,
@@ -192,6 +217,7 @@ export function useWordDeck(options: UseWordDeckOptions) {
         cardTransitionClass,
         bgCardTransitionClass,
         isSwipingDownActive,
+        isTransitioning,
         loadWordBook,
         changeWordBook,
         nextWordDirectional,

@@ -18,12 +18,6 @@ import {
     formatDefinitionContent 
 } from '@/utils/anatomy';
 
-defineOptions({
-    options: {
-        virtualHost: true
-    }
-});
-
 const props = withDefaults(defineProps<{
     word: WordItem | null;
     loading?: boolean;
@@ -61,16 +55,17 @@ const emit = defineEmits<{
     (e: 'tap-card'): void;
     (e: 'next-word'): void;
     (e: 'toggle-section', section: DetailSectionKey): void;
-    (e: 'scroll', event: any): void;
-    (e: 'touch-start', event: any): void;
-    (e: 'touch-move', event: any): void;
+    (e: 'scroll', event: Event | CustomEvent<{ scrollTop: number }>): void;
+    (e: 'touch-start', event: TouchEvent): void;
+    (e: 'touch-move', event: TouchEvent): void;
     (e: 'touch-end'): void;
-    (e: 'detail-touch-start', event: any): void;
-    (e: 'detail-touch-move', event: any): void;
+    (e: 'detail-touch-start', event: TouchEvent): void;
+    (e: 'detail-touch-move', event: TouchEvent): void;
     (e: 'detail-touch-end'): void;
 }>();
 
 const currentWordAnatomy = computed(() => {
+    if (props.isBackground) return null;
     const w = props.word?.w ?? '';
     if (!w) return null;
     const anatomy = getWordAnatomy(w, props.bookValue, props.lang);
@@ -459,13 +454,6 @@ const currentWordAnatomy = computed(() => {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
-}
-
-.card-scroll-view::-webkit-scrollbar {
-    display: none;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent;
 }
 
 /* Card details camera lens focus and blur transitions */

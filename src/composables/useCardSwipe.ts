@@ -1,4 +1,4 @@
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, onUnmounted } from 'vue';
 import type { Ref, ComputedRef } from 'vue';
 import type { WordItem } from '@/types/word';
 import type { Translations } from '@/utils/i18n';
@@ -49,6 +49,19 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
     const preventClick = ref(false);
     const detailScrollTop = ref(0);
     const scrollTop = ref(0);
+    let swipeDownTimer: ReturnType<typeof setTimeout> | null = null;
+    let swipeResetTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const clearSwipeTimers = () => {
+        if (swipeDownTimer) {
+            clearTimeout(swipeDownTimer);
+            swipeDownTimer = null;
+        }
+        if (swipeResetTimer) {
+            clearTimeout(swipeResetTimer);
+            swipeResetTimer = null;
+        }
+    };
 
     const cardStyle = computed(() => {
         if (isSwiping.value) {
@@ -92,7 +105,7 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
         return '';
     });
 
-    const onCardTouchStart = (e: any) => {
+    const onCardTouchStart = (e: TouchEvent) => {
         preventClick.value = false;
         if (e.touches && e.touches[0]) {
             startX.value = e.touches[0].clientX;
@@ -102,7 +115,7 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
         }
     };
 
-    const onCardTouchMove = (e: any) => {
+    const onCardTouchMove = (e: TouchEvent) => {
         if (!e.touches || !e.touches[0]) return;
         
         const currentX = e.touches[0].clientX;
@@ -152,11 +165,12 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
             nextWordDirectional('up');
         } else if (cardY.value > threshold && isSwipingDownActive.value) {
             isSwiping.value = false;
+            clearSwipeTimers();
             
             cardTransitionClass.value = 'active-card-to-back-instant';
             bgCardTransitionClass.value = 'prev-card-to-active-instant';
             
-            setTimeout(() => {
+            swipeDownTimer = setTimeout(() => {
                 isRevealing.value = false;
                 historyIndex.value -= 1;
                 wordObj.value = historyWords.value[historyIndex.value];
@@ -169,7 +183,7 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
                 updatePreloadedNextWord();
                 syncBgCard();
                 
-                setTimeout(() => {
+                swipeResetTimer = setTimeout(() => {
                     cardTransitionClass.value = '';
                     bgCardTransitionClass.value = '';
                 }, 30);
@@ -188,12 +202,12 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
         }
     };
 
-    const onDetailTouchStart = (e: any) => {
+    const onDetailTouchStart = (e: TouchEvent) => {
         if (detailScrollTop.value > 5) return;
         onCardTouchStart(e);
     };
 
-    const onDetailTouchMove = (e: any) => {
+    const onDetailTouchMove = (e: TouchEvent) => {
         if (detailScrollTop.value > 5) return;
         onCardTouchMove(e);
     };
@@ -203,8 +217,8 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
         onCardTouchEnd();
     };
 
-    const onDetailScroll = (e: any) => {
-        detailScrollTop.value = e.detail?.scrollTop || 0;
+    const onDetailScroll = (e: Event | CustomEvent<{ scrollTop: number }>) => {
+        detailScrollTop.value = (e as CustomEvent<{ scrollTop: number }>).detail?.scrollTop ?? 0;
     };
 
     const resetCardScrollTop = () => {
@@ -214,6 +228,10 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
             detailScrollTop.value = 0;
         });
     };
+
+    onUnmounted(() => {
+        clearSwipeTimers();
+    });
 
     return {
         screenHeight,

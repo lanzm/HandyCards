@@ -38,6 +38,11 @@ const handlePreviewQrCode = () => {
 const handleCopyGithub = () => {
     commonUtil.copyText(GITHUB_URL, props.i18n.githubCopiedMsg || '已复制链接');
 };
+
+const handleTtsSwitch = (e: Event) => {
+    const custom = e as CustomEvent<{ value: boolean }>;
+    emit('change-tts', Boolean(custom.detail?.value));
+};
 </script>
 
 <template>
@@ -162,7 +167,7 @@ const handleCopyGithub = () => {
                                     :checked="!ttsDisabled"
                                     color="#2563EB"
                                     class="settings-switch"
-                                    @change="emit('change-tts', ($event as any).detail.value)"
+                                    @change="handleTtsSwitch"
                                 />
                             </view>
                         </view>
@@ -267,12 +272,6 @@ const handleCopyGithub = () => {
     -ms-overflow-style: none;
 }
 
-.drawer-scroll-view::-webkit-scrollbar {
-    display: none;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent;
-}
 
 .book-card {
     display: flex;

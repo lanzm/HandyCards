@@ -204,7 +204,7 @@ const initData = () => {
     loadWordBook();
 };
 
-const onSystemThemeChange = (res: any) => {
+const onSystemThemeChange = (res: UniApp.OnThemeChangeCallbackResult) => {
     const savedTheme = uni.getStorageSync('theme');
     if (savedTheme !== 'dark' && savedTheme !== 'light') {
         if (res.theme === 'dark' || res.theme === 'light') {
@@ -333,14 +333,6 @@ view, text, button, image, scroll-view, movable-area, movable-view {
     -webkit-tap-highlight-color: transparent !important;
 }
 
-::-webkit-scrollbar,
-.card-scroll-view::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent !important;
-    color: transparent !important;
-}
 
 /* Page background and container (Acting as movable area) */
 .page-container {
