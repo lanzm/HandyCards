@@ -22,3 +22,6 @@ dist
 
 # Plans & local docs
 docs/plans/
+
+# Raw data sources
+scripts/*.json

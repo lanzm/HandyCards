@@ -11,7 +11,6 @@ import { computed } from 'vue';
 import type { WordItem, DetailSectionKey } from '@/types/word';
 import type { Translations, Language } from '@/utils/i18n';
 import { 
-    getWordAnatomy, 
     getUniquePos, 
     getPosIcon, 
     formatDefinitionPos, 
@@ -64,15 +63,38 @@ const emit = defineEmits<{
     (e: 'detail-touch-end'): void;
 }>();
 
-const currentWordAnatomy = computed(() => {
-    if (props.isBackground) return null;
-    const w = props.word?.w ?? '';
-    if (!w) return null;
-    const anatomy = getWordAnatomy(w, props.bookValue, props.lang);
-    return {
-        ...anatomy,
-        wordLength: w.length,
-    };
+const cleanStr = (s?: string) => (s ?? '').replace(/["'“”‘’「」『』\\]/g, '').trim();
+
+const parsedRoot = computed(() => {
+    const r = props.word?.r?.r;
+    if (!r) return null;
+    const match = r.match(/^([^（\(]+)(?:\s*[（\(]([^）\)]+)[）\)])?$/);
+    if (match) {
+        const term = cleanStr(match[1]);
+        const meaning = cleanStr(match[2]);
+        return {
+            term,
+            meaning: /[\u4e00-\u9fa5]/.test(meaning) ? meaning : ''
+        };
+    }
+    return { term: cleanStr(r), meaning: '' };
+});
+
+const parsedFamily = computed(() => {
+    const list = props.word?.r?.f;
+    if (!list || list.length === 0) return [];
+    return list.map(item => {
+        const match = item.match(/^([^（\(]+)(?:\s*[（\(]([^）\)]+)[）\)])?$/);
+        if (match) {
+            const term = cleanStr(match[1]);
+            const meaning = cleanStr(match[2]);
+            return {
+                term,
+                meaning: /[\u4e00-\u9fa5]/.test(meaning) ? meaning : ''
+            };
+        }
+        return { term: cleanStr(item), meaning: '' };
+    });
 });
 </script>
 
@@ -190,10 +212,10 @@ const currentWordAnatomy = computed(() => {
                     </view>
                 </view>
 
-                <!-- Word Anatomy Mock -->
-                <view v-if="word?.w" class="detail-section mb-3">
+                <!-- Word Roots & Cognates Mock -->
+                <view v-if="word?.r && (word.r.r || (word.r.f && word.r.f.length > 0))" class="detail-section mb-3">
                     <view class="detail-section-header">
-                        <text class="section-header-title">{{ i18n.wordAnatomyTitle }}</text>
+                        <text class="section-header-title">{{ i18n.wordRootTitle }}</text>
                         <text class="section-toggle-icon">+</text>
                     </view>
                 </view>
@@ -278,39 +300,31 @@ const currentWordAnatomy = computed(() => {
                         </view>
                     </view>
 
-                    <!-- Word Anatomy Section -->
-                    <view class="detail-section mb-3" v-if="word?.w">
+                    <!-- Word Roots & Cognates Section -->
+                    <view class="detail-section mb-3" v-if="parsedRoot || parsedFamily.length > 0">
                         <view class="detail-section-header" @click.stop="emit('toggle-section', 'anatomy')">
-                            <text class="section-header-title">{{ i18n.wordAnatomyTitle }}</text>
+                            <text class="section-header-title">{{ i18n.wordRootTitle }}</text>
                             <text class="section-toggle-icon">{{ detailSections.anatomy ? '-' : '+' }}</text>
                         </view>
                         <view v-if="detailSections.anatomy" class="detail-section-body">
-                            <view class="flex flex-wrap gap-2">
-                            <view class="anatomy-card-item">
-                                <text class="anatomy-item-label">{{ i18n.difficultyLabel }}</text>
-                                <view class="flex items-center gap-0.5">
-                                    <text
-                                      v-for="star in currentWordAnatomy?.difficulty"
-                                      :key="'star-' + star"
-                                      class="text-sm"
-                                    >⭐</text>
+                            <view class="example-list">
+                                <!-- Core Root -->
+                                <view class="example-item" v-if="parsedRoot">
+                                    <text class="root-sub-title">{{ i18n.wordRootLabel }}</text>
+                                    <text class="example-en-text">{{ parsedRoot.term }}</text>
+                                    <text class="example-cn-text" v-if="parsedRoot.meaning">{{ parsedRoot.meaning }}</text>
                                 </view>
-                            </view>
-                            <view class="anatomy-card-item">
-                                <text class="anatomy-item-label">{{ i18n.syllablesLabel }}</text>
-                                <text class="text-sm font-semibold text-[var(--ej-text-primary)]">{{ i18n.syllablesCountText(currentWordAnatomy?.syllables ?? 1) }}</text>
-                            </view>
-                            <view class="anatomy-card-item full-width" v-if="currentWordAnatomy?.suffixInfo">
-                                <text class="anatomy-item-label">{{ i18n.suffixLabel }}</text>
-                                <view class="flex items-start gap-2">
-                                    <text class="suffix-badge">{{ currentWordAnatomy.suffixInfo.suffix }}</text>
-                                    <text class="suffix-meaning">{{ currentWordAnatomy.suffixInfo.meaning }}</text>
+
+                                <!-- Family Cognates -->
+                                <view class="example-item" v-if="parsedFamily.length > 0">
+                                    <text class="root-sub-title">{{ i18n.wordFamilyLabel }}</text>
+                                    <view class="flex flex-wrap gap-x-6 gap-y-2">
+                                        <view v-for="(cog, cIndex) in parsedFamily" :key="cIndex" class="flex flex-col gap-0.5">
+                                            <text class="example-en-text">{{ cog.term }}</text>
+                                            <text class="example-cn-text" v-if="cog.meaning">{{ cog.meaning }}</text>
+                                        </view>
+                                    </view>
                                 </view>
-                            </view>
-                            <view class="anatomy-card-item full-width" v-else-if="currentWordAnatomy">
-                                <text class="anatomy-item-label">{{ i18n.lengthLabel }}</text>
-                                <text class="text-sm font-semibold text-[var(--ej-text-primary)]">{{ i18n.wordLengthText(currentWordAnatomy.wordLength, currentWordAnatomy.vowelsCount, currentWordAnatomy.consonantsCount) }}</text>
-                            </view>
                             </view>
                         </view>
                     </view>
@@ -561,46 +575,14 @@ const currentWordAnatomy = computed(() => {
     color: var(--ej-text-primary);
 }
 
-/* Word Anatomy Section */
-.anatomy-card-item {
-    flex: 1 1 calc(50% - 4px);
-    display: flex;
-    flex-direction: column;
-    padding: 8px 10px;
-    border-radius: 8px;
-    box-sizing: border-box;
-    background: var(--ej-border-section);
-    border: 1px solid var(--ej-border-section);
-}
-
-.anatomy-card-item.full-width {
-    flex: 1 1 100%;
-}
-
-.anatomy-item-label {
+/* Examples & Roots List Section */
+.root-sub-title {
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 4px;
     color: var(--ej-text-sub);
-}
-
-.suffix-badge {
-    font-size: 11px;
-    font-weight: 800;
-    padding: 2px 6px;
-    border-radius: 6px;
-    background: var(--ej-color-brand);
-    color: #FFFFFF;
-    flex-shrink: 0;
-}
-
-.suffix-meaning {
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--ej-text-primary);
+    margin-bottom: 2px;
 }
 
 /* Examples Section */

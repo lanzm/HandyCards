@@ -10,16 +10,10 @@ export interface Translations {
     
     definitionsTitle: string;
     wordAnatomyTitle: string;
+    wordRootTitle: string;
+    wordRootLabel: string;
+    wordFamilyLabel: string;
     examplesTitle: string;
-    
-    difficultyLabel: string;
-    syllablesLabel: string;
-    suffixLabel: string;
-    lengthLabel: string;
-    vowelsText: string;
-    consonantsText: string;
-    lettersText: string;
-    syllablesCountText: (count: number) => string;
     
     settingsTitle: string;
     currentBookLabel: string;
@@ -59,7 +53,6 @@ export interface Translations {
     langZhText: string;
     langEnText: string;
     
-    wordLengthText: (len: number, vowels: number, cons: number) => string;
     wordBookCountText: (count: number) => string;
     wordBookLabels: Record<string, string>;
 }
@@ -77,18 +70,11 @@ export const getTranslations = (lang: Language): Translations => {
         
         // Card detail section headers
         definitionsTitle: isZh ? '释义列表' : 'Definitions',
-        wordAnatomyTitle: isZh ? '词汇剖析' : 'Word Anatomy',
+        wordAnatomyTitle: isZh ? '同根派生' : 'Roots & Cognates',
+        wordRootTitle: isZh ? '同根派生' : 'Roots & Cognates',
+        wordRootLabel: isZh ? '核心词根' : 'Core Root',
+        wordFamilyLabel: isZh ? '同根派生词' : 'Cognates',
         examplesTitle: isZh ? '应用例句' : 'Examples',
-        
-        // Word Anatomy titles
-        difficultyLabel: isZh ? '难度系数' : 'Difficulty',
-        syllablesLabel: isZh ? '音节估算' : 'Syllables',
-        suffixLabel: isZh ? '词尾构词法' : 'Word Affix',
-        lengthLabel: isZh ? '字母长度' : 'Word Length',
-        vowelsText: isZh ? '元音' : 'Vowels',
-        consonantsText: isZh ? '辅音' : 'Consonants',
-        lettersText: isZh ? '字母' : 'Letters',
-        syllablesCountText: (count: number) => isZh ? `${count} 音节` : `${count} Syls`,
         
         // Drawer main settings
         settingsTitle: isZh ? '设置选项' : 'Settings',
@@ -133,7 +119,6 @@ export const getTranslations = (lang: Language): Translations => {
         langEnText: 'English',
         
         // Additional formatting & dictionary lists
-        wordLengthText: (len: number, vowels: number, cons: number) => isZh ? `${len} 字母 (${vowels} 元音 / ${cons} 辅音)` : `${len} letters (${vowels} vowels / ${cons} consonants)`,
         wordBookCountText: (count: number) => isZh ? `${count} 词` : `${count} words`,
         wordBookLabels: {
             'CET4luan_1': isZh ? '四级词汇' : 'CET-4 Vocab',
