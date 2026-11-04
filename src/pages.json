@@ -7,6 +7,28 @@
 			}
 		}
 	],
+	"subPackages": [
+		{
+			"root": "subpackages/wordbooks",
+			"name": "wordbooks",
+			"pages": [
+				{
+					"path": "pages/wordbook-loader",
+					"style": {
+						"navigationBarTitleText": "词书库"
+					}
+				}
+			]
+		}
+	],
+	"preloadRule": {
+		"pages/index/index": {
+			"network": "all",
+			"packages": [
+				"subpackages/wordbooks"
+			]
+		}
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "@navigationBarTextStyle",
 		"navigationBarTitleText": "随手词卡",

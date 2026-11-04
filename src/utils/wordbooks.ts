@@ -1,9 +1,49 @@
 import type { WordItem } from '@/types/word';
 
 // We do NOT statically import JSON files here to prevent them from being bundled into the compiled Javascript code.
-// Instead, they are loaded synchronously on demand at runtime from the local static assets folder.
+// Instead, they are loaded synchronously on demand at runtime from the local static assets folder or subpackages.
 
 const cachedData: Record<string, WordItem[]> = {};
+
+let subpackageLoadPromise: Promise<void> | null = null;
+
+/**
+ * 确保词书分包已被微信小程序环境下载并挂载
+ */
+export function ensureWordbookSubpackage(): Promise<void> {
+    if (subpackageLoadPromise) {
+        return subpackageLoadPromise;
+    }
+
+    subpackageLoadPromise = new Promise((resolve) => {
+        // @ts-ignore
+        if (typeof wx !== 'undefined' && wx.loadSubpackage) {
+            // @ts-ignore
+            wx.loadSubpackage({
+                name: 'wordbooks',
+                success: () => {
+                    resolve();
+                },
+                fail: (err: any) => {
+                    console.warn('[WordBooks] loadSubpackage by name failed, trying root:', err);
+                    // @ts-ignore
+                    wx.loadSubpackage({
+                        root: 'subpackages/wordbooks',
+                        success: () => resolve(),
+                        fail: (err2: any) => {
+                            console.error('[WordBooks] loadSubpackage by root failed:', err2);
+                            resolve(); // don't hang execution
+                        }
+                    });
+                }
+            });
+        } else {
+            resolve();
+        }
+    });
+
+    return subpackageLoadPromise;
+}
 
 export const wordBooksData = new Proxy({} as Record<string, WordItem[]>, {
     get(target, prop: string) {
@@ -21,17 +61,28 @@ export const wordBooksData = new Proxy({} as Record<string, WordItem[]>, {
             if (typeof wx !== 'undefined' && wx.getFileSystemManager) {
                 // @ts-ignore
                 const fs = wx.getFileSystemManager();
-                let content;
-                try {
-                    // Try absolute path from code package root first
-                    content = fs.readFileSync(`/static/${prop}.json`, 'utf8');
-                } catch (pathErr) {
-                    // Fallback to relative path
-                    content = fs.readFileSync(`static/${prop}.json`, 'utf8');
+                let content: string | ArrayBuffer | undefined;
+                const candidatePaths = [
+                    `/static/${prop}.json`,
+                    `static/${prop}.json`,
+                    `/subpackages/wordbooks/static/${prop}.json`,
+                    `subpackages/wordbooks/static/${prop}.json`
+                ];
+
+                for (const p of candidatePaths) {
+                    try {
+                        content = fs.readFileSync(p, 'utf8');
+                        if (content) break;
+                    } catch {
+                        // Try next candidate path
+                    }
                 }
-                const data = JSON.parse(content as string);
-                cachedData[prop] = data;
-                return data;
+
+                if (content) {
+                    const data = JSON.parse(content as string);
+                    cachedData[prop] = data;
+                    return data;
+                }
             }
         } catch (e) {
             console.error(`[WordBooks] Failed to load ${prop} using WeChat FileSystemManager:`, e);
@@ -40,13 +91,24 @@ export const wordBooksData = new Proxy({} as Record<string, WordItem[]>, {
         // Try Web/H5 XMLHttpRequest fallback (Browser environment)
         try {
             if (typeof window !== 'undefined') {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', `/static/${prop}.json`, false); // synchronous GET request
-                xhr.send(null);
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText);
-                    cachedData[prop] = data;
-                    return data;
+                const webCandidatePaths = [
+                    `/static/${prop}.json`,
+                    `/subpackages/wordbooks/static/${prop}.json`
+                ];
+
+                for (const url of webCandidatePaths) {
+                    try {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('GET', url, false); // synchronous GET request
+                        xhr.send(null);
+                        if (xhr.status === 200) {
+                            const data = JSON.parse(xhr.responseText);
+                            cachedData[prop] = data;
+                            return data;
+                        }
+                    } catch {
+                        // Try next url
+                    }
                 }
             }
         } catch (e) {

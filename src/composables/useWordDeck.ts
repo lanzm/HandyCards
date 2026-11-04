@@ -3,7 +3,7 @@ import type { Ref, ComputedRef } from 'vue';
 import type { WordItem, WordBookMeta } from '@/types/word';
 import type { Translations } from '@/utils/i18n';
 import commonUtil from '@/utils/commonUtil';
-import { wordBooksData, createWordShuffler, type WordShuffler } from '@/utils/wordbooks';
+import { wordBooksData, createWordShuffler, ensureWordbookSubpackage, type WordShuffler } from '@/utils/wordbooks';
 
 export interface UseWordDeckOptions {
     studyMode: Ref<'quiz' | 'browse'>;
@@ -182,7 +182,7 @@ export function useWordDeck(options: UseWordDeckOptions) {
         onWordChange?.(wordObj.value);
     };
 
-    const loadWordBook = () => {
+    const loadWordBook = async () => {
         wordBook.value = commonUtil.getCurrWordBook();
         wordList.value = [];
         historyWords.value = [];
@@ -190,7 +190,13 @@ export function useWordDeck(options: UseWordDeckOptions) {
         preloadedNextWord.value = null;
 
         const bookVal = wordBook.value?.value;
-        const data = bookVal ? wordBooksData[bookVal] : null;
+        let data = bookVal ? wordBooksData[bookVal] : null;
+
+        if ((!data || data.length === 0) && bookVal && bookVal !== 'CET4luan_1') {
+            await ensureWordbookSubpackage();
+            data = wordBooksData[bookVal];
+        }
+
         if (data && data.length > 0) {
             wordList.value = data;
             wordShuffler = createWordShuffler(bookVal || 'default', data);
@@ -203,10 +209,13 @@ export function useWordDeck(options: UseWordDeckOptions) {
         loading.value = false;
     };
 
-    const changeWordBook = (item: WordBookMeta) => {
+    const changeWordBook = async (item: WordBookMeta) => {
         uni.setStorageSync('wordBook', item.value);
         wordBook.value = item;
-        loadWordBook();
+        if (item.value !== 'CET4luan_1') {
+            await ensureWordbookSubpackage();
+        }
+        await loadWordBook();
     };
 
     onUnmounted(() => {
