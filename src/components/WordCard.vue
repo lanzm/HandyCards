@@ -45,6 +45,9 @@ const props = withDefaults(defineProps<{
     detailSections: () => ({
         definitions: true,
         examples: false,
+        collocations: false,
+        confusing: false,
+        secondary: false,
         anatomy: false
     })
 });
@@ -189,18 +192,45 @@ const parsedFamily = computed(() => {
                         <text class="section-toggle-icon">-</text>
                     </view>
                     <view class="detail-section-body">
-                        <view class="flex flex-col gap-2.5">
+                        <view class="example-list">
                             <view
                               v-for="(item, index) in word.t"
                               :key="index"
-                              class="flex flex-col gap-0.5"
+                              class="example-item"
                             >
-                                <text class="item-number-prefix">
-                                    {{ index + 1 }}.<template v-if="formatDefinitionPos(item[0])"> ({{ formatDefinitionPos(item[0]) }})</template>
-                                </text>
-                                <text class="item-definition-content">{{ formatDefinitionContent(item) }}</text>
+                                <view class="flex items-baseline gap-1.5">
+                                    <text class="collocation-bullet">•</text>
+                                    <text class="font-bold text-[13.5px] text-[var(--ej-color-brand)] shrink-0" v-if="formatDefinitionPos(item[0])">
+                                        {{ formatDefinitionPos(item[0]) }}.
+                                    </text>
+                                    <text class="example-en-text font-bold">{{ formatDefinitionContent(item) }}</text>
+                                </view>
                             </view>
                         </view>
+                    </view>
+                </view>
+
+                <!-- Secondary Meanings Mock -->
+                <view v-if="word?.sm && word.sm.length > 0" class="detail-section mb-3">
+                    <view class="detail-section-header">
+                        <text class="section-header-title">{{ i18n.secondaryTitle }}</text>
+                        <text class="section-toggle-icon">+</text>
+                    </view>
+                </view>
+
+                <!-- Collocations Mock -->
+                <view v-if="word?.c && word.c.length > 0" class="detail-section mb-3">
+                    <view class="detail-section-header">
+                        <text class="section-header-title">{{ i18n.collocationsTitle }}</text>
+                        <text class="section-toggle-icon">+</text>
+                    </view>
+                </view>
+
+                <!-- Confusing Words Mock -->
+                <view v-if="word?.cf && word.cf.length > 0" class="detail-section mb-3">
+                    <view class="detail-section-header">
+                        <text class="section-header-title">{{ i18n.confusingTitle }}</text>
+                        <text class="section-toggle-icon">+</text>
                     </view>
                 </view>
 
@@ -265,17 +295,89 @@ const parsedFamily = computed(() => {
                             <text class="section-toggle-icon">{{ detailSections.definitions ? '-' : '+' }}</text>
                         </view>
                         <view v-if="detailSections.definitions" class="detail-section-body">
-                            <view class="flex flex-col gap-2.5">
-                            <view
-                              v-for="(item, index) in word?.t"
-                              :key="index"
-                              class="flex flex-col gap-0.5"
-                            >
-                                <text class="item-number-prefix">
-                                    {{ index + 1 }}.<template v-if="formatDefinitionPos(item[0])"> ({{ formatDefinitionPos(item[0]) }})</template>
-                                </text>
-                                <text class="item-definition-content">{{ formatDefinitionContent(item) }}</text>
+                            <view class="example-list">
+                                <view
+                                  v-for="(item, index) in word?.t"
+                                  :key="index"
+                                  class="example-item"
+                                >
+                                    <view class="flex items-baseline gap-1.5">
+                                        <text class="collocation-bullet">•</text>
+                                        <text class="font-bold text-[13.5px] text-[var(--ej-color-brand)] shrink-0" v-if="formatDefinitionPos(item[0])">
+                                            {{ formatDefinitionPos(item[0]) }}.
+                                        </text>
+                                        <text class="example-en-text font-bold">{{ formatDefinitionContent(item) }}</text>
+                                    </view>
+                                </view>
                             </view>
+                        </view>
+                    </view>
+
+                    <!-- Secondary Meanings Section -->
+                    <view v-if="word?.sm && word.sm.length > 0" class="detail-section mb-3">
+                        <view class="detail-section-header" @click.stop="emit('toggle-section', 'secondary')">
+                            <text class="section-header-title">{{ i18n.secondaryTitle }}</text>
+                            <text class="section-toggle-icon">{{ detailSections.secondary ? '-' : '+' }}</text>
+                        </view>
+                        <view v-if="detailSections.secondary" class="detail-section-body">
+                            <view class="example-list">
+                                <view
+                                  v-for="(item, index) in word.sm"
+                                  :key="index"
+                                  class="example-item"
+                                >
+                                    <view class="flex items-baseline gap-1.5">
+                                        <text class="collocation-bullet">•</text>
+                                        <text class="example-en-text font-bold text-[var(--ej-color-brand)]">{{ item[0] }}</text>
+                                    </view>
+                                    <text class="example-cn-text pl-3">{{ item[1] }}</text>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+
+                    <!-- Collocations Section -->
+                    <view v-if="word?.c && word.c.length > 0" class="detail-section mb-3">
+                        <view class="detail-section-header" @click.stop="emit('toggle-section', 'collocations')">
+                            <text class="section-header-title">{{ i18n.collocationsTitle }}</text>
+                            <text class="section-toggle-icon">{{ detailSections.collocations ? '-' : '+' }}</text>
+                        </view>
+                        <view v-if="detailSections.collocations" class="detail-section-body">
+                            <view class="example-list">
+                                <view
+                                  v-for="(item, index) in word.c"
+                                  :key="index"
+                                  class="example-item"
+                                >
+                                    <view class="flex items-baseline gap-1.5">
+                                        <text class="collocation-bullet">•</text>
+                                        <text class="example-en-text font-bold">{{ item[0] }}</text>
+                                    </view>
+                                    <text class="example-cn-text pl-3">{{ item[1] }}</text>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+
+                    <!-- Confusing Words Section -->
+                    <view v-if="word?.cf && word.cf.length > 0" class="detail-section mb-3">
+                        <view class="detail-section-header" @click.stop="emit('toggle-section', 'confusing')">
+                            <text class="section-header-title">{{ i18n.confusingTitle }}</text>
+                            <text class="section-toggle-icon">{{ detailSections.confusing ? '-' : '+' }}</text>
+                        </view>
+                        <view v-if="detailSections.confusing" class="detail-section-body">
+                            <view class="example-list">
+                                <view
+                                  v-for="(item, index) in word.cf"
+                                  :key="index"
+                                  class="example-item"
+                                >
+                                    <view class="flex items-baseline gap-1.5">
+                                        <text class="collocation-bullet">•</text>
+                                        <text class="example-en-text font-bold">{{ item[0] }}</text>
+                                    </view>
+                                    <text class="example-cn-text pl-3">{{ item[1] }}</text>
+                                </view>
                             </view>
                         </view>
                     </view>
@@ -288,14 +390,17 @@ const parsedFamily = computed(() => {
                         </view>
                         <view v-if="detailSections.examples" class="detail-section-body">
                             <view class="example-list">
-                            <view
-                              v-for="(item, index) in word.s"
-                              :key="index"
-                              class="example-item"
-                            >
-                                <text class="example-en-text">{{ item[0] }}</text>
-                                <text class="example-cn-text">{{ item[1] }}</text>
-                            </view>
+                                <view
+                                  v-for="(item, index) in word.s"
+                                  :key="index"
+                                  class="example-item"
+                                >
+                                    <view class="flex items-baseline gap-1.5">
+                                        <text class="collocation-bullet">•</text>
+                                        <text class="example-en-text font-bold">{{ item[0] }}</text>
+                                    </view>
+                                    <text class="example-cn-text pl-3">{{ item[1] }}</text>
+                                </view>
                             </view>
                         </view>
                     </view>
@@ -311,17 +416,23 @@ const parsedFamily = computed(() => {
                                 <!-- Core Root -->
                                 <view class="example-item" v-if="parsedRoot">
                                     <text class="root-sub-title">{{ i18n.wordRootLabel }}</text>
-                                    <text class="example-en-text">{{ parsedRoot.term }}</text>
-                                    <text class="example-cn-text" v-if="parsedRoot.meaning">{{ parsedRoot.meaning }}</text>
+                                    <view class="flex items-baseline gap-1.5">
+                                        <text class="collocation-bullet">•</text>
+                                        <text class="example-en-text font-bold">{{ parsedRoot.term }}</text>
+                                    </view>
+                                    <text class="example-cn-text pl-3" v-if="parsedRoot.meaning">{{ parsedRoot.meaning }}</text>
                                 </view>
 
                                 <!-- Family Cognates -->
                                 <view class="example-item" v-if="parsedFamily.length > 0">
                                     <text class="root-sub-title">{{ i18n.wordFamilyLabel }}</text>
-                                    <view class="flex flex-wrap gap-x-6 gap-y-2">
+                                    <view class="flex flex-col gap-2.5">
                                         <view v-for="(cog, cIndex) in parsedFamily" :key="cIndex" class="flex flex-col gap-0.5">
-                                            <text class="example-en-text">{{ cog.term }}</text>
-                                            <text class="example-cn-text" v-if="cog.meaning">{{ cog.meaning }}</text>
+                                            <view class="flex items-baseline gap-1.5">
+                                                <text class="collocation-bullet">•</text>
+                                                <text class="example-en-text font-bold">{{ cog.term }}</text>
+                                            </view>
+                                            <text class="example-cn-text pl-3" v-if="cog.meaning">{{ cog.meaning }}</text>
                                         </view>
                                     </view>
                                 </view>
@@ -632,5 +743,55 @@ const parsedFamily = computed(() => {
 
 .btn-primary:active {
     background-color: var(--ej-color-brand-active);
+}
+
+.collocations-tag-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 9999px;
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #D97706;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+}
+
+.collocation-bullet {
+    font-size: 14px;
+    font-weight: 800;
+    color: #F59E0B;
+    line-height: 1;
+}
+
+.secondary-tag-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 9999px;
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #DC2626;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+}
+
+.confusing-tag-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 9999px;
+    background-color: rgba(99, 102, 241, 0.15);
+    color: #4F46E5;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+}
+
+.secondary-bullet {
+    font-size: 11px;
+    line-height: 1;
+}
+
+.confusing-bullet {
+    font-size: 11px;
+    line-height: 1;
 }
 </style>

@@ -61,6 +61,9 @@ const showQuizPrompt = computed(() => cardTapCount.value < 5);
 const createDefaultDetailSections = (): Record<DetailSectionKey, boolean> => ({
     definitions: true,
     examples: false,
+    collocations: false,
+    confusing: false,
+    secondary: false,
     anatomy: false
 });
 const detailSections = ref<Record<DetailSectionKey, boolean>>(createDefaultDetailSections());

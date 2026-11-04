@@ -9,6 +9,9 @@ export interface WordItem {
     t: [string, string][];      // [词性, 释义][]
     s?: [string, string][];     // [英文例句, 中文翻译][]
     r?: WordRootData;           // 词根词缀及同根词族
+    c?: [string, string][];     // [常用搭配短语, 中文释义][]
+    cf?: [string, string][];    // [形近词/易混淆词, 辨析说明][]
+    sm?: [string, string][];    // [熟词生义词性, 考点释义][]
     cardIndex?: number;         // 词卡在洗牌序列中的编号 (1 ~ N)
 }
 
@@ -18,4 +21,4 @@ export interface WordBookMeta {
     count: number;              // 词书词汇量
 }
 
-export type DetailSectionKey = 'definitions' | 'examples' | 'anatomy';
+export type DetailSectionKey = 'definitions' | 'examples' | 'collocations' | 'confusing' | 'secondary' | 'anatomy';

@@ -14,6 +14,12 @@ export interface Translations {
     wordRootLabel: string;
     wordFamilyLabel: string;
     examplesTitle: string;
+    collocationsTitle: string;
+    collocationsBadge: string;
+    confusingTitle: string;
+    confusingBadge: string;
+    secondaryTitle: string;
+    secondaryBadge: string;
     
     settingsTitle: string;
     currentBookLabel: string;
@@ -75,6 +81,12 @@ export const getTranslations = (lang: Language): Translations => {
         wordRootLabel: isZh ? '核心词根' : 'Core Root',
         wordFamilyLabel: isZh ? '同根派生词' : 'Cognates',
         examplesTitle: isZh ? '应用例句' : 'Examples',
+        collocationsTitle: isZh ? '常用搭配' : 'Collocations',
+        collocationsBadge: isZh ? '高频语块' : 'Phrases',
+        confusingTitle: isZh ? '形近辨析' : 'Confusing Pairs',
+        confusingBadge: isZh ? '易混警示' : 'Watch Out',
+        secondaryTitle: isZh ? '熟词生义' : 'Tricky Meanings',
+        secondaryBadge: isZh ? '常考真题' : 'Exam Focus',
         
         // Drawer main settings
         settingsTitle: isZh ? '设置选项' : 'Settings',
