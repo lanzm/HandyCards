@@ -44,9 +44,9 @@ const commonUtil = {
     getCurrWordBook() {
         const _wordBook = uni.getStorageSync('wordBook');
         if (_wordBook) {
-            return wordBookList.find((e) => e.value === _wordBook) ?? wordBookList[3];
+            return wordBookList.find((e) => e.value === _wordBook) ?? wordBookList[0];
         } else {
-            return wordBookList[3];
+            return wordBookList[0];
         }
     },
     /**

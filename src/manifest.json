@@ -65,15 +65,15 @@
                 },
                 {
                     "type": "file",
-                    "value": "static/CET6luan_1.json"
+                    "value": "subpackages/wordbooks/static/CET6luan_1.json"
                 },
                 {
                     "type": "file",
-                    "value": "static/KaoYanluan_1.json"
+                    "value": "subpackages/wordbooks/static/KaoYanluan_1.json"
                 },
                 {
                     "type": "file",
-                    "value": "static/IELTSluan_2.json"
+                    "value": "subpackages/wordbooks/static/IELTSluan_2.json"
                 }
             ]
         },

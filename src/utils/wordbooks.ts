@@ -5,12 +5,16 @@ import type { WordItem } from '@/types/word';
 
 const cachedData: Record<string, WordItem[]> = {};
 
-let subpackageLoadPromise: Promise<void> | null = null;
+let subpackageLoadPromise: Promise<boolean> | null = null;
+let subpackageLoaded = false;
 
 /**
  * 确保词书分包已被微信小程序环境下载并挂载
  */
-export function ensureWordbookSubpackage(): Promise<void> {
+export function ensureWordbookSubpackage(): Promise<boolean> {
+    if (subpackageLoaded) {
+        return Promise.resolve(true);
+    }
     if (subpackageLoadPromise) {
         return subpackageLoadPromise;
     }
@@ -22,23 +26,31 @@ export function ensureWordbookSubpackage(): Promise<void> {
             wx.loadSubpackage({
                 name: 'wordbooks',
                 success: () => {
-                    resolve();
+                    subpackageLoaded = true;
+                    subpackageLoadPromise = null;
+                    resolve(true);
                 },
                 fail: (err: any) => {
-                    console.warn('[WordBooks] loadSubpackage by name failed, trying root:', err);
+                    console.warn('[WordBooks] loadSubpackage by name "wordbooks" failed, trying "subpackages/wordbooks":', err);
                     // @ts-ignore
                     wx.loadSubpackage({
-                        root: 'subpackages/wordbooks',
-                        success: () => resolve(),
+                        name: 'subpackages/wordbooks',
+                        success: () => {
+                            subpackageLoaded = true;
+                            subpackageLoadPromise = null;
+                            resolve(true);
+                        },
                         fail: (err2: any) => {
-                            console.error('[WordBooks] loadSubpackage by root failed:', err2);
-                            resolve(); // don't hang execution
+                            console.error('[WordBooks] loadSubpackage failed:', err2);
+                            subpackageLoadPromise = null; // allow retry
+                            resolve(false);
                         }
                     });
                 }
             });
         } else {
-            resolve();
+            subpackageLoaded = true;
+            resolve(true);
         }
     });
 

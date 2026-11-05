@@ -193,8 +193,13 @@ export function useWordDeck(options: UseWordDeckOptions) {
         let data = bookVal ? wordBooksData[bookVal] : null;
 
         if ((!data || data.length === 0) && bookVal && bookVal !== 'CET4luan_1') {
-            await ensureWordbookSubpackage();
-            data = wordBooksData[bookVal];
+            loading.value = true;
+            commonUtil.loading(i18n.value.loadingText || '加载中...');
+            const ok = await ensureWordbookSubpackage();
+            uni.hideLoading();
+            if (ok) {
+                data = wordBooksData[bookVal];
+            }
         }
 
         if (data && data.length > 0) {
@@ -203,18 +208,39 @@ export function useWordDeck(options: UseWordDeckOptions) {
             randomWord();
             updatePreloadedNextWord();
             syncBgCard();
+            loading.value = false;
         } else {
-            commonUtil.msg(i18n.value.loadFailAlert, "error");
+            // Fail-safe: Fallback to CET4 in main package if subpackage load failed
+            console.warn(`[WordDeck] Failed to load wordbook ${bookVal}, attempting fallback to CET4`);
+            const fallbackData = wordBooksData['CET4luan_1'];
+            if (fallbackData && fallbackData.length > 0) {
+                wordBook.value = commonUtil.wordBookList[0];
+                uni.setStorageSync('wordBook', 'CET4luan_1');
+                wordList.value = fallbackData;
+                wordShuffler = createWordShuffler('CET4luan_1', fallbackData);
+                randomWord();
+                updatePreloadedNextWord();
+                syncBgCard();
+                commonUtil.msg(i18n.value.subpackageFallbackAlert, 'none', false, 2500);
+            } else {
+                commonUtil.msg(i18n.value.loadFailAlert, 'error');
+            }
+            loading.value = false;
         }
-        loading.value = false;
     };
 
     const changeWordBook = async (item: WordBookMeta) => {
+        if (item.value !== 'CET4luan_1') {
+            commonUtil.loading(i18n.value.loadingText || '加载中...');
+            const ok = await ensureWordbookSubpackage();
+            uni.hideLoading();
+            if (!ok) {
+                commonUtil.msg(i18n.value.subpackageFailAlert, 'error');
+                return;
+            }
+        }
         uni.setStorageSync('wordBook', item.value);
         wordBook.value = item;
-        if (item.value !== 'CET4luan_1') {
-            await ensureWordbookSubpackage();
-        }
         await loadWordBook();
     };
 

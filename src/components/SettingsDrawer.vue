@@ -185,9 +185,9 @@ const handleTtsSwitch = (e: Event) => {
                                         mode="aspectFit"
                                     />
                                     <view class="flex flex-col gap-0.5 flex-1 min-w-0">
-                                        <view class="flex items-center gap-1.5">
-                                            <text class="text-sm font-semibold text-[var(--ej-text-primary)]">{{ i18n.shareCardTitle }}</text>
-                                            <text class="share-badge">二维码</text>
+                                        <view class="flex items-center gap-1.5 flex-nowrap">
+                                            <text class="text-sm font-semibold text-[var(--ej-text-primary)] truncate">{{ i18n.shareCardTitle }}</text>
+                                            <text class="share-badge">{{ i18n.shareBadgeText }}</text>
                                         </view>
                                         <text class="text-[11px] text-[var(--ej-text-muted)] leading-tight">{{ i18n.shareCardDesc }}</text>
                                     </view>
@@ -200,9 +200,9 @@ const handleTtsSwitch = (e: Event) => {
                                         <image :src="GITHUB_ICON_SVG" class="github-octo-svg" mode="aspectFit" />
                                     </view>
                                     <view class="flex flex-col gap-0.5 flex-1 min-w-0">
-                                        <view class="flex items-center gap-1.5">
-                                            <text class="text-sm font-semibold text-[var(--ej-text-primary)]">{{ i18n.githubCardTitle }}</text>
-                                            <text class="github-star-badge">MIT 开源</text>
+                                        <view class="flex items-center gap-1.5 flex-nowrap">
+                                            <text class="text-sm font-semibold text-[var(--ej-text-primary)] truncate">{{ i18n.githubCardTitle }}</text>
+                                            <text class="github-star-badge">{{ i18n.githubBadgeText }}</text>
                                         </view>
                                         <text class="text-[11px] text-[var(--ej-text-muted)] truncate leading-tight">github.com/lanzm/HandyCards</text>
                                     </view>
@@ -390,16 +390,21 @@ const handleTtsSwitch = (e: Event) => {
 .share-badge {
     font-size: 10px;
     font-weight: 700;
-    padding: 1px 6px;
+    padding: 2px 6px;
     border-radius: 4px;
     background-color: var(--ej-color-brand-light);
     color: var(--ej-color-brand);
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.2;
 }
 
 .share-arrow {
     font-size: 20px;
     line-height: 1;
     font-weight: 400;
+    flex-shrink: 0;
+    align-self: center;
 }
 
 .github-repo-card {
@@ -440,16 +445,30 @@ const handleTtsSwitch = (e: Event) => {
 .github-star-badge {
     font-size: 10px;
     font-weight: 700;
-    padding: 1px 6px;
+    padding: 2px 6px;
     border-radius: 4px;
     background-color: rgba(16, 185, 129, 0.1);
     color: #10B981;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.2;
 }
 
 .copy-action-pill {
-    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 12px;
     border-radius: 6px;
     background-color: var(--ej-color-brand-light);
     flex-shrink: 0;
+    align-self: center;
+    box-sizing: border-box;
+}
+
+.copy-action-pill text {
+    line-height: 1;
+    display: block;
 }
 </style>

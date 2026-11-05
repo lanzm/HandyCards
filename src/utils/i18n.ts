@@ -38,7 +38,9 @@ export interface Translations {
     shareLabel: string;
     shareCardTitle: string;
     shareCardDesc: string;
+    shareBadgeText: string;
     githubCardTitle: string;
+    githubBadgeText: string;
     copyLinkText: string;
     githubCopiedMsg: string;
     wordListLabel: string;
@@ -53,6 +55,8 @@ export interface Translations {
     alreadyAddedAlert: string;
     removedAlert: string;
     loadFailAlert: string;
+    subpackageFailAlert: string;
+    subpackageFallbackAlert: string;
     bookCompletedAlert: string;
     
     langLabel: string;
@@ -106,7 +110,9 @@ export const getTranslations = (lang: Language): Translations => {
         shareLabel: isZh ? '开源与分享' : 'Open Source & Share',
         shareCardTitle: isZh ? '微信分享二维码' : 'WeChat Share QR Code',
         shareCardDesc: isZh ? '点击查看高清大图，长按可识别或转发' : 'Tap to preview QR code, long press to scan or share',
-        githubCardTitle: isZh ? 'GitHub 开源项目' : 'GitHub Open Source',
+        shareBadgeText: isZh ? '二维码' : 'QR Code',
+        githubCardTitle: isZh ? 'GitHub 开源项目' : 'GitHub Repo',
+        githubBadgeText: isZh ? 'CC 非商用' : 'CC BY-NC 4.0',
         copyLinkText: isZh ? '复制链接' : 'Copy',
         githubCopiedMsg: isZh ? '已复制链接' : 'Link copied',
         wordListLabel: isZh ? '我的生词本' : 'My Word List',
@@ -123,6 +129,8 @@ export const getTranslations = (lang: Language): Translations => {
         alreadyAddedAlert: isZh ? '已在生词本中' : 'Already in word list',
         removedAlert: isZh ? '已从生词本移除' : 'Removed from word list',
         loadFailAlert: isZh ? '加载词书失败' : 'Failed to load wordbook',
+        subpackageFailAlert: isZh ? '词书分包下载失败，请检查网络后重试' : 'Subpackage download failed, please check network',
+        subpackageFallbackAlert: isZh ? '分包加载失败，已切回四级核心词库' : 'Failed to load subpackage, switched to CET-4',
         bookCompletedAlert: isZh ? '🎉 恭喜背完整本！已开启新一轮洗牌' : '🎉 Congratulations! Shuffled for the next round',
         
         // Language Selector
