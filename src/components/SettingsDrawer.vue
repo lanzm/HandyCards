@@ -59,7 +59,14 @@ const handleTtsSwitch = (e: Event) => {
             <view class="flex flex-col w-full h-full overflow-hidden">
                 <view class="flex justify-between items-center mb-4">
                     <text class="text-[17px] font-bold tracking-tight text-[var(--ej-text-primary)]">{{ i18n.settingsTitle }}</text>
-                    <view class="text-xl text-[var(--ej-text-sub)] cursor-pointer p-1" @click="closeDrawer">✕</view>
+                    <view 
+                        class="drawer-close-btn cursor-pointer" 
+                        @click="closeDrawer"
+                        hover-class="drawer-close-btn-hover"
+                        :hover-stay-time="100"
+                    >
+                        <text class="drawer-close-icon">✕</text>
+                    </view>
                 </view>
                 
                 <scroll-view scroll-y="true" class="drawer-scroll-view flex-1 min-h-0 h-full">
@@ -262,6 +269,29 @@ const handleTtsSwitch = (e: Event) => {
 }
 .drawer-panel.show {
     transform: translateY(0);
+}
+
+.drawer-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ej-text-sub);
+    background-color: transparent;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.drawer-close-btn-hover {
+    background-color: var(--ej-border);
+    opacity: 0.8;
+}
+
+.drawer-close-icon {
+    font-size: 15px;
+    line-height: 1;
 }
 
 .drawer-scroll-view {

@@ -56,7 +56,6 @@ export interface Translations {
     removedAlert: string;
     loadFailAlert: string;
     subpackageFailAlert: string;
-    subpackageFallbackAlert: string;
     bookCompletedAlert: string;
     
     langLabel: string;
@@ -130,7 +129,6 @@ export const getTranslations = (lang: Language): Translations => {
         removedAlert: isZh ? '已从生词本移除' : 'Removed from word list',
         loadFailAlert: isZh ? '加载词书失败' : 'Failed to load wordbook',
         subpackageFailAlert: isZh ? '词书分包下载失败，请检查网络后重试' : 'Subpackage download failed, please check network',
-        subpackageFallbackAlert: isZh ? '分包加载失败，已切回四级核心词库' : 'Failed to load subpackage, switched to CET-4',
         bookCompletedAlert: isZh ? '🎉 恭喜背完整本！已开启新一轮洗牌' : '🎉 Congratulations! Shuffled for the next round',
         
         // Language Selector

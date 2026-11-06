@@ -41,7 +41,14 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
         onSwipeDownSuccess
     } = options;
 
-    const screenHeight = ref(800);
+    const getInitialScreenHeight = () => {
+        try {
+            return uni.getSystemInfoSync()?.windowHeight || 800;
+        } catch {
+            return 800;
+        }
+    };
+    const screenHeight = ref(getInitialScreenHeight());
     const startX = ref(0);
     const startY = ref(0);
     const cardY = ref(0);
@@ -164,6 +171,7 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
             isSwiping.value = false;
             nextWordDirectional('up');
         } else if (cardY.value > threshold && isSwipingDownActive.value) {
+            commonUtil.vibrateCardSwitch();
             isSwiping.value = false;
             clearSwipeTimers();
             

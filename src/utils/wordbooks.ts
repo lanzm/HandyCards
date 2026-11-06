@@ -178,13 +178,21 @@ export function createWordShuffler(bookKey: string, list: WordItem[]): WordShuff
         return arr;
     };
 
-    const saveState = () => {
+    const saveCursorState = () => {
+        try {
+            uni.setStorageSync(cursorKey, cursor);
+        } catch (e) {
+            console.warn('[WordShuffler] 保存游标进度失败:', e);
+        }
+    };
+
+    const saveFullState = () => {
         try {
             uni.setStorageSync(orderKey, order);
             uni.setStorageSync(cursorKey, cursor);
             uni.setStorageSync(roundKey, round);
         } catch (e) {
-            console.warn('[WordShuffler] 保存状态失败:', e);
+            console.warn('[WordShuffler] 保存完整洗牌状态失败:', e);
         }
     };
 
@@ -202,12 +210,13 @@ export function createWordShuffler(bookKey: string, list: WordItem[]): WordShuff
                 order = generateShuffledOrder(list.length);
                 cursor = 0;
                 round = 1;
-                saveState();
+                saveFullState();
             }
         } catch {
             order = generateShuffledOrder(list.length);
             cursor = 0;
             round = 1;
+            saveFullState();
         }
     };
 
@@ -217,7 +226,7 @@ export function createWordShuffler(bookKey: string, list: WordItem[]): WordShuff
         order = generateShuffledOrder(list.length);
         cursor = 0;
         round += 1;
-        saveState();
+        saveFullState();
     };
 
     const peekNext = (): WordItem | null => {
@@ -242,7 +251,7 @@ export function createWordShuffler(bookKey: string, list: WordItem[]): WordShuff
         const currentSeq = cursor + 1;
         const index = order[cursor];
         cursor += 1;
-        saveState();
+        saveCursorState();
         const raw = list[index];
         return {
             word: raw ? { ...raw, cardIndex: currentSeq } : null,

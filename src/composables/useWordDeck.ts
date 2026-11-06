@@ -94,6 +94,7 @@ export function useWordDeck(options: UseWordDeckOptions) {
                 commonUtil.msg(i18n.value.firstWordAlert);
                 return;
             }
+            commonUtil.vibrateCardSwitch();
             isSwipingDownActive.value = true;
             bgWordObj.value = wordObj.value;
             bgKnowFlag.value = knowFlag.value;
@@ -102,7 +103,6 @@ export function useWordDeck(options: UseWordDeckOptions) {
             wordObj.value = historyWords.value[historyIndex.value];
             knowFlag.value = true;
         } else {
-            isSwipingDownActive.value = false;
             if (historyIndex.value < historyWords.value.length - 1) {
                 historyIndex.value += 1;
             } else {
@@ -117,6 +117,8 @@ export function useWordDeck(options: UseWordDeckOptions) {
                 preloadedNextWord.value = null;
                 historyIndex.value = historyWords.value.length - 1;
             }
+            commonUtil.vibrateCardSwitch();
+            isSwipingDownActive.value = false;
         }
 
         isRevealing.value = false;
@@ -210,8 +212,8 @@ export function useWordDeck(options: UseWordDeckOptions) {
             syncBgCard();
             loading.value = false;
         } else {
-            // Fail-safe: Fallback to CET4 in main package if subpackage load failed
-            console.warn(`[WordDeck] Failed to load wordbook ${bookVal}, attempting fallback to CET4`);
+            // Fail-safe: Fallback silently to CET4 in main package if subpackage load failed
+            console.warn(`[WordDeck] Failed to load wordbook ${bookVal}, silently falling back to CET4`);
             const fallbackData = wordBooksData['CET4luan_1'];
             if (fallbackData && fallbackData.length > 0) {
                 wordBook.value = commonUtil.wordBookList[0];
@@ -221,7 +223,6 @@ export function useWordDeck(options: UseWordDeckOptions) {
                 randomWord();
                 updatePreloadedNextWord();
                 syncBgCard();
-                commonUtil.msg(i18n.value.subpackageFallbackAlert, 'none', false, 2500);
             } else {
                 commonUtil.msg(i18n.value.loadFailAlert, 'error');
             }

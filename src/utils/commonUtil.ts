@@ -63,6 +63,30 @@ const commonUtil = {
         });
     },
     /**
+     * 切换卡片时的清晰微触觉反馈（medium 档位，含安卓降级保护）
+     */
+    vibrateCardSwitch() {
+        try {
+            // #ifdef MP-WEIXIN
+            uni.vibrateShort({
+                type: 'medium',
+                fail: () => {
+                    try {
+                        uni.vibrateShort({});
+                    } catch {
+                        // ignore
+                    }
+                }
+            });
+            // #endif
+            // #ifndef MP-WEIXIN
+            uni.vibrateShort({});
+            // #endif
+        } catch {
+            // ignore
+        }
+    },
+    /**
      * 本地静态图片纯离线预览（微信小程序端通过文件系统临时转存实现 100% 离线预览，H5/其他端平滑降级）
      * @param staticPath 相对于 static 的路径或以 /static 开头的路径
      * @param cacheFileName 缓存到本地的文件名
