@@ -16,6 +16,24 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
     const GEAR_WIDTH = 50;
     const VISIBLE_GAP = 16; // 弹出时距离屏幕边缘的间隙
 
+    let cachedScreenWidth = 0;
+    let cachedScreenHeight = 0;
+
+    const getScreenDimensions = () => {
+        if (cachedScreenWidth > 0) {
+            return { screenWidth: cachedScreenWidth, screenHeight: cachedScreenHeight };
+        }
+        try {
+            const sys = uni.getSystemInfoSync();
+            cachedScreenWidth = sys.windowWidth || 375;
+            cachedScreenHeight = sys.windowHeight || 667;
+        } catch {
+            cachedScreenWidth = 375;
+            cachedScreenHeight = 667;
+        }
+        return { screenWidth: cachedScreenWidth, screenHeight: cachedScreenHeight };
+    };
+
     /**
      * 启动延时吸边收起定时器
      * @param delay 停留毫秒数，默认 1500ms
@@ -42,8 +60,7 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
             gearIntroTimer = null;
         }
         try {
-            const sys = uni.getSystemInfoSync();
-            const screenWidth = sys.windowWidth;
+            const { screenWidth } = getScreenDimensions();
 
             if (dockSide.value === 'left') {
                 gearX.value = VISIBLE_GAP;
@@ -64,8 +81,7 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
      */
     const dockGear = () => {
         try {
-            const sys = uni.getSystemInfoSync();
-            const screenWidth = sys.windowWidth;
+            const { screenWidth } = getScreenDimensions();
 
             if (dockSide.value === 'left') {
                 gearX.value = 0;
@@ -99,8 +115,7 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
 
     const onGearTouchEnd = () => {
         try {
-            const sys = uni.getSystemInfoSync();
-            const screenWidth = sys.windowWidth;
+            const { screenWidth } = getScreenDimensions();
             const centerX = (screenWidth - GEAR_WIDTH) / 2;
 
             if (lastDragX.value < centerX) {
@@ -132,14 +147,16 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
         }
         try {
             const sys = uni.getSystemInfoSync();
-            const screenWidth = sys.windowWidth;
+            cachedScreenWidth = sys.windowWidth || 375;
+            cachedScreenHeight = sys.windowHeight || 667;
+            const screenWidth = cachedScreenWidth;
             const visibleX = Math.max(screenWidth - GEAR_WIDTH - VISIBLE_GAP, 0);
 
             dockSide.value = 'right';
             gearX.value = visibleX;
-            gearY.value = sys.windowHeight * 0.4;
+            gearY.value = cachedScreenHeight * 0.4;
             lastDragX.value = visibleX;
-            lastDragY.value = sys.windowHeight * 0.4;
+            lastDragY.value = cachedScreenHeight * 0.4;
             isHiding.value = false;
 
             startAutoHideTimer(1400);

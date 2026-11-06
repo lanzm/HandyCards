@@ -216,12 +216,12 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
     };
 
     const onDetailTouchMove = (e: TouchEvent) => {
-        if (detailScrollTop.value > 5) return;
+        if (!isSwiping.value && detailScrollTop.value > 5) return;
         onCardTouchMove(e);
     };
 
     const onDetailTouchEnd = () => {
-        if (detailScrollTop.value > 5) return;
+        if (!isSwiping.value && detailScrollTop.value > 5) return;
         onCardTouchEnd();
     };
 

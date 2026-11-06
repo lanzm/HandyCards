@@ -99,6 +99,8 @@ const parsedFamily = computed(() => {
         return { term: cleanStr(item), meaning: '' };
     });
 });
+
+const uniquePosList = computed(() => getUniquePos(props.word?.t));
 </script>
 
 <template>
@@ -133,35 +135,38 @@ const parsedFamily = computed(() => {
           @touchmove="!isBackground ? emit('touch-move', $event) : undefined"
           @touchend="!isBackground ? emit('touch-end') : undefined"
         >
-            <view class="flex justify-between items-start gap-2">
-                <view class="flex flex-col gap-1 flex-1 min-w-0 pr-1">
+            <view class="flex flex-col gap-1">
+                <!-- Word & Top-Right Sequence Badge Row -->
+                <view class="flex justify-between items-start gap-2">
                     <text 
-                      class="word-large-text" 
+                      class="word-large-text flex-1 min-w-0 pr-1" 
                       @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
                     >{{ word.w }}</text>
-                    <view 
-                      class="inline-flex flex-wrap items-center gap-2" 
-                      @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
-                    >
-                        <text class="phonetic-small-text">/{{ word.p }}/</text>
-                        <text 
-                          v-if="!ttsDisabled" 
-                          class="phonetic-speaker-inline" 
-                          :class="{ 'playing': playFlag && !isBackground }"
-                        ></text>
+
+                    <!-- Top-right minimalist card sequence badge (#158) -->
+                    <view v-if="word?.cardIndex" class="card-seq-badge shrink-0">
+                        <text class="card-seq-text">#{{ word.cardIndex }}</text>
                     </view>
                 </view>
 
-                <!-- Top-right minimalist card sequence badge (#158) -->
-                <view v-if="word?.cardIndex" class="card-seq-badge shrink-0">
-                    <text class="card-seq-text">#{{ word.cardIndex }}</text>
+                <!-- Phonetic Audio Row -->
+                <view 
+                  class="inline-flex flex-wrap items-center gap-2" 
+                  @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
+                >
+                    <text class="phonetic-small-text">/{{ word.p }}/</text>
+                    <text 
+                      v-if="!ttsDisabled" 
+                      class="phonetic-speaker-inline" 
+                      :class="{ 'playing': playFlag && !isBackground }"
+                    ></text>
                 </view>
             </view>
             
             <!-- Part of Speech Tabs/Pills -->
-            <view class="flex flex-wrap gap-2 mt-3.5" v-if="word?.t && word.t.length > 0">
+            <view class="flex flex-wrap gap-2 mt-3.5" v-if="uniquePosList.length > 0">
                 <view 
-                  v-for="(item, index) in getUniquePos(word.t)" 
+                  v-for="(item, index) in uniquePosList" 
                   :key="index"
                   class="pos-pill"
                 >
@@ -466,6 +471,8 @@ const parsedFamily = computed(() => {
             <view class="w-full">
                 <view 
                   class="card-btn btn-primary text-base" 
+                  hover-class="btn-primary-hover"
+                  :hover-stay-time="100"
                   @click.stop="!isBackground && emit('next-word')"
                 >
                     {{ i18n.nextBtn }}
@@ -499,18 +506,18 @@ const parsedFamily = computed(() => {
     display: inline-flex;
     align-items: center;
     justify-content: flex-end;
-    margin-top: 2px;
+    margin-top: 5px;
     user-select: none;
 }
 
 .card-seq-text {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     font-style: italic;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: var(--ej-text-primary);
-    opacity: 0.22;
-    line-height: 1;
+    opacity: 0.25;
+    line-height: 1.1;
     letter-spacing: 0.5px;
 }
 
@@ -741,8 +748,10 @@ const parsedFamily = computed(() => {
     background-color: var(--ej-color-brand);
 }
 
-.btn-primary:active {
+.btn-primary:active,
+.btn-primary-hover {
     background-color: var(--ej-color-brand-active);
+    transform: scale(0.985);
 }
 
 .collocations-tag-badge {

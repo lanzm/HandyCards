@@ -52,6 +52,7 @@ const handleTtsSwitch = (e: Event) => {
             class="drawer-overlay" 
             :class="{ 'show': show }" 
             @click="closeDrawer"
+            @touchmove.stop.prevent
         ></view>
         
         <!-- Settings Drawer Panel -->

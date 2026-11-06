@@ -10,7 +10,22 @@ declare const wx: any;
 export function useWordAudio() {
     const playFlag = ref(false);
     let activeAudioContext: UniApp.InnerAudioContext | any = null;
+    let activeTempFilePath: string | null = null;
     let speechRequestVersion = 0;
+
+    const cleanupActiveTempFile = () => {
+        if (activeTempFilePath && typeof wx !== 'undefined' && wx.getFileSystemManager) {
+            try {
+                wx.getFileSystemManager().unlink({
+                    filePath: activeTempFilePath,
+                    fail: () => {}
+                });
+            } catch {
+                // ignore
+            }
+            activeTempFilePath = null;
+        }
+    };
 
     const stopAudio = () => {
         if (activeAudioContext) {
@@ -22,6 +37,7 @@ export function useWordAudio() {
             }
             activeAudioContext = null;
         }
+        cleanupActiveTempFile();
         playFlag.value = false;
     };
 
@@ -39,7 +55,9 @@ export function useWordAudio() {
         // WeChat Mini Program File System
         if (typeof wx !== 'undefined' && wx.getFileSystemManager && wx.env && wx.env.USER_DATA_PATH) {
             const fs = wx.getFileSystemManager();
+            cleanupActiveTempFile();
             const tempFilePath = `${wx.env.USER_DATA_PATH}/temp_speech_${Date.now()}.mp3`;
+            activeTempFilePath = tempFilePath;
 
             fs.writeFile({
                 filePath: tempFilePath,
@@ -48,6 +66,9 @@ export function useWordAudio() {
                 success: () => {
                     if (requestVersion !== speechRequestVersion) {
                         fs.unlink({ filePath: tempFilePath, fail: () => {} });
+                        if (activeTempFilePath === tempFilePath) {
+                            activeTempFilePath = null;
+                        }
                         return;
                     }
                     const audioContext = uni.createInnerAudioContext();
@@ -62,6 +83,9 @@ export function useWordAudio() {
                             filePath: tempFilePath,
                             fail: (err: any) => console.warn('删除临时音频文件失败:', err)
                         });
+                        if (activeTempFilePath === tempFilePath) {
+                            activeTempFilePath = null;
+                        }
                         if (activeAudioContext === audioContext) {
                             activeAudioContext = null;
                         }
@@ -76,6 +100,9 @@ export function useWordAudio() {
                 },
                 fail: (err: any) => {
                     console.error('写入临时音频文件失败:', err);
+                    if (activeTempFilePath === tempFilePath) {
+                        activeTempFilePath = null;
+                    }
                     handleEnd();
                 }
             });
