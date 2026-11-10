@@ -212,12 +212,11 @@ export function useWordDeck(options: UseWordDeckOptions) {
             syncBgCard();
             loading.value = false;
         } else {
-            // Fail-safe: Fallback silently to CET4 in main package if subpackage load failed
-            console.warn(`[WordDeck] Failed to load wordbook ${bookVal}, silently falling back to CET4`);
+            // Fail-safe: Fallback silently to CET4 in memory if subpackage load failed (preserve user's stored wordBook preference)
+            console.warn(`[WordDeck] Failed to load wordbook ${bookVal}, silently falling back to CET4 in memory`);
             const fallbackData = wordBooksData['CET4luan_1'];
             if (fallbackData && fallbackData.length > 0) {
                 wordBook.value = commonUtil.wordBookList[0];
-                uni.setStorageSync('wordBook', 'CET4luan_1');
                 wordList.value = fallbackData;
                 wordShuffler = createWordShuffler('CET4luan_1', fallbackData);
                 randomWord();

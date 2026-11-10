@@ -68,36 +68,39 @@ const emit = defineEmits<{
 
 const cleanStr = (s?: string) => (s ?? '').replace(/["'“”‘’「」『』\\]/g, '').trim();
 
-const parsedRoot = computed(() => {
-    const r = props.word?.r?.r;
-    if (!r) return null;
-    const match = r.match(/^([^（\(]+)(?:\s*[（\(]([^）\)]+)[）\)])?$/);
-    if (match) {
-        const term = cleanStr(match[1]);
-        const meaning = cleanStr(match[2]);
+const parseCognateItem = (text?: string) => {
+    if (!text) return null;
+    // 1. 匹配中英文圆括号、方括号或中括号：如 "dict (说)"、"dict [说]"、"dict【说】"
+    const bracketMatch = text.match(/^([^（\(\[【]+)(?:\s*[（\(\[【]([^）\)\]】]+)[）\)\]】])?$/);
+    if (bracketMatch && bracketMatch[2]) {
+        const term = cleanStr(bracketMatch[1]);
+        const meaning = cleanStr(bracketMatch[2]);
         return {
             term,
             meaning: /[\u4e00-\u9fa5]/.test(meaning) ? meaning : ''
         };
     }
-    return { term: cleanStr(r), meaning: '' };
+    // 2. 匹配冒号或破折号分隔：如 "dict: 言，说" 或 "dict - 言"
+    const colonMatch = text.match(/^([^:：\-–—]+)\s*[:：\-–—]\s*(.+)$/);
+    if (colonMatch && /[\u4e00-\u9fa5]/.test(colonMatch[2])) {
+        return {
+            term: cleanStr(colonMatch[1]),
+            meaning: cleanStr(colonMatch[2])
+        };
+    }
+    return { term: cleanStr(text), meaning: '' };
+};
+
+const parsedRoot = computed(() => {
+    const r = props.word?.r?.r;
+    if (!r) return null;
+    return parseCognateItem(r);
 });
 
 const parsedFamily = computed(() => {
     const list = props.word?.r?.f;
     if (!list || list.length === 0) return [];
-    return list.map(item => {
-        const match = item.match(/^([^（\(]+)(?:\s*[（\(]([^）\)]+)[）\)])?$/);
-        if (match) {
-            const term = cleanStr(match[1]);
-            const meaning = cleanStr(match[2]);
-            return {
-                term,
-                meaning: /[\u4e00-\u9fa5]/.test(meaning) ? meaning : ''
-            };
-        }
-        return { term: cleanStr(item), meaning: '' };
-    });
+    return list.map(item => parseCognateItem(item) || { term: cleanStr(item), meaning: '' });
 });
 
 const uniquePosList = computed(() => getUniquePos(props.word?.t));
@@ -194,7 +197,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                 <view class="detail-section mb-3">
                     <view class="detail-section-header">
                         <text class="section-header-title">{{ i18n.definitionsTitle }}</text>
-                        <text class="section-toggle-icon">-</text>
+                        <view class="section-toggle-icon is-open"></view>
                     </view>
                     <view class="detail-section-body">
                         <view class="example-list">
@@ -219,7 +222,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                 <view v-if="word?.sm && word.sm.length > 0" class="detail-section mb-3">
                     <view class="detail-section-header">
                         <text class="section-header-title">{{ i18n.secondaryTitle }}</text>
-                        <text class="section-toggle-icon">+</text>
+                        <view class="section-toggle-icon"></view>
                     </view>
                 </view>
 
@@ -227,7 +230,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                 <view v-if="word?.c && word.c.length > 0" class="detail-section mb-3">
                     <view class="detail-section-header">
                         <text class="section-header-title">{{ i18n.collocationsTitle }}</text>
-                        <text class="section-toggle-icon">+</text>
+                        <view class="section-toggle-icon"></view>
                     </view>
                 </view>
 
@@ -235,7 +238,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                 <view v-if="word?.cf && word.cf.length > 0" class="detail-section mb-3">
                     <view class="detail-section-header">
                         <text class="section-header-title">{{ i18n.confusingTitle }}</text>
-                        <text class="section-toggle-icon">+</text>
+                        <view class="section-toggle-icon"></view>
                     </view>
                 </view>
 
@@ -243,7 +246,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                 <view v-if="word?.s && word.s.length > 0" class="detail-section mb-3">
                     <view class="detail-section-header">
                         <text class="section-header-title">{{ i18n.examplesTitle }}</text>
-                        <text class="section-toggle-icon">+</text>
+                        <view class="section-toggle-icon"></view>
                     </view>
                 </view>
 
@@ -251,7 +254,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                 <view v-if="word?.r && (word.r.r || (word.r.f && word.r.f.length > 0))" class="detail-section mb-3">
                     <view class="detail-section-header">
                         <text class="section-header-title">{{ i18n.wordRootTitle }}</text>
-                        <text class="section-toggle-icon">+</text>
+                        <view class="section-toggle-icon"></view>
                     </view>
                 </view>
 
@@ -297,7 +300,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                     <view class="detail-section mb-3">
                         <view class="detail-section-header" @click.stop="emit('toggle-section', 'definitions')">
                             <text class="section-header-title">{{ i18n.definitionsTitle }}</text>
-                            <text class="section-toggle-icon">{{ detailSections.definitions ? '-' : '+' }}</text>
+                            <view class="section-toggle-icon" :class="{ 'is-open': detailSections.definitions }"></view>
                         </view>
                         <view v-if="detailSections.definitions" class="detail-section-body">
                             <view class="example-list">
@@ -322,7 +325,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                     <view v-if="word?.sm && word.sm.length > 0" class="detail-section mb-3">
                         <view class="detail-section-header" @click.stop="emit('toggle-section', 'secondary')">
                             <text class="section-header-title">{{ i18n.secondaryTitle }}</text>
-                            <text class="section-toggle-icon">{{ detailSections.secondary ? '-' : '+' }}</text>
+                            <view class="section-toggle-icon" :class="{ 'is-open': detailSections.secondary }"></view>
                         </view>
                         <view v-if="detailSections.secondary" class="detail-section-body">
                             <view class="example-list">
@@ -345,7 +348,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                     <view v-if="word?.c && word.c.length > 0" class="detail-section mb-3">
                         <view class="detail-section-header" @click.stop="emit('toggle-section', 'collocations')">
                             <text class="section-header-title">{{ i18n.collocationsTitle }}</text>
-                            <text class="section-toggle-icon">{{ detailSections.collocations ? '-' : '+' }}</text>
+                            <view class="section-toggle-icon" :class="{ 'is-open': detailSections.collocations }"></view>
                         </view>
                         <view v-if="detailSections.collocations" class="detail-section-body">
                             <view class="example-list">
@@ -368,7 +371,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                     <view v-if="word?.cf && word.cf.length > 0" class="detail-section mb-3">
                         <view class="detail-section-header" @click.stop="emit('toggle-section', 'confusing')">
                             <text class="section-header-title">{{ i18n.confusingTitle }}</text>
-                            <text class="section-toggle-icon">{{ detailSections.confusing ? '-' : '+' }}</text>
+                            <view class="section-toggle-icon" :class="{ 'is-open': detailSections.confusing }"></view>
                         </view>
                         <view v-if="detailSections.confusing" class="detail-section-body">
                             <view class="example-list">
@@ -391,7 +394,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                     <view v-if="word?.s && word.s.length > 0" class="detail-section mb-3">
                         <view class="detail-section-header" @click.stop="emit('toggle-section', 'examples')">
                             <text class="section-header-title">{{ i18n.examplesTitle }}</text>
-                            <text class="section-toggle-icon">{{ detailSections.examples ? '-' : '+' }}</text>
+                            <view class="section-toggle-icon" :class="{ 'is-open': detailSections.examples }"></view>
                         </view>
                         <view v-if="detailSections.examples" class="detail-section-body">
                             <view class="example-list">
@@ -414,7 +417,7 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                     <view class="detail-section mb-3" v-if="parsedRoot || parsedFamily.length > 0">
                         <view class="detail-section-header" @click.stop="emit('toggle-section', 'anatomy')">
                             <text class="section-header-title">{{ i18n.wordRootTitle }}</text>
-                            <text class="section-toggle-icon">{{ detailSections.anatomy ? '-' : '+' }}</text>
+                            <view class="section-toggle-icon" :class="{ 'is-open': detailSections.anatomy }"></view>
                         </view>
                         <view v-if="detailSections.anatomy" class="detail-section-body">
                             <view class="example-list">
@@ -653,15 +656,44 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1;
+    position: relative;
     flex-shrink: 0;
     color: var(--ej-color-brand);
     background: var(--ej-color-brand-light);
+    box-sizing: border-box;
+}
+
+/* 纯 CSS 几何绝对居中横线（减号） */
+.section-toggle-icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 1.8px;
+    background-color: currentColor;
+    border-radius: 1px;
+}
+
+/* 纯 CSS 几何绝对居中竖线（与横线结合为加号） */
+.section-toggle-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.8px;
+    height: 10px;
+    background-color: currentColor;
+    border-radius: 1px;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+/* 展开状态：仅保留横线减号，竖线平滑旋转淡出 */
+.section-toggle-icon.is-open::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+    opacity: 0;
 }
 
 .section-header-title {

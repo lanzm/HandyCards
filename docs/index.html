@@ -21,6 +21,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&family=Noto+Serif+SC:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Theme Init Script (Prevent Dark Mode Flash) -->
+  <script>
+    if (localStorage.getItem('handycards_theme') === 'dark' || (!localStorage.getItem('handycards_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -224,7 +231,7 @@
             <div class="w-full max-w-sm bg-white dark:bg-darkbg-card border border-paper-border dark:border-darkbg-border rounded-3xl p-7 sm:p-8 shadow-paper dark:shadow-none text-center group hover:shadow-paper-hover transition-all">
               
               <!-- High-res QR Code styled as an Embossed Stamp -->
-              <div class="p-3 bg-paper-100 dark:bg-white rounded-2xl border border-paper-border dark:border-stone-200 inline-block mb-4 shadow-sm group-hover:scale-102 transition-transform">
+              <div class="p-3 bg-paper-100 dark:bg-white rounded-2xl border border-paper-border dark:border-stone-200 inline-block mb-4 shadow-sm group-hover:scale-[1.02] transition-transform">
                 <img src="images/wechat-mp-qrcode.jpg" alt="随手词卡 微信小程序码" class="w-44 h-44 rounded-xl object-contain block mix-blend-multiply" />
               </div>
 
@@ -359,7 +366,7 @@
           <!-- Book 3 -->
           <div class="bg-white dark:bg-darkbg-card border border-paper-border dark:border-darkbg-border p-6 rounded-2xl shadow-paper dark:shadow-none flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
             <div>
-              <span class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-900 font-semibold mb-3 inline-block">KRA</span>
+              <span class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-900 font-semibold mb-3 inline-block">KY</span>
               <h4 class="text-base sm:text-lg font-serif font-semibold text-ink-pure dark:text-white mb-2" data-i18n="b3_title">考研英语必背</h4>
               <p class="text-xs text-ink-secondary dark:text-stone-400 leading-relaxed font-sans" data-i18n="b3_desc">覆盖全国硕士研究生招生考试（英语一/英语二）历年大纲精选核心词。</p>
             </div>
@@ -413,42 +420,42 @@
                 <td class="py-4 px-6 text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
                   <span class="text-emerald-600 font-bold">✓</span> <span data-i18n="c1_good">纯粹 0 广告，开屏秒入</span>
                 </td>
-                <td class="py-4 px-6 text-stone-400 dark:text-stone-500" data-i18n="c1_bad">5 秒开屏广告、横幅弹窗不断</td>
+                <td class="py-4 px-6 text-stone-400 dark:text-stone-400" data-i18n="c1_bad">5 秒开屏广告、横幅弹窗不断</td>
               </tr>
               <tr class="hover:bg-paper-50 dark:hover:bg-darkbg-hover transition-colors">
                 <td class="py-4 px-6 font-medium text-ink-pure dark:text-white" data-i18n="c2_name">隐私授权</td>
                 <td class="py-4 px-6 text-emerald-700 dark:text-emerald-400 font-semibold">
                   <span class="text-emerald-600 font-bold">✓</span> <span data-i18n="c2_good">免登录、无需手机号与多余权限</span>
                 </td>
-                <td class="py-4 px-6 text-stone-400 dark:text-stone-500" data-i18n="c2_bad">强制手机号验证码、读取设备信息</td>
+                <td class="py-4 px-6 text-stone-400 dark:text-stone-400" data-i18n="c2_bad">强制手机号验证码、读取设备信息</td>
               </tr>
               <tr class="hover:bg-paper-50 dark:hover:bg-darkbg-hover transition-colors">
                 <td class="py-4 px-6 font-medium text-ink-pure dark:text-white" data-i18n="c3_name">离线能力</td>
                 <td class="py-4 px-6 text-emerald-700 dark:text-emerald-400 font-semibold">
                   <span class="text-emerald-600 font-bold">✓</span> <span data-i18n="c3_good">全量离线包，飞行模式随时刷词</span>
                 </td>
-                <td class="py-4 px-6 text-stone-400 dark:text-stone-500" data-i18n="c3_bad">强依赖服务器，断网无法加载数据</td>
+                <td class="py-4 px-6 text-stone-400 dark:text-stone-400" data-i18n="c3_bad">强依赖服务器，断网无法加载数据</td>
               </tr>
               <tr class="hover:bg-paper-50 dark:hover:bg-darkbg-hover transition-colors">
                 <td class="py-4 px-6 font-medium text-ink-pure dark:text-white" data-i18n="c4_name">社交绑架</td>
                 <td class="py-4 px-6 text-emerald-700 dark:text-emerald-400 font-semibold">
                   <span class="text-emerald-600 font-bold">✓</span> <span data-i18n="c4_good">零打卡压力，无强制朋友圈分享</span>
                 </td>
-                <td class="py-4 px-6 text-stone-400 dark:text-stone-500" data-i18n="c4_bad">诱导打卡发圈，打断背词心流</td>
+                <td class="py-4 px-6 text-stone-400 dark:text-stone-400" data-i18n="c4_bad">诱导打卡发圈，打断背词心流</td>
               </tr>
               <tr class="hover:bg-paper-50 dark:hover:bg-darkbg-hover transition-colors">
                 <td class="py-4 px-6 font-medium text-ink-pure dark:text-white" data-i18n="c5_name">应用体积</td>
                 <td class="py-4 px-6 text-emerald-700 dark:text-emerald-400 font-semibold">
                   <span class="text-emerald-600 font-bold">✓</span> <span data-i18n="c5_good">主包仅 520KB，即开即走</span>
                 </td>
-                <td class="py-4 px-6 text-stone-400 dark:text-stone-500" data-i18n="c5_bad">动辄 100MB~300MB 庞大安装包</td>
+                <td class="py-4 px-6 text-stone-400 dark:text-stone-400" data-i18n="c5_bad">动辄 100MB~300MB 庞大安装包</td>
               </tr>
               <tr class="hover:bg-paper-50 dark:hover:bg-darkbg-hover transition-colors">
                 <td class="py-4 px-6 font-medium text-ink-pure dark:text-white" data-i18n="c6_name">收费机制</td>
                 <td class="py-4 px-6 text-emerald-700 dark:text-emerald-400 font-semibold">
                   <span class="text-emerald-600 font-bold">✓</span> <span data-i18n="c6_good">100% 永久免费学习使用</span>
                 </td>
-                <td class="py-4 px-6 text-stone-400 dark:text-stone-500" data-i18n="c6_bad">各种会员订阅费、付费真题词库</td>
+                <td class="py-4 px-6 text-stone-400 dark:text-stone-400" data-i18n="c6_bad">各种会员订阅费、付费真题词库</td>
               </tr>
             </tbody>
           </table>
@@ -474,7 +481,7 @@
                 <div class="font-medium text-stone-500 dark:text-stone-400 flex items-center gap-1.5 mb-0.5">
                   <span>✗</span> <span data-i18n="th_traditional">传统商业背单词 App</span>
                 </div>
-                <p class="text-stone-500 dark:text-stone-500 pl-4" data-i18n="c1_bad">5 秒开屏广告、横幅弹窗不断</p>
+                <p class="text-stone-500 dark:text-stone-400 pl-4" data-i18n="c1_bad">5 秒开屏广告、横幅弹窗不断</p>
               </div>
             </div>
           </div>
@@ -496,7 +503,7 @@
                 <div class="font-medium text-stone-500 dark:text-stone-400 flex items-center gap-1.5 mb-0.5">
                   <span>✗</span> <span data-i18n="th_traditional">传统商业背单词 App</span>
                 </div>
-                <p class="text-stone-500 dark:text-stone-500 pl-4" data-i18n="c2_bad">强制手机号验证码、读取设备信息</p>
+                <p class="text-stone-500 dark:text-stone-400 pl-4" data-i18n="c2_bad">强制手机号验证码、读取设备信息</p>
               </div>
             </div>
           </div>
@@ -518,7 +525,7 @@
                 <div class="font-medium text-stone-500 dark:text-stone-400 flex items-center gap-1.5 mb-0.5">
                   <span>✗</span> <span data-i18n="th_traditional">传统商业背单词 App</span>
                 </div>
-                <p class="text-stone-500 dark:text-stone-500 pl-4" data-i18n="c3_bad">强依赖服务器，断网无法加载数据</p>
+                <p class="text-stone-500 dark:text-stone-400 pl-4" data-i18n="c3_bad">强依赖服务器，断网无法加载数据</p>
               </div>
             </div>
           </div>
@@ -540,7 +547,7 @@
                 <div class="font-medium text-stone-500 dark:text-stone-400 flex items-center gap-1.5 mb-0.5">
                   <span>✗</span> <span data-i18n="th_traditional">传统商业背单词 App</span>
                 </div>
-                <p class="text-stone-500 dark:text-stone-500 pl-4" data-i18n="c4_bad">诱导打卡发圈，打断背词心流</p>
+                <p class="text-stone-500 dark:text-stone-400 pl-4" data-i18n="c4_bad">诱导打卡发圈，打断背词心流</p>
               </div>
             </div>
           </div>
@@ -562,7 +569,7 @@
                 <div class="font-medium text-stone-500 dark:text-stone-400 flex items-center gap-1.5 mb-0.5">
                   <span>✗</span> <span data-i18n="th_traditional">传统商业背单词 App</span>
                 </div>
-                <p class="text-stone-500 dark:text-stone-500 pl-4" data-i18n="c5_bad">动辄 100MB~300MB 庞大安装包</p>
+                <p class="text-stone-500 dark:text-stone-400 pl-4" data-i18n="c5_bad">动辄 100MB~300MB 庞大安装包</p>
               </div>
             </div>
           </div>
@@ -584,7 +591,7 @@
                 <div class="font-medium text-stone-500 dark:text-stone-400 flex items-center gap-1.5 mb-0.5">
                   <span>✗</span> <span data-i18n="th_traditional">传统商业背单词 App</span>
                 </div>
-                <p class="text-stone-500 dark:text-stone-500 pl-4" data-i18n="c6_bad">各种会员订阅费、付费真题词库</p>
+                <p class="text-stone-500 dark:text-stone-400 pl-4" data-i18n="c6_bad">各种会员订阅费、付费真题词库</p>
               </div>
             </div>
           </div>
@@ -819,11 +826,17 @@
     function applyLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('handycards_lang', lang);
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
       document.getElementById('lang-text').innerText = lang === 'zh' ? 'EN' : '中';
       
       const t = translations[lang];
       document.title = t.page_title;
-      document.getElementById('page-desc').setAttribute('content', t.page_desc);
+      const pageDesc = document.getElementById('page-desc');
+      if (pageDesc) pageDesc.setAttribute('content', t.page_desc);
+      const ogTitle = document.getElementById('og-title');
+      if (ogTitle) ogTitle.setAttribute('content', t.page_title);
+      const ogDesc = document.getElementById('og-desc');
+      if (ogDesc) ogDesc.setAttribute('content', t.page_desc);
 
       // Hero HTML & Text
       document.getElementById('hero-title').innerHTML = t.hero_title;

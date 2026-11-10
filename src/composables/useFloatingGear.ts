@@ -18,20 +18,23 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
 
     let cachedScreenWidth = 0;
     let cachedScreenHeight = 0;
+    let cachedStatusBarHeight = 44;
 
     const getScreenDimensions = () => {
         if (cachedScreenWidth > 0) {
-            return { screenWidth: cachedScreenWidth, screenHeight: cachedScreenHeight };
+            return { screenWidth: cachedScreenWidth, screenHeight: cachedScreenHeight, statusBarHeight: cachedStatusBarHeight };
         }
         try {
             const sys = uni.getSystemInfoSync();
             cachedScreenWidth = sys.windowWidth || 375;
             cachedScreenHeight = sys.windowHeight || 667;
+            cachedStatusBarHeight = sys.statusBarHeight || 44;
         } catch {
             cachedScreenWidth = 375;
             cachedScreenHeight = 667;
+            cachedStatusBarHeight = 44;
         }
-        return { screenWidth: cachedScreenWidth, screenHeight: cachedScreenHeight };
+        return { screenWidth: cachedScreenWidth, screenHeight: cachedScreenHeight, statusBarHeight: cachedStatusBarHeight };
     };
 
     /**
@@ -115,7 +118,7 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
 
     const onGearTouchEnd = () => {
         try {
-            const { screenWidth } = getScreenDimensions();
+            const { screenWidth, screenHeight, statusBarHeight } = getScreenDimensions();
             const centerX = (screenWidth - GEAR_WIDTH) / 2;
 
             if (lastDragX.value < centerX) {
@@ -129,7 +132,13 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
                 lastDragX.value = visibleX;
             }
 
-            gearY.value = lastDragY.value;
+            // 限制齿轮 Y 轴在屏幕安全视口内，避免遮挡顶部状态栏胶囊或脱出底栏
+            const minY = Math.max(statusBarHeight + 10, 50);
+            const maxY = Math.max(minY, screenHeight - 100);
+            const clampedY = Math.min(Math.max(lastDragY.value, minY), maxY);
+
+            gearY.value = clampedY;
+            lastDragY.value = clampedY;
             isHiding.value = false;
 
             // 拖拽松手后保持弹出 1.5 秒，随后自动吸边折叠
@@ -146,17 +155,15 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
             gearIntroTimer = null;
         }
         try {
-            const sys = uni.getSystemInfoSync();
-            cachedScreenWidth = sys.windowWidth || 375;
-            cachedScreenHeight = sys.windowHeight || 667;
-            const screenWidth = cachedScreenWidth;
+            const { screenWidth, screenHeight, statusBarHeight } = getScreenDimensions();
             const visibleX = Math.max(screenWidth - GEAR_WIDTH - VISIBLE_GAP, 0);
+            const initialY = Math.min(Math.max(screenHeight * 0.4, statusBarHeight + 20), screenHeight - 100);
 
             dockSide.value = 'right';
             gearX.value = visibleX;
-            gearY.value = cachedScreenHeight * 0.4;
+            gearY.value = initialY;
             lastDragX.value = visibleX;
-            lastDragY.value = cachedScreenHeight * 0.4;
+            lastDragY.value = initialY;
             isHiding.value = false;
 
             startAutoHideTimer(1400);

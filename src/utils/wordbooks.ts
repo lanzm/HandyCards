@@ -9,10 +9,47 @@ let subpackageLoadPromise: Promise<boolean> | null = null;
 let subpackageLoaded = false;
 
 /**
+ * 嗅探分包静态资源文件是否已经挂载就绪（支持 preloadRule 静默完成后直接命中）
+ */
+function isSubpackageFileReady(): boolean {
+    // @ts-ignore
+    if (typeof wx !== 'undefined' && wx.getFileSystemManager) {
+        try {
+            // @ts-ignore
+            const fs = wx.getFileSystemManager();
+            const probePaths = [
+                '/subpackages/wordbooks/static/CET6luan_1.json',
+                'subpackages/wordbooks/static/CET6luan_1.json'
+            ];
+            for (const p of probePaths) {
+                try {
+                    if (typeof fs.accessSync === 'function') {
+                        fs.accessSync(p);
+                        return true;
+                    }
+                    const content = fs.readFileSync(p, 'utf8');
+                    if (content) return true;
+                } catch {
+                    // ignore and try next
+                }
+            }
+        } catch {
+            return false;
+        }
+        return false;
+    }
+    return true;
+}
+
+/**
  * 确保词书分包已被微信小程序环境下载并挂载
  */
 export function ensureWordbookSubpackage(): Promise<boolean> {
     if (subpackageLoaded) {
+        return Promise.resolve(true);
+    }
+    if (isSubpackageFileReady()) {
+        subpackageLoaded = true;
         return Promise.resolve(true);
     }
     if (subpackageLoadPromise) {
@@ -22,6 +59,23 @@ export function ensureWordbookSubpackage(): Promise<boolean> {
     subpackageLoadPromise = new Promise((resolve) => {
         // @ts-ignore
         if (typeof wx !== 'undefined' && wx.loadSubpackage) {
+            const pollCheckReady = (remainingTries = 3) => {
+                if (isSubpackageFileReady()) {
+                    subpackageLoaded = true;
+                    subpackageLoadPromise = null;
+                    resolve(true);
+                    return;
+                }
+                if (remainingTries <= 0) {
+                    subpackageLoadPromise = null;
+                    resolve(false);
+                    return;
+                }
+                setTimeout(() => {
+                    pollCheckReady(remainingTries - 1);
+                }, 150);
+            };
+
             // @ts-ignore
             wx.loadSubpackage({
                 name: 'wordbooks',
@@ -31,21 +85,8 @@ export function ensureWordbookSubpackage(): Promise<boolean> {
                     resolve(true);
                 },
                 fail: (err: any) => {
-                    console.warn('[WordBooks] loadSubpackage by name "wordbooks" failed, trying "subpackages/wordbooks":', err);
-                    // @ts-ignore
-                    wx.loadSubpackage({
-                        name: 'subpackages/wordbooks',
-                        success: () => {
-                            subpackageLoaded = true;
-                            subpackageLoadPromise = null;
-                            resolve(true);
-                        },
-                        fail: (err2: any) => {
-                            console.error('[WordBooks] loadSubpackage failed:', err2);
-                            subpackageLoadPromise = null; // allow retry
-                            resolve(false);
-                        }
-                    });
+                    console.warn('[WordBooks] loadSubpackage triggered fail callback, polling file readiness in case preloadRule is downloading:', err);
+                    pollCheckReady(3);
                 }
             });
         } else {
