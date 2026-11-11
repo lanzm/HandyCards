@@ -104,6 +104,47 @@ const parsedFamily = computed(() => {
 });
 
 const uniquePosList = computed(() => getUniquePos(props.word?.t));
+
+// 线性插值辅助函数
+const lerp = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
+
+// 连续平滑升温彩蛋：由浅入深 (1~40) -> 渐暖泛金 (41~100) -> 炽热纯红 (101~200)
+const seqBadgeStyle = computed(() => {
+    const idx = props.word?.cardIndex;
+    if (!idx || idx <= 0) return '';
+
+    let opacity = 1;
+    let rL: number, gL: number, bL: number;
+    let rD: number, gD: number, bD: number;
+
+    if (idx <= 40) {
+        const t = Math.max(0, Math.min(1, (idx - 1) / 39));
+        opacity = Number((0.25 + 0.75 * t).toFixed(2));
+        rL = 100; gL = 116; bL = 139; // #64748B
+        rD = 148; gD = 163; bD = 184; // #94A3B8
+    } else if (idx <= 100) {
+        opacity = 1;
+        const t = (idx - 40) / 60;
+        // Light: 墨灰 rgb(100, 116, 139) -> 灿金 rgb(234, 179, 8)
+        rL = lerp(100, 234, t); gL = lerp(116, 179, t); bL = lerp(139, 8, t);
+        // Dark: 墨灰 rgb(148, 163, 184) -> 亮金 rgb(251, 191, 36)
+        rD = lerp(148, 251, t); gD = lerp(163, 191, t); bD = lerp(184, 36, t);
+    } else if (idx <= 200) {
+        opacity = 1;
+        const t = (idx - 100) / 100;
+        // Light: 灿金 rgb(234, 179, 8) -> 炽红 rgb(239, 68, 68)
+        rL = lerp(234, 239, t); gL = lerp(179, 68, t); bL = lerp(8, 68, t);
+        // Dark: 亮金 rgb(251, 191, 36) -> 烈红 rgb(248, 113, 113)
+        rD = lerp(251, 248, t); gD = lerp(191, 113, t); bD = lerp(36, 113, t);
+    } else {
+        opacity = 1;
+        rL = 239; gL = 68; bL = 68;
+        rD = 248; gD = 113; bD = 113;
+    }
+
+    const weight = idx >= 200 ? 700 : (idx >= 100 ? 600 : 500);
+    return `--seq-opacity: ${opacity}; --seq-color-light: rgb(${rL},${gL},${bL}); --seq-color-dark: rgb(${rD},${gD},${bD}); font-weight: ${weight};`;
+});
 </script>
 
 <template>
@@ -146,9 +187,9 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
                       @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
                     >{{ word.w }}</text>
 
-                    <!-- Top-right minimalist card sequence badge (#158) -->
+                    <!-- Top-right minimalist card sequence badge with smooth heat interpolation easter egg -->
                     <view v-if="word?.cardIndex" class="card-seq-badge shrink-0">
-                        <text class="card-seq-text">#{{ word.cardIndex }}</text>
+                        <text class="card-seq-text" :style="seqBadgeStyle">#{{ word.cardIndex }}</text>
                     </view>
                 </view>
 
@@ -515,13 +556,17 @@ const uniquePosList = computed(() => getUniquePos(props.word?.t));
 
 .card-seq-text {
     font-size: 13px;
-    font-weight: 500;
     font-style: italic;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: var(--ej-text-primary);
-    opacity: 0.25;
+    color: var(--seq-color-light, #64748B);
+    opacity: var(--seq-opacity, 0.25);
     line-height: 1.1;
     letter-spacing: 0.5px;
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.dark .card-seq-text {
+    color: var(--seq-color-dark, #94A3B8);
 }
 
 .word-large-text {

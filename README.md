@@ -14,7 +14,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-red?style=flat-square" /></a>
   <a href="docs/BRAND.md"><img src="https://img.shields.io/badge/Brand-Design%20Assets-8250df?style=flat-square" /></a>
   <a href="#"><img src="https://img.shields.io/badge/Features-无广告%20%7C%20免登录%20%7C%20纯离线-orange?style=flat-square" /></a>
-  <a href="#-快速开始与自主部署"><img src="https://img.shields.io/badge/Architecture-分包架构%20%7C%20主包520KB-success?style=flat-square" /></a>
+  <a href="#-快速开始与自主部署"><img src="https://img.shields.io/badge/Architecture-一书一分包%20%7C%20主包500KB-success?style=flat-square" /></a>
 </p>
 
 </div>
@@ -29,7 +29,7 @@
 - 🎯 **双刷词模式**：支持「自测遮挡模式」与「高效速览模式」随时一键无缝切换。
 - 💡 **高频认知维度**：黄金短语搭配、形近词防混淆辨析、熟词生义考点陷阱、同根派生词族深度解析。
 - 🌓 **暗黑模式与双语**：自动跟随系统深色主题，支持中英双语界面即时切换。
-- 🍃 **微信分包架构**：主包体积仅 **520KB** 极速冷启动，分包静默预载，总离线容量扩展至 **20MB**。
+- 🍃 **微信一书一分包架构**：主包体积仅 **500KB** 极速冷启动，进阶词书独立分包原生按需加载（单分包仅 300KB~780KB），彻底告别 2MB 限制，总离线容量可扩展至 **20MB**。
 
 ---
 
@@ -46,14 +46,14 @@
 
 ## 📖 内置离线词库
 
-内置全部主流学习词库，采用微信小程序官方独立分包架构，默认四级词书位于主包即开即用，进阶词书位于分包静默预载：
+内置全部主流学习词库，采用微信小程序官方「一书一分包」原生异步架构。默认四级词书位于主包即开即用，进阶词书采用独立原生分包按需加载：
 
-| 词书名称 | 对应文件与分包位置 | 词汇量 | 架构与适用场景 |
+| 词书名称 | 对应模块与分包位置 | 词汇量 | 架构与适用场景 |
 | :--- | :--- | :---: | :--- |
 | **四级核心词** | `src/static/CET4luan_1.json` | 1,162 词 | **主包内嵌** · 首屏秒开即学，四级必备 |
-| **六级进阶词** | `src/subpackages/wordbooks/static/CET6luan_1.json` | 1,188 词 | **独立分包** · 后台静默预加载，六级拔高 |
-| **考研英语** | `src/subpackages/wordbooks/static/KaoYanluan_1.json` | 1,328 词 | **独立分包** · 考研真题核心高频词汇 |
-| **雅思词汇** | `src/subpackages/wordbooks/static/IELTSluan_2.json` | 3,056 词 | **独立分包** · 雅思学术类（A类）必备 |
+| **六级进阶词** | `src/subpackages/cet6/` | 1,188 词 | **独立分包 (~296KB)** · 原生异步按需加载，六级拔高 |
+| **考研英语** | `src/subpackages/kaoyan/` | 1,328 词 | **独立分包 (~376KB)** · 原生异步按需加载，考研真题核心 |
+| **雅思词汇** | `src/subpackages/ielts/` | 3,056 词 | **独立分包 (~777KB)** · 原生异步按需加载，雅思学术必备 |
 
 ---
 
@@ -81,7 +81,7 @@ npm run dev:mp-weixin
 ```bash
 npm run build:mp-weixin
 ```
-编译产物位于 `dist/build/mp-weixin`（主包仅 **520KB**，分包 **1.5MB**，微信开发者工具上传 0 报错）。在微信开发者工具中导入后，点击右上角 **「上传」** 提交微信审核即可。
+编译产物位于 `dist/build/mp-weixin`（主包仅 **500KB**，各词书独立分包仅 **300KB~780KB**，严格契合微信规范，微信开发者工具上传 0 报错）。在微信开发者工具中导入后，点击右上角 **「上传」** 提交微信审核即可。
 
 ### 4. 语音发音域名配置
 

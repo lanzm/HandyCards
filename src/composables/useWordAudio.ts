@@ -11,6 +11,7 @@ export function useWordAudio() {
     const playFlag = ref(false);
     let activeAudioContext: UniApp.InnerAudioContext | any = null;
     let activeTempFilePath: string | null = null;
+    let activeRequestTask: UniApp.RequestTask | null = null;
     let speechRequestVersion = 0;
 
     const cleanupActiveTempFile = () => {
@@ -28,6 +29,14 @@ export function useWordAudio() {
     };
 
     const stopAudio = () => {
+        if (activeRequestTask) {
+            try {
+                activeRequestTask.abort();
+            } catch {
+                // ignore
+            }
+            activeRequestTask = null;
+        }
         if (activeAudioContext) {
             try {
                 activeAudioContext.stop();
@@ -145,11 +154,12 @@ export function useWordAudio() {
         stopAudio();
         playFlag.value = true;
 
-        uni.request({
+        activeRequestTask = uni.request({
             url: 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(currentWord) + '&type=1',
             header: {},
             responseType: 'arraybuffer',
             success: (res) => {
+                activeRequestTask = null;
                 if (thisVersion !== speechRequestVersion) {
                     return;
                 }
@@ -163,8 +173,12 @@ export function useWordAudio() {
                 });
             },
             fail: (err) => {
+                activeRequestTask = null;
                 if (thisVersion === speechRequestVersion) {
-                    console.error('音频获取失败:', err);
+                    // 过滤主动 abort 导致的错误日志，避免控制台刷屏
+                    if (err?.errMsg && !err.errMsg.includes('abort')) {
+                        console.error('音频获取失败:', err);
+                    }
                     playFlag.value = false;
                 }
             }

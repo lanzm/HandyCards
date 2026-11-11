@@ -1,38 +1,54 @@
 {
-	"pages": [
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "随手词卡"
-			}
-		}
-	],
-	"subPackages": [
-		{
-			"root": "subpackages/wordbooks",
-			"name": "wordbooks",
-			"pages": [
-				{
-					"path": "pages/wordbook-loader",
-					"style": {
-						"navigationBarTitleText": "词书库"
-					}
-				}
-			]
-		}
-	],
-	"preloadRule": {
-		"pages/index/index": {
-			"network": "all",
-			"packages": [
-				"subpackages/wordbooks"
-			]
-		}
-	},
-	"globalStyle": {
-		"navigationBarTextStyle": "@navigationBarTextStyle",
-		"navigationBarTitleText": "随手词卡",
-		"navigationBarBackgroundColor": "@navigationBarBackgroundColor",
-		"backgroundColor": "@backgroundColor"
-	}
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "随手词卡"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "subpackages/cet6",
+      "name": "cet6",
+      "pages": [
+        {
+          "path": "pages/loader",
+          "style": {
+            "navigationBarTitleText": "六级词库"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/kaoyan",
+      "name": "kaoyan",
+      "pages": [
+        {
+          "path": "pages/loader",
+          "style": {
+            "navigationBarTitleText": "考研词库"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/ielts",
+      "name": "ielts",
+      "pages": [
+        {
+          "path": "pages/loader",
+          "style": {
+            "navigationBarTitleText": "雅思词库"
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "@navigationBarTextStyle",
+    "navigationBarTitleText": "随手词卡",
+    "navigationBarBackgroundColor": "@navigationBarBackgroundColor",
+    "backgroundColor": "@backgroundColor"
+  }
 }

@@ -83,8 +83,11 @@ const handleCardTap = () => {
     if (preventClick.value) return;
     isRevealing.value = true;
     knowFlag.value = true;
-    cardTapCount.value++;
-    uni.setStorageSync('cardTapCount', cardTapCount.value);
+    // 仅在前 5 次提示期内持久化，达到阈值后跳过同步磁盘写入以提升运行时性能
+    if (cardTapCount.value <= 5) {
+        cardTapCount.value++;
+        uni.setStorageSync('cardTapCount', cardTapCount.value);
+    }
 };
 
 // Drawer & Floating Gear
@@ -369,15 +372,10 @@ view, text, button, image, scroll-view, movable-area, movable-view {
     box-sizing: border-box;
     overflow: hidden;
     transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease, color 0.3s;
-    background-color: #FFFFFF;
     background-color: var(--ej-bg-card);
     border: 1px solid var(--ej-border-card);
     box-shadow: var(--ej-shadow-card);
     color: var(--ej-text-primary);
-}
-
-.dark .app-card {
-    background-color: #18181B;
 }
 
 /* Background Stack Card */
@@ -397,7 +395,6 @@ view, text, button, image, scroll-view, movable-area, movable-view {
     justify-content: space-between;
     box-sizing: border-box;
     overflow: hidden;
-    background-color: #FFFFFF;
     background-color: var(--ej-bg-card-bg);
     border: 1px solid var(--ej-border-card);
     box-shadow: var(--ej-shadow-card-bg);
@@ -408,10 +405,6 @@ view, text, button, image, scroll-view, movable-area, movable-view {
     opacity: 0.85;
     z-index: 5;
     pointer-events: none;
-}
-
-.dark .app-card-bg {
-    background-color: #18181B;
 }
 
 .app-card > word-card,

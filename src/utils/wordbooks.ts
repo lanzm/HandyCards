@@ -1,101 +1,218 @@
 import type { WordItem } from '@/types/word';
 
+declare const wx: any;
+
 // We do NOT statically import JSON files here to prevent them from being bundled into the compiled Javascript code.
-// Instead, they are loaded synchronously on demand at runtime from the local static assets folder or subpackages.
+// Instead, CET4 is read from local static assets, and other books (CET6, KaoYan, IELTS) are packaged into their own independent subpackages.
 
 const cachedData: Record<string, WordItem[]> = {};
 
-let subpackageLoadPromise: Promise<boolean> | null = null;
-let subpackageLoaded = false;
+interface SubpackageBookConfig {
+    name: string;
+    root: string;
+    modulePaths: string[];
+}
+
+const BOOK_SUBPACKAGE_MAP: Record<string, SubpackageBookConfig> = {
+    'CET6luan_1': {
+        name: 'cet6',
+        root: 'subpackages/cet6',
+        modulePaths: [
+            '../subpackages/cet6/index.js',
+            '/subpackages/cet6/index.js',
+            'subpackages/cet6/index.js',
+            '../subpackages/cet6/pages/loader.js',
+            '/subpackages/cet6/pages/loader.js'
+        ]
+    },
+    'KaoYanluan_1': {
+        name: 'kaoyan',
+        root: 'subpackages/kaoyan',
+        modulePaths: [
+            '../subpackages/kaoyan/index.js',
+            '/subpackages/kaoyan/index.js',
+            'subpackages/kaoyan/index.js',
+            '../subpackages/kaoyan/pages/loader.js',
+            '/subpackages/kaoyan/pages/loader.js'
+        ]
+    },
+    'IELTSluan_2': {
+        name: 'ielts',
+        root: 'subpackages/ielts',
+        modulePaths: [
+            '../subpackages/ielts/index.js',
+            '/subpackages/ielts/index.js',
+            'subpackages/ielts/index.js',
+            '../subpackages/ielts/pages/loader.js',
+            '/subpackages/ielts/pages/loader.js'
+        ]
+    }
+};
 
 /**
- * 嗅探分包静态资源文件是否已经挂载就绪（支持 preloadRule 静默完成后直接命中）
+ * 检查内存或全局中是否已经存有该词书数据
  */
-function isSubpackageFileReady(): boolean {
-    // @ts-ignore
-    if (typeof wx !== 'undefined' && wx.getFileSystemManager) {
-        try {
-            // @ts-ignore
-            const fs = wx.getFileSystemManager();
-            const probePaths = [
-                '/subpackages/wordbooks/static/CET6luan_1.json',
-                'subpackages/wordbooks/static/CET6luan_1.json'
-            ];
-            for (const p of probePaths) {
-                try {
-                    if (typeof fs.accessSync === 'function') {
-                        fs.accessSync(p);
-                        return true;
-                    }
-                    const content = fs.readFileSync(p, 'utf8');
-                    if (content) return true;
-                } catch {
-                    // ignore and try next
-                }
-            }
-        } catch {
-            return false;
-        }
-        return false;
+function getBookFromMemory(bookKey: string): WordItem[] | null {
+    if (cachedData[bookKey] && cachedData[bookKey].length > 0) {
+        return cachedData[bookKey];
     }
-    return true;
+    if (typeof wx !== 'undefined' && wx?.__wordbooks?.[bookKey]) {
+        const list = wx.__wordbooks[bookKey];
+        if (Array.isArray(list) && list.length > 0) {
+            cachedData[bookKey] = list;
+            return list;
+        }
+    }
+    if (typeof globalThis !== 'undefined' && (globalThis as any)?.__wordbooks?.[bookKey]) {
+        const list = (globalThis as any).__wordbooks[bookKey];
+        if (Array.isArray(list) && list.length > 0) {
+            cachedData[bookKey] = list;
+            return list;
+        }
+    }
+    return null;
 }
 
 /**
- * 确保词书分包已被微信小程序环境下载并挂载
+ * 同步尝试 require 分包模块
  */
-export function ensureWordbookSubpackage(): Promise<boolean> {
-    if (subpackageLoaded) {
-        return Promise.resolve(true);
+function tryRequireBook(bookKey: string): WordItem[] | null {
+    const mem = getBookFromMemory(bookKey);
+    if (mem) return mem;
+
+    const cfg = BOOK_SUBPACKAGE_MAP[bookKey];
+    if (!cfg) return null;
+
+    // @ts-ignore
+    if (typeof require === 'function') {
+        for (const p of cfg.modulePaths) {
+            try {
+                // @ts-ignore
+                const mod = require(p);
+                const afterMem = getBookFromMemory(bookKey);
+                if (afterMem) return afterMem;
+
+                const list = mod?.wordList || mod?.default || mod;
+                if (Array.isArray(list) && list.length > 0) {
+                    cachedData[bookKey] = list;
+                    if (typeof wx !== 'undefined') {
+                        if (!wx.__wordbooks) wx.__wordbooks = {};
+                        wx.__wordbooks[bookKey] = list;
+                    }
+                    return list;
+                }
+            } catch {
+                // try next candidate path
+            }
+        }
     }
-    if (isSubpackageFileReady()) {
-        subpackageLoaded = true;
+    return null;
+}
+
+const subpackagePromises: Record<string, Promise<boolean> | undefined> = {};
+
+/**
+ * 确保指定词书的分包已被微信小程序环境下载并挂载
+ * @param targetBook 目标词书 key（如 IELTSluan_2、CET6luan_1、KaoYanluan_1）
+ * @param maxWaitMs 最大等待毫秒数，默认 8000ms（8秒，兼顾真机弱网环境）
+ */
+export function ensureWordbookSubpackage(targetBook?: string, maxWaitMs = 8000): Promise<boolean> {
+    if (!targetBook || targetBook === 'CET4luan_1') {
         return Promise.resolve(true);
-    }
-    if (subpackageLoadPromise) {
-        return subpackageLoadPromise;
     }
 
-    subpackageLoadPromise = new Promise((resolve) => {
-        // @ts-ignore
+    if (tryRequireBook(targetBook)) {
+        return Promise.resolve(true);
+    }
+
+    const existingPromise = subpackagePromises[targetBook];
+    if (existingPromise) {
+        return existingPromise;
+    }
+
+    const cfg = BOOK_SUBPACKAGE_MAP[targetBook];
+    if (!cfg) {
+        return Promise.resolve(false);
+    }
+
+    const promise = new Promise<boolean>(async (resolve) => {
+        // 1. 优先尝试微信官方原生分包异步化 require.async
+        try {
+            // @ts-ignore
+            if (typeof require !== 'undefined' && typeof (require as any).async === 'function') {
+                for (const p of cfg.modulePaths) {
+                    try {
+                        // @ts-ignore
+                        const mod = await (require as any).async(p);
+                        const afterMem = getBookFromMemory(targetBook);
+                        if (afterMem) {
+                            delete subpackagePromises[targetBook];
+                            resolve(true);
+                            return;
+                        }
+
+                        const list = mod?.wordList || mod?.default || mod;
+                        if (Array.isArray(list) && list.length > 0) {
+                            cachedData[targetBook] = list;
+                            if (typeof wx !== 'undefined') {
+                                if (!wx.__wordbooks) wx.__wordbooks = {};
+                                wx.__wordbooks[targetBook] = list;
+                            }
+                            delete subpackagePromises[targetBook];
+                            resolve(true);
+                            return;
+                        }
+                    } catch {
+                        // try next
+                    }
+                }
+            }
+        } catch {
+            // 继续向下尝试 wx.loadSubpackage
+        }
+
+        // 2. 尝试 wx.loadSubpackage
         if (typeof wx !== 'undefined' && wx.loadSubpackage) {
-            const pollCheckReady = (remainingTries = 3) => {
-                if (isSubpackageFileReady()) {
-                    subpackageLoaded = true;
-                    subpackageLoadPromise = null;
+            const intervalMs = 200;
+            const maxTries = Math.max(1, Math.floor(maxWaitMs / intervalMs));
+
+            const pollCheckReady = (remainingTries: number) => {
+                if (tryRequireBook(targetBook)) {
+                    delete subpackagePromises[targetBook];
                     resolve(true);
                     return;
                 }
                 if (remainingTries <= 0) {
-                    subpackageLoadPromise = null;
+                    delete subpackagePromises[targetBook];
                     resolve(false);
                     return;
                 }
                 setTimeout(() => {
                     pollCheckReady(remainingTries - 1);
-                }, 150);
+                }, intervalMs);
             };
 
-            // @ts-ignore
             wx.loadSubpackage({
-                name: 'wordbooks',
+                name: cfg.name,
                 success: () => {
-                    subpackageLoaded = true;
-                    subpackageLoadPromise = null;
-                    resolve(true);
+                    const list = tryRequireBook(targetBook);
+                    delete subpackagePromises[targetBook];
+                    resolve(!!list);
                 },
                 fail: (err: any) => {
-                    console.warn('[WordBooks] loadSubpackage triggered fail callback, polling file readiness in case preloadRule is downloading:', err);
-                    pollCheckReady(3);
+                    console.warn('[WordBooks] loadSubpackage(' + cfg.name + ') fail, polling readiness:', err);
+                    pollCheckReady(maxTries);
                 }
             });
         } else {
-            subpackageLoaded = true;
-            resolve(true);
+            const list = tryRequireBook(targetBook);
+            delete subpackagePromises[targetBook];
+            resolve(!!list);
         }
     });
 
-    return subpackageLoadPromise;
+    subpackagePromises[targetBook] = promise;
+    return promise;
 }
 
 export const wordBooksData = new Proxy({} as Record<string, WordItem[]>, {
@@ -108,18 +225,23 @@ export const wordBooksData = new Proxy({} as Record<string, WordItem[]>, {
             return cachedData[prop];
         }
 
-        // Try WeChat FileSystemManager first (Mini Program environment)
+        // 1. 如果属于独立分包词书，尝试从分包编译产物（JS 模块）同步获取
+        if (BOOK_SUBPACKAGE_MAP[prop]) {
+            const subData = tryRequireBook(prop);
+            if (subData && Array.isArray(subData) && subData.length > 0) {
+                cachedData[prop] = subData;
+                return subData;
+            }
+        }
+
+        // 2. 主包词书（如 CET4luan_1）尝试微信 FileSystemManager
         try {
-            // @ts-ignore
             if (typeof wx !== 'undefined' && wx.getFileSystemManager) {
-                // @ts-ignore
                 const fs = wx.getFileSystemManager();
                 let content: string | ArrayBuffer | undefined;
                 const candidatePaths = [
-                    `/static/${prop}.json`,
-                    `static/${prop}.json`,
-                    `/subpackages/wordbooks/static/${prop}.json`,
-                    `subpackages/wordbooks/static/${prop}.json`
+                    '/static/' + prop + '.json',
+                    'static/' + prop + '.json'
                 ];
 
                 for (const p of candidatePaths) {
@@ -138,23 +260,22 @@ export const wordBooksData = new Proxy({} as Record<string, WordItem[]>, {
                 }
             }
         } catch (e) {
-            console.error(`[WordBooks] Failed to load ${prop} using WeChat FileSystemManager:`, e);
+            console.error('[WordBooks] Failed to load ' + prop + ' using WeChat FileSystemManager:', e);
         }
 
-        // Try Web/H5 XMLHttpRequest fallback (Browser environment)
+        // 3. Try Web/H5 XMLHttpRequest fallback (Browser environment)
         try {
             if (typeof window !== 'undefined') {
                 const webCandidatePaths = [
-                    `/static/${prop}.json`,
-                    `/subpackages/wordbooks/static/${prop}.json`
+                    '/static/' + prop + '.json'
                 ];
 
                 for (const url of webCandidatePaths) {
                     try {
                         const xhr = new XMLHttpRequest();
-                        xhr.open('GET', url, false); // synchronous GET request
+                        xhr.open('GET', url, false);
                         xhr.send(null);
-                        if (xhr.status === 200) {
+                        if (xhr.status === 200 || xhr.status === 0) {
                             const data = JSON.parse(xhr.responseText);
                             cachedData[prop] = data;
                             return data;
@@ -165,13 +286,12 @@ export const wordBooksData = new Proxy({} as Record<string, WordItem[]>, {
                 }
             }
         } catch (e) {
-            console.error(`[WordBooks] Failed to load ${prop} using XMLHttpRequest:`, e);
+            console.error('[WordBooks] Failed to load ' + prop + ' using XMLHttpRequest:', e);
         }
 
         return [];
     }
 });
-
 
 export interface WordShuffler {
     /** 抽取下一个无重复单词并推进游标；若整本学完自动开启新一轮并标记 isNewRound */
@@ -201,9 +321,9 @@ export function createWordShuffler(bookKey: string, list: WordItem[]): WordShuff
         };
     }
 
-    const orderKey = `ej_shuffled_order_${bookKey}`;
-    const cursorKey = `ej_cursor_${bookKey}`;
-    const roundKey = `ej_round_${bookKey}`;
+    const orderKey = 'ej_shuffled_order_' + bookKey;
+    const cursorKey = 'ej_cursor_' + bookKey;
+    const roundKey = 'ej_round_' + bookKey;
 
     let order: number[] = [];
     let cursor = 0;
@@ -311,37 +431,5 @@ export function createWordShuffler(bookKey: string, list: WordItem[]): WordShuff
         peekNext,
         getProgress,
         reshuffle
-    };
-}
-
-/**
- * 创建具有防连续重复缓冲池的单词随机抽取器
- * @param maxHistory 最大防重复历史容量（默认 30）
- */
-export function createWordRandomizer(maxHistory = 30) {
-    const recentHistory: string[] = [];
-
-    return {
-        pick(list: WordItem[]): WordItem | null {
-            if (!list || list.length === 0) return null;
-            if (list.length <= 5) {
-                return list[Math.floor(Math.random() * list.length)];
-            }
-            let candidate = list[Math.floor(Math.random() * list.length)];
-            let attempts = 0;
-            while (recentHistory.includes(candidate.w.toLowerCase()) && attempts < 10) {
-                candidate = list[Math.floor(Math.random() * list.length)];
-                attempts++;
-            }
-            recentHistory.push(candidate.w.toLowerCase());
-            const limit = Math.min(maxHistory, Math.floor(list.length * 0.5));
-            if (recentHistory.length > limit) {
-                recentHistory.shift();
-            }
-            return candidate;
-        },
-        reset() {
-            recentHistory.length = 0;
-        },
     };
 }

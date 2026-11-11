@@ -37,3 +37,23 @@ wordCardJsons.forEach(jsonPath => {
     // ignore
   }
 });
+
+// Ensure project.config.json disables unused file filtering on upload
+const projectConfigJsons = [
+  path.join(__dirname, '../dist/build/mp-weixin/project.config.json'),
+  path.join(__dirname, '../dist/dev/mp-weixin/project.config.json')
+];
+
+projectConfigJsons.forEach(configPath => {
+  try {
+    if (fs.existsSync(configPath)) {
+      const data = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      if (!data.setting) data.setting = {};
+      data.setting.ignoreDevUnusedFiles = false;
+      data.setting.ignoreUploadUnusedFiles = false;
+      fs.writeFileSync(configPath, JSON.stringify(data, null, 2), 'utf8');
+    }
+  } catch (err) {
+    // ignore
+  }
+});

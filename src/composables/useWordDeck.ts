@@ -195,10 +195,9 @@ export function useWordDeck(options: UseWordDeckOptions) {
         let data = bookVal ? wordBooksData[bookVal] : null;
 
         if ((!data || data.length === 0) && bookVal && bookVal !== 'CET4luan_1') {
+            // 优雅骨架屏：冷启动时不弹阻断式遮罩 loading，保持 loading.value = true 展示纯粹骨架屏
             loading.value = true;
-            commonUtil.loading(i18n.value.loadingText || '加载中...');
-            const ok = await ensureWordbookSubpackage();
-            uni.hideLoading();
+            const ok = await ensureWordbookSubpackage(bookVal, 8000);
             if (ok) {
                 data = wordBooksData[bookVal];
             }
@@ -212,8 +211,8 @@ export function useWordDeck(options: UseWordDeckOptions) {
             syncBgCard();
             loading.value = false;
         } else {
-            // Fail-safe: Fallback silently to CET4 in memory if subpackage load failed (preserve user's stored wordBook preference)
-            console.warn(`[WordDeck] Failed to load wordbook ${bookVal}, silently falling back to CET4 in memory`);
+            // 极端兜底（例如离线断网且本地从未下载分包超过 5 秒）：静默在内存展示四级，保留用户 Storage 偏好不变
+            console.warn(`[WordDeck] 超时未能加载词书 ${bookVal}，临时在内存中降级为四级展示`);
             const fallbackData = wordBooksData['CET4luan_1'];
             if (fallbackData && fallbackData.length > 0) {
                 wordBook.value = commonUtil.wordBookList[0];
@@ -232,7 +231,7 @@ export function useWordDeck(options: UseWordDeckOptions) {
     const changeWordBook = async (item: WordBookMeta) => {
         if (item.value !== 'CET4luan_1') {
             commonUtil.loading(i18n.value.loadingText || '加载中...');
-            const ok = await ensureWordbookSubpackage();
+            const ok = await ensureWordbookSubpackage(item.value, 8000);
             uni.hideLoading();
             if (!ok) {
                 commonUtil.msg(i18n.value.subpackageFailAlert, 'error');
