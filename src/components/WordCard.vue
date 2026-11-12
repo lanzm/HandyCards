@@ -10,6 +10,7 @@ export default {
 import { computed } from 'vue';
 import type { WordItem, DetailSectionKey } from '@/types/word';
 import type { Translations, Language } from '@/utils/i18n';
+import commonUtil from '@/utils/commonUtil';
 import { 
     getUniquePos, 
     getPosIcon, 
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<{
     scrollTop?: number;
     detailSections?: Record<DetailSectionKey, boolean>;
     bookValue?: string;
+    totalWords?: number;
     lang?: Language;
 }>(), {
     loading: false,
@@ -41,6 +43,7 @@ const props = withDefaults(defineProps<{
     playFlag: false,
     scrollTop: 0,
     bookValue: '',
+    totalWords: 0,
     lang: 'zh',
     detailSections: () => ({
         definitions: true,
@@ -105,44 +108,87 @@ const parsedFamily = computed(() => {
 
 const uniquePosList = computed(() => getUniquePos(props.word?.t));
 
+const totalCount = computed(() => {
+    if (props.totalWords && props.totalWords > 0) {
+        return props.totalWords;
+    }
+    const found = commonUtil.wordBookList.find(b => b.value === props.bookValue);
+    return found?.count ?? 1200;
+});
+
 // 线性插值辅助函数
 const lerp = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
 
-// 连续平滑升温彩蛋：由浅入深 (1~40) -> 渐暖泛金 (41~100) -> 炽热纯红 (101~200)
+interface ColorStop {
+    t: number;
+    light: [number, number, number];
+    dark: [number, number, number];
+}
+
+// 连续平滑色彩光谱锚点（根据全书进度比率 t 自适应连续渐变）：
+// 0.00: 质感墨灰
+// 0.10: 质感墨灰（前 10% 仅由浅入深提升透明度，起步清爽不抢夺注意力）
+// 0.45: 灿金暖琥珀（渐入佳境）
+// 0.75: 炽烈赤红（势如破竹）
+// 1.00: 极光曜紫（通关升华）
+const COLOR_STOPS: ColorStop[] = [
+    { t: 0.00, light: [100, 116, 139], dark: [148, 163, 184] }, // #64748B / #94A3B8
+    { t: 0.10, light: [100, 116, 139], dark: [148, 163, 184] },
+    { t: 0.45, light: [217, 119, 6],   dark: [251, 191, 36]  }, // 灿金暖琥珀 #D97706 / #FBBF24
+    { t: 0.75, light: [225, 29, 72],   dark: [251, 113, 133] }, // 炽烈赤红 #E11D48 / #FB7185
+    { t: 1.00, light: [147, 51, 234],  dark: [192, 132, 252] }, // 极光曜紫 #9333EA / #C084FC
+];
+
+function interpolateColor(t: number) {
+    if (t <= COLOR_STOPS[0].t) {
+        const s = COLOR_STOPS[0];
+        return { rL: s.light[0], gL: s.light[1], bL: s.light[2], rD: s.dark[0], gD: s.dark[1], bD: s.dark[2] };
+    }
+    const last = COLOR_STOPS[COLOR_STOPS.length - 1];
+    if (t >= last.t) {
+        return { rL: last.light[0], gL: last.light[1], bL: last.light[2], rD: last.dark[0], gD: last.dark[1], bD: last.dark[2] };
+    }
+
+    for (let i = 0; i < COLOR_STOPS.length - 1; i++) {
+        const c1 = COLOR_STOPS[i];
+        const c2 = COLOR_STOPS[i + 1];
+        if (t >= c1.t && t <= c2.t) {
+            const range = c2.t - c1.t;
+            const progress = range > 0 ? (t - c1.t) / range : 0;
+            return {
+                rL: lerp(c1.light[0], c2.light[0], progress),
+                gL: lerp(c1.light[1], c2.light[1], progress),
+                bL: lerp(c1.light[2], c2.light[2], progress),
+                rD: lerp(c1.dark[0], c2.dark[0], progress),
+                gD: lerp(c1.dark[1], c2.dark[1], progress),
+                bD: lerp(c1.dark[2], c2.dark[2], progress),
+            };
+        }
+    }
+
+    const s = COLOR_STOPS[0];
+    return { rL: s.light[0], gL: s.light[1], bL: s.light[2], rD: s.dark[0], gD: s.dark[1], bD: s.dark[2] };
+}
+
+// 连续平滑升温彩蛋：墨灰 (0.00~0.10) -> 灿金 (0.45) -> 炽红 (0.75) -> 极光紫 (1.00)
 const seqBadgeStyle = computed(() => {
     const idx = props.word?.cardIndex;
     if (!idx || idx <= 0) return '';
 
-    let opacity = 1;
-    let rL: number, gL: number, bL: number;
-    let rD: number, gD: number, bD: number;
+    const total = totalCount.value > 1 ? totalCount.value : 1000;
+    // 归一化全书进度比率 t (0.0 ~ 1.0)
+    const t = Math.max(0, Math.min(1, (idx - 1) / (total - 1)));
 
-    if (idx <= 40) {
-        const t = Math.max(0, Math.min(1, (idx - 1) / 39));
-        opacity = Number((0.25 + 0.75 * t).toFixed(2));
-        rL = 100; gL = 116; bL = 139; // #64748B
-        rD = 148; gD = 163; bD = 184; // #94A3B8
-    } else if (idx <= 100) {
-        opacity = 1;
-        const t = (idx - 40) / 60;
-        // Light: 墨灰 rgb(100, 116, 139) -> 灿金 rgb(234, 179, 8)
-        rL = lerp(100, 234, t); gL = lerp(116, 179, t); bL = lerp(139, 8, t);
-        // Dark: 墨灰 rgb(148, 163, 184) -> 亮金 rgb(251, 191, 36)
-        rD = lerp(148, 251, t); gD = lerp(163, 191, t); bD = lerp(184, 36, t);
-    } else if (idx <= 200) {
-        opacity = 1;
-        const t = (idx - 100) / 100;
-        // Light: 灿金 rgb(234, 179, 8) -> 炽红 rgb(239, 68, 68)
-        rL = lerp(234, 239, t); gL = lerp(179, 68, t); bL = lerp(8, 68, t);
-        // Dark: 亮金 rgb(251, 191, 36) -> 烈红 rgb(248, 113, 113)
-        rD = lerp(251, 248, t); gD = lerp(191, 113, t); bD = lerp(36, 113, t);
-    } else {
-        opacity = 1;
-        rL = 239; gL = 68; bL = 68;
-        rD = 248; gD = 113; bD = 113;
-    }
+    // 前 10% 阶段由极轻的不透明度 0.25 线性淡入到 1.0，起步清爽不抢夺视线
+    const opacity = t <= 0.10
+        ? Number((0.25 + 0.75 * (t / 0.10)).toFixed(2))
+        : 1;
 
-    const weight = idx >= 200 ? 700 : (idx >= 100 ? 600 : 500);
+    const { rL, gL, bL, rD, gD, bD } = interpolateColor(t);
+
+    // 字重随进度微调递增，终点圆满加粗
+    const weight = t >= 0.85 ? 700 : (t >= 0.45 ? 600 : 500);
+
     return `--seq-opacity: ${opacity}; --seq-color-light: rgb(${rL},${gL},${bL}); --seq-color-dark: rgb(${rD},${gD},${bD}); font-weight: ${weight};`;
 });
 </script>

@@ -123,6 +123,7 @@ const wordDeck = useWordDeck({
 
 const {
     wordBook,
+    wordList,
     wordObj,
     bgWordObj,
     bgKnowFlag,
@@ -250,6 +251,7 @@ onUnmounted(() => {
             :tts-disabled="ttsDisabled"
             :i18n="i18n"
             :book-value="wordBook?.value || ''"
+            :total-words="wordList.length"
             :lang="lang"
           />
       </view>
@@ -272,6 +274,7 @@ onUnmounted(() => {
             :play-flag="playFlag"
             :i18n="i18n"
             :book-value="wordBook?.value || ''"
+            :total-words="wordList.length"
             :lang="lang"
             :scroll-top="scrollTop"
             :detail-sections="detailSections"
