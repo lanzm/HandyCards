@@ -54,7 +54,17 @@ export function useWordAudio() {
         if (requestVersion !== speechRequestVersion) {
             return;
         }
-        stopAudio();
+        if (activeAudioContext) {
+            try {
+                activeAudioContext.stop();
+                activeAudioContext.destroy();
+            } catch (e) {
+                // ignore
+            }
+            activeAudioContext = null;
+        }
+        cleanupActiveTempFile();
+        playFlag.value = true;
 
         const handleEnd = () => {
             playFlag.value = false;
@@ -85,6 +95,7 @@ export function useWordAudio() {
                     audioContext.autoplay = true;
                     audioContext.src = tempFilePath;
                     audioContext.onPlay(() => {
+                        playFlag.value = true;
                         console.log(logMsg);
                     });
                     const cleanup = () => {
@@ -125,6 +136,7 @@ export function useWordAudio() {
             audioContext.autoplay = true;
             audioContext.src = 'data:audio/mpeg;base64,' + base64String;
             audioContext.onPlay(() => {
+                playFlag.value = true;
                 console.log(logMsg);
             });
             const cleanup = () => {

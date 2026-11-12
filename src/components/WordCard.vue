@@ -245,11 +245,19 @@ const seqBadgeStyle = computed(() => {
                   @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
                 >
                     <text class="phonetic-small-text">/{{ word.p }}/</text>
-                    <text 
+                    <view 
                       v-if="!ttsDisabled" 
-                      class="phonetic-speaker-inline" 
+                      class="phonetic-speaker-btn" 
                       :class="{ 'playing': playFlag && !isBackground }"
-                    ></text>
+                    >
+                        <text class="phonetic-speaker-inline"></text>
+                        <!-- 音频播放律动波形条 -->
+                        <view class="sound-wave-bars">
+                            <text class="wave-bar bar-1"></text>
+                            <text class="wave-bar bar-2"></text>
+                            <text class="wave-bar bar-3"></text>
+                        </view>
+                    </view>
                 </view>
             </view>
             
@@ -632,9 +640,29 @@ const seqBadgeStyle = computed(() => {
     word-break: break-word;
 }
 
+.phonetic-speaker-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 12px;
+    vertical-align: middle;
+    transition: background-color 0.2s ease;
+}
+
+.phonetic-speaker-btn.playing {
+    background-color: rgba(37, 99, 235, 0.08);
+}
+
+.dark .phonetic-speaker-btn.playing {
+    background-color: rgba(96, 165, 250, 0.12);
+}
+
 .phonetic-speaker-inline {
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
     flex-shrink: 0;
     display: inline-block;
     vertical-align: middle;
@@ -643,30 +671,88 @@ const seqBadgeStyle = computed(() => {
     -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
     mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
     opacity: 0.85;
-    transition: all 0.2s;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.phonetic-speaker-inline.playing {
-    transform: scale(1.2);
+.phonetic-speaker-btn.playing .phonetic-speaker-inline {
     opacity: 1;
+    animation: speaker-bounce 0.5s ease-in-out infinite alternate;
 }
 
-.playing {
-    position: relative;
-    animation: speaker-pulse 0.6s ease-in-out infinite;
+/* 动效音波柱容器 */
+.sound-wave-bars {
+    display: none;
+    align-items: center;
+    gap: 2.5px;
+    height: 14px;
+    padding-left: 1px;
 }
 
-.playing::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    border-radius: 50%;
-    border: 2px solid var(--ej-color-brand);
-    opacity: 0.8;
-    animation: speaker-ripple 0.6s cubic-bezier(0.25, 0, 0, 1) infinite;
+.phonetic-speaker-btn.playing .sound-wave-bars {
+    display: inline-flex;
+}
+
+/* 3 根跳动音波条 */
+.wave-bar {
+    width: 2.5px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--ej-color-brand);
+    display: inline-block;
+}
+
+.phonetic-speaker-btn.playing .bar-1 {
+    animation: sound-wave-dance-1 0.52s ease-in-out infinite alternate;
+}
+
+.phonetic-speaker-btn.playing .bar-2 {
+    animation: sound-wave-dance-2 0.38s ease-in-out infinite alternate 0.08s;
+}
+
+.phonetic-speaker-btn.playing .bar-3 {
+    animation: sound-wave-dance-3 0.6s ease-in-out infinite alternate 0.16s;
+}
+
+@keyframes speaker-bounce {
+    0% {
+        transform: scale(0.96);
+    }
+    100% {
+        transform: scale(1.18);
+    }
+}
+
+@keyframes sound-wave-dance-1 {
+    0% {
+        height: 3px;
+        opacity: 0.5;
+    }
+    100% {
+        height: 11px;
+        opacity: 1;
+    }
+}
+
+@keyframes sound-wave-dance-2 {
+    0% {
+        height: 4px;
+        opacity: 0.6;
+    }
+    100% {
+        height: 14px;
+        opacity: 1;
+    }
+}
+
+@keyframes sound-wave-dance-3 {
+    0% {
+        height: 3px;
+        opacity: 0.45;
+    }
+    100% {
+        height: 10px;
+        opacity: 0.95;
+    }
 }
 
 /* POS tags */
