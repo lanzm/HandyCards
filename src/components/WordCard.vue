@@ -191,6 +191,15 @@ const seqBadgeStyle = computed(() => {
 
     return `--seq-opacity: ${opacity}; --seq-color-light: rgb(${rL},${gL},${bL}); --seq-color-dark: rgb(${rD},${gD},${bD}); font-weight: ${weight};`;
 });
+
+// 长单词自适应阶梯字号：防止长词被右侧编号挤压或丑陋折行
+const wordFontSizeClass = computed(() => {
+    const len = props.word?.w?.trim()?.length || 0;
+    if (len >= 17) return 'word-size-xs';   // 22px (极长词)
+    if (len >= 14) return 'word-size-sm';   // 26px (如 implementation 14 字母)
+    if (len >= 11) return 'word-size-md';   // 30px (如 conservation 12 字母)
+    return '';                              // 36px 默认饱满大字
+});
 </script>
 
 <template>
@@ -230,6 +239,7 @@ const seqBadgeStyle = computed(() => {
                 <view class="flex justify-between items-start gap-2">
                     <text 
                       class="word-large-text flex-1 min-w-0 pr-1" 
+                      :class="wordFontSizeClass"
                       @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
                     >{{ word.w }}</text>
 
@@ -247,16 +257,12 @@ const seqBadgeStyle = computed(() => {
                     <text class="phonetic-small-text">/{{ word.p }}/</text>
                     <view 
                       v-if="!ttsDisabled" 
-                      class="phonetic-speaker-btn" 
+                      class="phonetic-speaker-box" 
                       :class="{ 'playing': playFlag && !isBackground }"
                     >
-                        <text class="phonetic-speaker-inline"></text>
-                        <!-- 音频播放律动波形条 -->
-                        <view class="sound-wave-bars">
-                            <text class="wave-bar bar-1"></text>
-                            <text class="wave-bar bar-2"></text>
-                            <text class="wave-bar bar-3"></text>
-                        </view>
+                        <text class="speaker-horn"></text>
+                        <text class="speaker-arc arc-1"></text>
+                        <text class="speaker-arc arc-2"></text>
                     </view>
                 </view>
             </view>
@@ -302,7 +308,6 @@ const seqBadgeStyle = computed(() => {
                               class="example-item"
                             >
                                 <view class="flex items-baseline gap-1.5">
-                                    <text class="collocation-bullet">•</text>
                                     <text class="font-bold text-[13.5px] text-[var(--ej-color-brand)] shrink-0" v-if="formatDefinitionPos(item[0])">
                                         {{ formatDefinitionPos(item[0]) }}.
                                     </text>
@@ -405,7 +410,6 @@ const seqBadgeStyle = computed(() => {
                                   class="example-item"
                                 >
                                     <view class="flex items-baseline gap-1.5">
-                                        <text class="collocation-bullet">•</text>
                                         <text class="font-bold text-[13.5px] text-[var(--ej-color-brand)] shrink-0" v-if="formatDefinitionPos(item[0])">
                                             {{ formatDefinitionPos(item[0]) }}.
                                         </text>
@@ -429,11 +433,8 @@ const seqBadgeStyle = computed(() => {
                                   :key="index"
                                   class="example-item"
                                 >
-                                    <view class="flex items-baseline gap-1.5">
-                                        <text class="collocation-bullet">•</text>
-                                        <text class="example-en-text font-bold text-[var(--ej-color-brand)]">{{ item[0] }}</text>
-                                    </view>
-                                    <text class="example-cn-text pl-3">{{ item[1] }}</text>
+                                    <text class="example-en-text font-bold text-[var(--ej-color-brand)]">{{ item[0] }}</text>
+                                    <text class="example-cn-text">{{ item[1] }}</text>
                                 </view>
                             </view>
                         </view>
@@ -452,11 +453,8 @@ const seqBadgeStyle = computed(() => {
                                   :key="index"
                                   class="example-item"
                                 >
-                                    <view class="flex items-baseline gap-1.5">
-                                        <text class="collocation-bullet">•</text>
-                                        <text class="example-en-text font-bold">{{ item[0] }}</text>
-                                    </view>
-                                    <text class="example-cn-text pl-3">{{ item[1] }}</text>
+                                    <text class="example-en-text font-bold">{{ item[0] }}</text>
+                                    <text class="example-cn-text">{{ item[1] }}</text>
                                 </view>
                             </view>
                         </view>
@@ -475,11 +473,8 @@ const seqBadgeStyle = computed(() => {
                                   :key="index"
                                   class="example-item"
                                 >
-                                    <view class="flex items-baseline gap-1.5">
-                                        <text class="collocation-bullet">•</text>
-                                        <text class="example-en-text font-bold">{{ item[0] }}</text>
-                                    </view>
-                                    <text class="example-cn-text pl-3">{{ item[1] }}</text>
+                                    <text class="example-en-text font-bold">{{ item[0] }}</text>
+                                    <text class="example-cn-text">{{ item[1] }}</text>
                                 </view>
                             </view>
                         </view>
@@ -498,11 +493,8 @@ const seqBadgeStyle = computed(() => {
                                   :key="index"
                                   class="example-item"
                                 >
-                                    <view class="flex items-baseline gap-1.5">
-                                        <text class="collocation-bullet">•</text>
-                                        <text class="example-en-text font-bold">{{ item[0] }}</text>
-                                    </view>
-                                    <text class="example-cn-text pl-3">{{ item[1] }}</text>
+                                    <text class="example-en-text font-bold">{{ item[0] }}</text>
+                                    <text class="example-cn-text">{{ item[1] }}</text>
                                 </view>
                             </view>
                         </view>
@@ -519,11 +511,8 @@ const seqBadgeStyle = computed(() => {
                                 <!-- Core Root -->
                                 <view class="example-item" v-if="parsedRoot">
                                     <text class="root-sub-title">{{ i18n.wordRootLabel }}</text>
-                                    <view class="flex items-baseline gap-1.5">
-                                        <text class="collocation-bullet">•</text>
-                                        <text class="example-en-text font-bold">{{ parsedRoot.term }}</text>
-                                    </view>
-                                    <text class="example-cn-text pl-3" v-if="parsedRoot.meaning">{{ parsedRoot.meaning }}</text>
+                                    <text class="example-en-text font-bold">{{ parsedRoot.term }}</text>
+                                    <text class="example-cn-text" v-if="parsedRoot.meaning">{{ parsedRoot.meaning }}</text>
                                 </view>
 
                                 <!-- Family Cognates -->
@@ -531,11 +520,8 @@ const seqBadgeStyle = computed(() => {
                                     <text class="root-sub-title">{{ i18n.wordFamilyLabel }}</text>
                                     <view class="flex flex-col gap-2.5">
                                         <view v-for="(cog, cIndex) in parsedFamily" :key="cIndex" class="flex flex-col gap-0.5">
-                                            <view class="flex items-baseline gap-1.5">
-                                                <text class="collocation-bullet">•</text>
-                                                <text class="example-en-text font-bold">{{ cog.term }}</text>
-                                            </view>
-                                            <text class="example-cn-text pl-3" v-if="cog.meaning">{{ cog.meaning }}</text>
+                                            <text class="example-en-text font-bold">{{ cog.term }}</text>
+                                            <text class="example-cn-text" v-if="cog.meaning">{{ cog.meaning }}</text>
                                         </view>
                                     </view>
                                 </view>
@@ -627,9 +613,21 @@ const seqBadgeStyle = computed(() => {
     font-size: 36px;
     font-weight: 800;
     letter-spacing: -0.02em;
-    line-height: 1.1;
+    line-height: 1.15;
     word-break: normal;
     color: var(--ej-text-primary);
+}
+
+.word-large-text.word-size-md {
+    font-size: 30px;
+}
+
+.word-large-text.word-size-sm {
+    font-size: 26px;
+}
+
+.word-large-text.word-size-xs {
+    font-size: 22px;
 }
 
 .phonetic-small-text {
@@ -640,118 +638,102 @@ const seqBadgeStyle = computed(() => {
     word-break: break-word;
 }
 
-.phonetic-speaker-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    height: 24px;
-    padding: 0 4px;
-    border-radius: 12px;
-    vertical-align: middle;
-    transition: background-color 0.2s ease;
-}
-
-.phonetic-speaker-btn.playing {
-    background-color: rgba(37, 99, 235, 0.08);
-}
-
-.dark .phonetic-speaker-btn.playing {
-    background-color: rgba(96, 165, 250, 0.12);
-}
-
-.phonetic-speaker-inline {
-    width: 17px;
-    height: 17px;
+.phonetic-speaker-box {
+    position: relative;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
     display: inline-block;
     vertical-align: middle;
-    margin-left: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: transform 0.15s ease;
+}
+
+.phonetic-speaker-box:active {
+    transform: scale(0.9);
+}
+
+.speaker-horn,
+.speaker-arc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
     background-color: var(--ej-color-brand);
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.speaker-horn {
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5'></polygon></svg>") no-repeat center / contain;
     opacity: 0.85;
-    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.phonetic-speaker-btn.playing .phonetic-speaker-inline {
+.speaker-arc.arc-1 {
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M15.54 8.46a5 5 0 0 1 0 7.07'></path></svg>") no-repeat center / contain;
+    opacity: 0.85;
+}
+
+.speaker-arc.arc-2 {
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19.07 4.93a10 10 0 0 1 0 14.14'></path></svg>") no-repeat center / contain;
+    opacity: 0.85;
+}
+
+/* 播放态：原生弧形音波层层扩散动效（仿微信语音/扬声器扩散） */
+.phonetic-speaker-box.playing .speaker-horn {
     opacity: 1;
-    animation: speaker-bounce 0.5s ease-in-out infinite alternate;
+    animation: horn-vibrate 0.9s ease-in-out infinite;
 }
 
-/* 动效音波柱容器 */
-.sound-wave-bars {
-    display: none;
-    align-items: center;
-    gap: 2.5px;
-    height: 14px;
-    padding-left: 1px;
+.phonetic-speaker-box.playing .arc-1 {
+    animation: wave-arc-1 0.9s ease-in-out infinite;
 }
 
-.phonetic-speaker-btn.playing .sound-wave-bars {
-    display: inline-flex;
+.phonetic-speaker-box.playing .arc-2 {
+    animation: wave-arc-2 0.9s ease-in-out infinite;
 }
 
-/* 3 根跳动音波条 */
-.wave-bar {
-    width: 2.5px;
-    height: 4px;
-    border-radius: 2px;
-    background-color: var(--ej-color-brand);
-    display: inline-block;
-}
-
-.phonetic-speaker-btn.playing .bar-1 {
-    animation: sound-wave-dance-1 0.52s ease-in-out infinite alternate;
-}
-
-.phonetic-speaker-btn.playing .bar-2 {
-    animation: sound-wave-dance-2 0.38s ease-in-out infinite alternate 0.08s;
-}
-
-.phonetic-speaker-btn.playing .bar-3 {
-    animation: sound-wave-dance-3 0.6s ease-in-out infinite alternate 0.16s;
-}
-
-@keyframes speaker-bounce {
-    0% {
-        transform: scale(0.96);
+@keyframes horn-vibrate {
+    0%, 100% {
+        transform: scale(1);
     }
-    100% {
-        transform: scale(1.18);
+    50% {
+        transform: scale(1.08);
     }
 }
 
-@keyframes sound-wave-dance-1 {
-    0% {
-        height: 3px;
-        opacity: 0.5;
+@keyframes wave-arc-1 {
+    0%, 15% {
+        opacity: 0.15;
+        transform: scale(0.92);
     }
-    100% {
-        height: 11px;
+    35%, 80% {
         opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.15;
+        transform: scale(0.92);
     }
 }
 
-@keyframes sound-wave-dance-2 {
-    0% {
-        height: 4px;
-        opacity: 0.6;
+@keyframes wave-arc-2 {
+    0%, 40% {
+        opacity: 0.15;
+        transform: scale(0.92);
     }
-    100% {
-        height: 14px;
+    60%, 85% {
         opacity: 1;
-    }
-}
-
-@keyframes sound-wave-dance-3 {
-    0% {
-        height: 3px;
-        opacity: 0.45;
+        transform: scale(1);
     }
     100% {
-        height: 10px;
-        opacity: 0.95;
+        opacity: 0.15;
+        transform: scale(0.92);
     }
 }
 
@@ -974,24 +956,6 @@ const seqBadgeStyle = computed(() => {
     line-height: 1.2;
 }
 
-.collocation-bullet {
-    font-size: 14px;
-    font-weight: 800;
-    color: #F59E0B;
-    line-height: 1;
-}
-
-.secondary-tag-badge {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 1px 6px;
-    border-radius: 9999px;
-    background-color: rgba(239, 68, 68, 0.15);
-    color: #DC2626;
-    letter-spacing: 0.3px;
-    line-height: 1.2;
-}
-
 .confusing-tag-badge {
     font-size: 10px;
     font-weight: 700;
@@ -1001,15 +965,5 @@ const seqBadgeStyle = computed(() => {
     color: #4F46E5;
     letter-spacing: 0.3px;
     line-height: 1.2;
-}
-
-.secondary-bullet {
-    font-size: 11px;
-    line-height: 1;
-}
-
-.confusing-bullet {
-    font-size: 11px;
-    line-height: 1;
 }
 </style>
