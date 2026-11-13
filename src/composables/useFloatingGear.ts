@@ -1,4 +1,5 @@
 import { ref, watch, onMounted, onUnmounted, nextTick, type Ref } from 'vue';
+import commonUtil from '@/utils/commonUtil';
 
 /**
  * 管理设置悬浮齿轮按钮的位置、手势拖拽、吸边贴合与优雅自动隐藏的 Composable
@@ -24,16 +25,10 @@ export function useFloatingGear(showDrawer: Ref<boolean>) {
         if (cachedScreenWidth > 0) {
             return { screenWidth: cachedScreenWidth, screenHeight: cachedScreenHeight, statusBarHeight: cachedStatusBarHeight };
         }
-        try {
-            const sys = uni.getSystemInfoSync();
-            cachedScreenWidth = sys.windowWidth || 375;
-            cachedScreenHeight = sys.windowHeight || 667;
-            cachedStatusBarHeight = sys.statusBarHeight || 44;
-        } catch {
-            cachedScreenWidth = 375;
-            cachedScreenHeight = 667;
-            cachedStatusBarHeight = 44;
-        }
+        const win = commonUtil.getWindowDimensions();
+        cachedScreenWidth = win.windowWidth;
+        cachedScreenHeight = win.windowHeight;
+        cachedStatusBarHeight = win.statusBarHeight;
         return { screenWidth: cachedScreenWidth, screenHeight: cachedScreenHeight, statusBarHeight: cachedStatusBarHeight };
     };
 

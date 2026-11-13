@@ -42,11 +42,7 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
     } = options;
 
     const getInitialScreenHeight = () => {
-        try {
-            return uni.getSystemInfoSync()?.windowHeight || 800;
-        } catch {
-            return 800;
-        }
+        return commonUtil.getWindowDimensions().windowHeight;
     };
     const screenHeight = ref(getInitialScreenHeight());
     const startX = ref(0);

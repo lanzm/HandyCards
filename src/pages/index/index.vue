@@ -181,12 +181,7 @@ watch(() => wordObj.value?.w, () => {
 
 // App lifecycle & initialization
 const initData = () => {
-    try {
-        const sys = uni.getSystemInfoSync();
-        cardSwipe.screenHeight.value = sys.windowHeight || 800;
-    } catch (e) {
-        cardSwipe.screenHeight.value = 800;
-    }
+    cardSwipe.screenHeight.value = commonUtil.getWindowDimensions().windowHeight;
 
     showDrawer.value = false;
     isDark.value = getInitialTheme();

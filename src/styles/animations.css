@@ -1,4 +1,4 @@
-/* EnglishJoy Card Gestures & Speaker Animations */
+/* EnglishJoy Card Gestures & UI Animations */
 
 /* Dynamic Up swipe transitions (Next Word) */
 .card-slide-out-up {
@@ -7,29 +7,7 @@
     transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease;
 }
 
-.card-reset-down {
-    transition: none !important;
-    transform: translateY(120%);
-    opacity: 0;
-}
-
-.card-slide-in-up {
-    transform: translateY(0);
-    opacity: 1;
-}
-
 /* Dynamic Down swipe transitions (Previous Word) */
-.card-slide-out-down {
-    transform: translateY(120%);
-    opacity: 0;
-}
-
-.card-reset-up {
-    transition: none !important;
-    transform: translateY(-120%);
-    opacity: 0;
-}
-
 .card-slide-in-down {
     animation: slide-in-down-anim 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
@@ -39,24 +17,7 @@
     100% { transform: translateY(0); }
 }
 
-/* Cancelled/Instant transitions */
-.card-slide-in-down-instant {
-    transform: translateY(0) !important;
-    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.card-slide-out-up-instant {
-    transform: translateY(-120%) !important;
-    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.active-card-to-back-instant {
-    transform: scale(0.94) translateY(18px) !important;
-    opacity: 0.88 !important;
-    z-index: 5 !important;
-    transition: none !important;
-}
-
+/* Card reset to center */
 .card-reset-center {
     transition: none !important;
     transform: translateY(0) !important;
@@ -92,10 +53,11 @@
     transition: none !important;
 }
 
-.bg-card-to-active-instant {
-    transform: scale(1) translateY(0) !important;
-    opacity: 1 !important;
-    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease;
+.active-card-to-back-instant {
+    transform: scale(0.94) translateY(18px) !important;
+    opacity: 0.88 !important;
+    z-index: 5 !important;
+    transition: none !important;
 }
 
 .prev-card-to-active-instant {
@@ -105,39 +67,11 @@
     transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease;
 }
 
-/* Audio Playing Waves Animation */
-@keyframes speaker-pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.08);
-    }
-}
-
-@keyframes speaker-ripple {
-    0% {
-        transform: scale(1);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
-}
-
 /* Flex utilities */
 .flex-center {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.flex-col-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
 }
 
 /* Floating Settings Gear */
@@ -180,4 +114,3 @@
     font-size: 24px;
     color: var(--ej-text-muted);
 }
-

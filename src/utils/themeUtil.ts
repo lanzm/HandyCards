@@ -9,7 +9,8 @@ export const getInitialTheme = (): ThemeMode => {
         if (savedTheme === 'dark' || savedTheme === 'light') {
             return savedTheme;
         }
-        const systemTheme = uni.getSystemInfoSync().theme;
+        const appBase = typeof (uni as any).getAppBaseInfo === 'function' ? (uni as any).getAppBaseInfo() : null;
+        const systemTheme = appBase?.theme ?? uni.getSystemInfoSync?.()?.theme;
         return systemTheme === 'dark' ? 'dark' : 'light';
     } catch {
         return 'light';

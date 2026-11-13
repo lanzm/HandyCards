@@ -50,6 +50,35 @@ const commonUtil = {
         }
     },
     /**
+     * 高性能安全获取窗口尺寸（优先使用无阻塞的 getWindowInfo，平滑降级至 getSystemInfoSync）
+     */
+    getWindowDimensions() {
+        try {
+            if (typeof (uni as any).getWindowInfo === 'function') {
+                const win = (uni as any).getWindowInfo();
+                if (win && win.windowWidth) {
+                    return {
+                        windowWidth: win.windowWidth || 375,
+                        windowHeight: win.windowHeight || 800,
+                        statusBarHeight: win.statusBarHeight || 44
+                    };
+                }
+            }
+            const sys = uni.getSystemInfoSync();
+            return {
+                windowWidth: sys?.windowWidth || 375,
+                windowHeight: sys?.windowHeight || 800,
+                statusBarHeight: sys?.statusBarHeight || 44
+            };
+        } catch {
+            return {
+                windowWidth: 375,
+                windowHeight: 800,
+                statusBarHeight: 44
+            };
+        }
+    },
+    /**
      * 复制文本到系统剪贴板并提示
      */
     copyText(text: string, successMsg = '已复制') {
