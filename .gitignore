@@ -23,5 +23,7 @@ dist
 # Plans & local docs
 docs/plans/
 
-# Raw data sources
-scripts/*.json
+# Scripts & raw data: ignore all one-off tools, keep only build hooks
+scripts/*
+!scripts/post-build.js
+*.bak
