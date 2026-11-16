@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import commonUtil from "@/utils/commonUtil";
 import { getInitialTheme, setNavigationBarTheme, type ThemeMode } from "@/utils/themeUtil";
 import { getTranslations, type Language } from "@/utils/i18n";
@@ -224,6 +225,24 @@ onMounted(() => {
 onUnmounted(() => {
     stopAudio();
     uni.offThemeChange(onSystemThemeChange);
+});
+
+// WeChat share to friends / groups
+onShareAppMessage(() => {
+    return {
+        title: '终于有个不搞花里胡哨的背单词了',
+        path: '/pages/index/index',
+        imageUrl: commonUtil.getShareCoverPath(),
+    };
+});
+
+// WeChat share to Moments (Timeline)
+onShareTimeline(() => {
+    return {
+        title: '随手词卡 · 不搞花里胡哨，纯粹离线翻卡背单词',
+        query: '',
+        imageUrl: commonUtil.getShareCoverPath(),
+    };
 });
 </script>
 

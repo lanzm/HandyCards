@@ -79,6 +79,48 @@ const commonUtil = {
         }
     },
     /**
+     * 获取离线分享卡片封面路径
+     * 解决微信开发者工具模拟器无法解析代码包绝对路径导致“虚拟好友”裂图的问题
+     */
+    getShareCoverPath(): string {
+        // #ifdef MP-WEIXIN
+        try {
+            if (typeof wx !== 'undefined' && wx.getFileSystemManager && wx.env && wx.env.USER_DATA_PATH) {
+                const fs = wx.getFileSystemManager();
+                const targetPath = `${wx.env.USER_DATA_PATH}/handycards_share_cover.jpg`;
+                let exists = false;
+                try {
+                    fs.accessSync(targetPath);
+                    exists = true;
+                } catch {
+                    exists = false;
+                }
+                if (!exists) {
+                    const candidatePaths = ['static/share-cover.jpg', '/static/share-cover.jpg'];
+                    for (const p of candidatePaths) {
+                        try {
+                            const buf = fs.readFileSync(p);
+                            if (buf) {
+                                fs.writeFileSync(targetPath, buf);
+                                exists = true;
+                                break;
+                            }
+                        } catch {
+                            // try next
+                        }
+                    }
+                }
+                if (exists) {
+                    return targetPath;
+                }
+            }
+        } catch (e) {
+            console.warn('[commonUtil] getShareCoverPath fail:', e);
+        }
+        // #endif
+        return '/static/share-cover.jpg';
+    },
+    /**
      * 复制文本到系统剪贴板并提示
      */
     copyText(text: string, successMsg = '已复制') {
