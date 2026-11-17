@@ -285,7 +285,6 @@
     ],
     "r": {
       "f": [
-        "rustles (他)",
         "rustled (发出沙沙声)"
       ]
     }
@@ -715,8 +714,8 @@
     "r": {
       "r": "purchas (收购)",
       "f": [
-        "purchaser (名词)",
-        "purchasable (形容词)"
+        "purchaser (买方、购买者)",
+        "purchasable (可购买的)"
       ]
     }
   },
@@ -1307,8 +1306,8 @@
     ],
     "r": {
       "f": [
-        "unfortunate (形容词)",
-        "unfortunately (副词)"
+        "unfortunate (不幸的)",
+        "unfortunately (不幸地)"
       ]
     }
   },
@@ -2638,10 +2637,7 @@
       ]
     ],
     "r": {
-      "r": "fright (害怕的，形容词)",
-      "f": [
-        "frightening (令人恐惧的)"
-      ]
+      "r": "fright (惊恐、惊吓)"
     }
   },
   {
@@ -3249,7 +3245,7 @@
     "r": {
       "r": "interpret (解释者，译员)",
       "f": [
-        "interpreter (解释者)",
+        "interpreter (口译员、解释者)",
         "misinterpret (误解)"
       ]
     }
@@ -4512,9 +4508,9 @@
       ]
     ],
     "r": {
-      "r": "robustness (名词，强健)",
+      "r": "robust (强壮、坚固)",
       "f": [
-        "robustly (副词)"
+        "robustly (强健地、坚固地)"
       ]
     }
   },
@@ -7612,7 +7608,7 @@
       "r": "whelm (淹没、压倒)",
       "f": [
         "underwhelm (令人不感兴趣或不)",
-        "overwhelm (动词)"
+        "overwhelm (压倒、淹没)"
       ]
     }
   },
@@ -9817,8 +9813,8 @@
     "r": {
       "r": "clarus (清楚的)",
       "f": [
-        "clear (形容词)",
-        "clearly (副词)"
+        "clear (清楚的、明白的)",
+        "clearly (清楚地、显然)"
       ]
     }
   },
@@ -10459,8 +10455,8 @@
     "r": {
       "r": "pet / petit (寻求、追逐、竞争)",
       "f": [
-        "incompetent (形容词)",
-        "incompetently (副词)"
+        "incompetent (无能力的、不胜任的)",
+        "incompetently (不胜任地)"
       ]
     }
   },
@@ -13375,12 +13371,7 @@
         "a high school dropout",
         "中学退学者"
       ]
-    ],
-    "r": {
-      "f": [
-        "dropouts (名词)"
-      ]
-    }
+    ]
   },
   {
     "w": "capture",
@@ -14653,7 +14644,7 @@
     ],
     "r": {
       "f": [
-        "tragedize (将)",
+        "tragedize (使悲剧化)",
         "tragic (悲剧的)"
       ]
     }
@@ -14722,8 +14713,8 @@
     "r": {
       "r": "adequat (相等的)",
       "f": [
-        "inadequately (副词)",
-        "inadequacy (名词)"
+        "inadequately (不充分地、不适当地)",
+        "inadequacy (不充分、不足)"
       ]
     }
   },
@@ -14860,8 +14851,7 @@
     "r": {
       "r": "tractus (拉)",
       "f": [
-        "traces (单数)",
-        "tracing (基本形式)"
+        "traces (单数)"
       ]
     }
   },
@@ -15986,8 +15976,7 @@
     "r": {
       "r": "fin (终点)",
       "f": [
-        "confinement (限制)",
-        "confines (现在时)"
+        "confinement (限制)"
       ]
     }
   },
@@ -17583,8 +17572,8 @@
     "r": {
       "r": "inter (在)",
       "f": [
-        "interfere (动词)",
-        "interfering (形容词)"
+        "interfere (干涉、妨碍)",
+        "interfering (爱管闲事的)"
       ]
     }
   },
@@ -18177,7 +18166,7 @@
     ],
     "r": {
       "f": [
-        "crippled (使)",
+        "crippled (残疾的、受损的)",
         "crippling (令人瘸腿的)"
       ]
     }
@@ -18440,7 +18429,7 @@
     ],
     "r": {
       "f": [
-        "back (后退)"
+        "back (支持、后退)"
       ]
     }
   },
@@ -19153,7 +19142,11 @@
       ]
     ],
     "r": {
-      "r": "proportion (构成副词)"
+      "r": "proportion (比例、均衡)",
+      "f": [
+        "proportionate (成比例的)",
+        "disproportion (不均衡)"
+      ]
     }
   },
   {
@@ -19787,7 +19780,7 @@
     "r": {
       "r": "valiant (英勇的)",
       "f": [
-        "valid (有效的)",
+        "valid (有效的、正当的)",
         "evaluate (评价)"
       ]
     },
@@ -20553,8 +20546,7 @@
     ],
     "r": {
       "f": [
-        "trndna (古挪威语中的转动)",
-        "trends (名词)"
+        "trndna (古挪威语中的转动)"
       ]
     }
   },
@@ -22090,8 +22082,8 @@
     "r": {
       "r": "cat (小猫)",
       "f": [
-        "catering (名词)",
-        "caterer (名词)"
+        "catering (餐饮服务、酒席承办)",
+        "caterer (酒席承办人)"
       ]
     }
   },
@@ -22151,7 +22143,7 @@
     ],
     "r": {
       "f": [
-        "dominate (主导)",
+        "dominate (支配、统治)",
         "dominion (领土)"
       ]
     }
@@ -23567,7 +23559,7 @@
     ],
     "r": {
       "f": [
-        "mechanistic (形容词)"
+        "mechanistic (机械的、机械论的)"
       ]
     }
   },
@@ -23619,8 +23611,8 @@
     "r": {
       "r": "valide (强有力的)",
       "f": [
-        "valid (形容词)",
-        "validate (动词)"
+        "valid (有效的、正当的)",
+        "validate (证实、验证)"
       ]
     }
   },
@@ -23960,8 +23952,8 @@
     "r": {
       "r": "interpres (翻译者或解释者)",
       "f": [
-        "interpreter (名词)",
-        "interpretation (名词)"
+        "interpreter (口译员、解释者)",
+        "interpretation (解释、阐释)"
       ]
     }
   },
@@ -24696,8 +24688,8 @@
     "r": {
       "r": "invas (进入)",
       "f": [
-        "invasion (名词)",
-        "invade (动词)"
+        "invasion (入侵、侵犯)",
+        "invade (侵入、侵略)"
       ]
     }
   },
@@ -24723,7 +24715,7 @@
     "r": {
       "r": "ignorare (不知道)",
       "f": [
-        "ignorance (无知)",
+        "ignorance (无知、愚昧)",
         "ignorant (无知的)"
       ]
     }
@@ -26459,7 +26451,7 @@
     "r": {
       "r": "ced / ceed (走、前行)",
       "f": [
-        "precede (领先)",
+        "precede (在...之前、先于)",
         "recede (后退)"
       ]
     }
@@ -26622,8 +26614,8 @@
     ],
     "r": {
       "f": [
-        "aggressively (副词)",
-        "aggressiveness (名词)"
+        "aggressively (侵略性地、进取地)",
+        "aggressiveness (攻击性、进取心)"
       ]
     }
   },
@@ -27318,8 +27310,8 @@
     "r": {
       "r": "crim (区分)",
       "f": [
-        "discriminate (动词)",
-        "discriminating (形容词)"
+        "discriminate (歧视、区别)",
+        "discriminating (有辨别力的)"
       ]
     }
   },

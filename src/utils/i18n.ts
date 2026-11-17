@@ -1,6 +1,7 @@
 export type Language = 'zh' | 'en';
 
 export interface Translations {
+    appTitle: string;
     quizPrompt: string;
     knowBtn: string;
     dontKnowBtn: string;
@@ -37,6 +38,7 @@ export interface Translations {
     darkModeText: string;
     shareLabel: string;
     shareCardTitle: string;
+    shareTimelineTitle: string;
     shareCardDesc: string;
     shareBadgeText: string;
     githubCardTitle: string;
@@ -69,6 +71,7 @@ export interface Translations {
 export const getTranslations = (lang: Language): Translations => {
     const isZh = lang === 'zh';
     return {
+        appTitle: isZh ? '随手词卡' : 'HandyCards',
         // Main card states
         quizPrompt: isZh ? '轻触查看释义' : 'Tap to reveal definitions',
         knowBtn: isZh ? '认识' : 'Know',
@@ -108,6 +111,7 @@ export const getTranslations = (lang: Language): Translations => {
         darkModeText: isZh ? '🌙 暗黑模式' : '🌙 Dark Mode',
         shareLabel: isZh ? '开源与分享' : 'Open Source & Share',
         shareCardTitle: isZh ? '微信分享二维码' : 'WeChat Share QR Code',
+        shareTimelineTitle: isZh ? '随手词卡 · 不搞花里胡哨，纯粹离线翻卡背单词' : 'HandyCards · Pure & Offline Flashcard Vocabulary',
         shareCardDesc: isZh ? '点击查看高清大图，长按可识别或转发' : 'Tap to preview QR code, long press to scan or share',
         shareBadgeText: isZh ? '二维码' : 'QR Code',
         githubCardTitle: isZh ? 'GitHub 开源项目' : 'GitHub Repo',

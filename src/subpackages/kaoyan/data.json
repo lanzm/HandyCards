@@ -557,7 +557,7 @@
     "r": {
       "r": "ced / ceed (走、前行)",
       "f": [
-        "precede (领先)",
+        "precede (在...之前、先于)",
         "recede (后退)"
       ]
     }
@@ -1564,8 +1564,8 @@
     "r": {
       "r": "syn (一起)",
       "f": [
-        "symmetrical (形容词)",
-        "symmetrically (副词)"
+        "symmetrical (对称的)",
+        "symmetrically (对称地)"
       ]
     }
   },
@@ -3811,7 +3811,7 @@
     "r": {
       "r": "vant / van (在前面、优势)",
       "f": [
-        "advantaging (让)",
+        "advantaging (使获利)",
         "advantageous (有利的)"
       ]
     },
@@ -4377,8 +4377,8 @@
     "r": {
       "r": "oikos (家)",
       "f": [
-        "ecological (形容词)",
-        "ecologist (名词)"
+        "ecological (生态的)",
+        "ecologist (生态学家)"
       ]
     }
   },
@@ -4547,8 +4547,8 @@
     "r": {
       "r": "fingere (创作)",
       "f": [
-        "fictional (形容词)",
-        "fictionally (副词)"
+        "fictional (虚构的、小说的)",
+        "fictionally (虚构地)"
       ]
     }
   },
@@ -4774,11 +4774,7 @@
       ]
     ],
     "r": {
-      "r": "templum (观察)",
-      "f": [
-        "contemplates (他)",
-        "contemplated (我)"
-      ]
+      "r": "templum (观察)"
     }
   },
   {
@@ -7712,7 +7708,7 @@
       "r": "facere (完成)",
       "f": [
         "efficient (高效的)",
-        "efficientize (使)"
+        "efficientize (提高...效率)"
       ]
     }
   },
@@ -9023,10 +9019,7 @@
       ]
     ],
     "r": {
-      "r": "exceed (走出)",
-      "f": [
-        "exceeds (动词单数形式)"
-      ]
+      "r": "exceed (走出)"
     }
   },
   {
@@ -11256,7 +11249,7 @@
     ],
     "r": {
       "f": [
-        "clothe (给)"
+        "clothe (给...穿衣)"
       ]
     }
   },
@@ -12977,7 +12970,7 @@
     ],
     "r": {
       "f": [
-        "back (削减)"
+        "back (支持、后退)"
       ]
     }
   },
@@ -13994,12 +13987,7 @@
         "She made herself a cup of coffee.",
         "她给自己煮了杯咖啡。"
       ]
-    ],
-    "r": {
-      "f": [
-        "hers (所有格)"
-      ]
-    }
+    ]
   },
   {
     "w": "summon",
@@ -14127,7 +14115,7 @@
     "r": {
       "r": "loirre (猎鸟诱饵)",
       "f": [
-        "luringly (副词)"
+        "luringly (诱惑地、诱人地)"
       ]
     }
   },
@@ -14339,7 +14327,7 @@
       "r": "sub- / suc- (在...下面、随后、继承)",
       "f": [
         "recede (后退)",
-        "precede (领先)"
+        "precede (在...之前、先于)"
       ]
     }
   },
@@ -14983,7 +14971,7 @@
     ],
     "r": {
       "f": [
-        "beneficial (形容词)"
+        "beneficial (有益的、有利的)"
       ]
     },
     "c": [
@@ -17265,11 +17253,7 @@
       ]
     ],
     "r": {
-      "r": "spiritus (呼吸)",
-      "f": [
-        "spiritually (副词形式)",
-        "spirituality (名词形式)"
-      ]
+      "r": "spiritus (呼吸)"
     }
   },
   {
@@ -18516,7 +18500,7 @@
       "r": "vocare (声音)",
       "f": [
         "vocal (发声的)",
-        "evocative (形容词)"
+        "evocative (唤起...的、引起共鸣的)"
       ]
     }
   },
@@ -19335,8 +19319,8 @@
     ],
     "r": {
       "f": [
-        "aggressively (副词)",
-        "aggressiveness (名词)"
+        "aggressively (侵略性地、进取地)",
+        "aggressiveness (攻击性、进取心)"
       ]
     }
   },
@@ -20675,7 +20659,6 @@
     "r": {
       "r": "com- (共同、完全)",
       "f": [
-        "composites (复合词)",
         "compositely (复合式地)"
       ]
     }
@@ -21416,7 +21399,7 @@
     ],
     "r": {
       "f": [
-        "crippled (使)",
+        "crippled (残疾的、受损的)",
         "crippling (令人瘸腿的)"
       ]
     }
@@ -24787,7 +24770,7 @@
     "r": {
       "r": "time (时间)",
       "f": [
-        "overworked (形容词)"
+        "overworked (劳累过度的)"
       ]
     }
   },
@@ -25063,7 +25046,7 @@
     ],
     "r": {
       "f": [
-        "dominate (主导)",
+        "dominate (支配、统治)",
         "dominion (领土)"
       ]
     }
@@ -27381,8 +27364,8 @@
     "r": {
       "r": "spend (花费)",
       "f": [
-        "expense (名词)",
-        "spending (名词)"
+        "expense (开支、花销)",
+        "spending (开销、支出)"
       ]
     }
   },
@@ -27707,7 +27690,7 @@
       "r": "humidus (湿度)",
       "f": [
         "humidity (湿度)",
-        "humidify (使)"
+        "humidify (使湿润)"
       ]
     }
   },
@@ -28033,10 +28016,7 @@
       ]
     ],
     "r": {
-      "r": "revolut (旋转)",
-      "f": [
-        "revolutionaries (名词时)"
-      ]
+      "r": "revolut (旋转)"
     }
   },
   {
@@ -30877,7 +30857,7 @@
     "r": {
       "r": "concedere (完全)",
       "f": [
-        "precede (在)",
+        "precede (在...之前、先于)",
         "recede (后退)"
       ]
     }
@@ -30973,8 +30953,8 @@
     "r": {
       "r": "cat (小猫)",
       "f": [
-        "catering (名词)",
-        "caterer (名词)"
+        "catering (餐饮服务、酒席承办)",
+        "caterer (酒席承办人)"
       ]
     }
   },
@@ -31864,8 +31844,7 @@
     "r": {
       "r": "fin (终点)",
       "f": [
-        "confinement (限制)",
-        "confines (现在时)"
+        "confinement (限制)"
       ]
     }
   },
@@ -32478,7 +32457,7 @@
       "r": "form (形式、正规)",
       "f": [
         "formality (正式)",
-        "formalize (使)"
+        "formalize (使正式化)"
       ]
     }
   },
@@ -32898,7 +32877,6 @@
     ],
     "r": {
       "f": [
-        "prides (如指代一群雄狮时)",
         "proudly (骄傲地)"
       ]
     }

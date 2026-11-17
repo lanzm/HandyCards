@@ -21,6 +21,12 @@ const updateNavBarColor = () => {
     setNavigationBarTheme(isDark.value);
 };
 
+const updateNavBarTitle = () => {
+    uni.setNavigationBarTitle({
+        title: i18n.value.appTitle,
+    });
+};
+
 const setTheme = (theme: 'dark' | 'light') => {
     isDark.value = theme;
     uni.setStorageSync('theme', theme);
@@ -30,7 +36,14 @@ const setTheme = (theme: 'dark' | 'light') => {
 const setLang = (newLang: Language) => {
     lang.value = newLang;
     uni.setStorageSync('lang', newLang);
+    updateNavBarTitle();
 };
+
+watch(() => i18n.value.appTitle, (newTitle) => {
+    if (newTitle) {
+        uni.setNavigationBarTitle({ title: newTitle });
+    }
+});
 
 // Audio TTS
 const { playFlag, playWord, stopAudio } = useWordAudio();
@@ -204,6 +217,7 @@ const initData = () => {
     ttsDisabled.value = savedTtsDisabled === true || savedTtsDisabled === 'true';
 
     updateNavBarColor();
+    updateNavBarTitle();
     loadWordBook();
 };
 
@@ -239,7 +253,7 @@ onShareAppMessage(() => {
 // WeChat share to Moments (Timeline)
 onShareTimeline(() => {
     return {
-        title: '随手词卡 · 不搞花里胡哨，纯粹离线翻卡背单词',
+        title: i18n.value.shareTimelineTitle,
         query: '',
         imageUrl: commonUtil.getShareCoverPath(),
     };

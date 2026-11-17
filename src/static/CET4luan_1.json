@@ -995,7 +995,7 @@
       ]
     ],
     "r": {
-      "r": "un- + rest (否定的前缀)"
+      "r": "un- (否定) + rest (休息、安宁)"
     }
   },
   {
@@ -1265,8 +1265,8 @@
     "r": {
       "r": "fingere (创作)",
       "f": [
-        "fictional (形容词)",
-        "fictionally (副词)"
+        "fictional (虚构的、小说的)",
+        "fictionally (虚构地)"
       ]
     }
   },
@@ -2200,7 +2200,7 @@
     "r": {
       "r": "mitt (承认)",
       "f": [
-        "commit (犯)",
+        "commit (承诺、犯下)",
         "transmit (传送)"
       ]
     }
@@ -3845,12 +3845,7 @@
         "a high school dropout",
         "中学退学者"
       ]
-    ],
-    "r": {
-      "f": [
-        "dropouts (名词)"
-      ]
-    }
+    ]
   },
   {
     "w": "replace",
@@ -6043,8 +6038,8 @@
     "r": {
       "r": "interpres (翻译者或解释者)",
       "f": [
-        "interpreter (名词)",
-        "interpretation (名词)"
+        "interpreter (口译员、解释者)",
+        "interpretation (解释、阐释)"
       ]
     }
   },
@@ -7587,8 +7582,8 @@
     "r": {
       "r": "adequat (相等的)",
       "f": [
-        "inadequately (副词)",
-        "inadequacy (名词)"
+        "inadequately (不充分地、不适当地)",
+        "inadequacy (不充分、不足)"
       ]
     }
   },
@@ -8753,7 +8748,7 @@
     "r": {
       "r": "optio (选择)",
       "f": [
-        "optional (形容词)"
+        "optional (可选择的、选修的)"
       ]
     }
   },
@@ -9777,10 +9772,7 @@
       ]
     ],
     "r": {
-      "r": "fright (害怕的，形容词)",
-      "f": [
-        "frightening (令人恐惧的)"
-      ]
+      "r": "fright (惊恐、惊吓)"
     }
   },
   {
@@ -11715,7 +11707,7 @@
     ],
     "r": {
       "f": [
-        "beneficial (形容词)"
+        "beneficial (有益的、有利的)"
       ]
     },
     "c": [
@@ -13747,7 +13739,7 @@
       "r": "whelm (淹没、压倒)",
       "f": [
         "underwhelm (令人不感兴趣或不)",
-        "overwhelm (动词)"
+        "overwhelm (压倒、淹没)"
       ]
     }
   },
@@ -14455,7 +14447,7 @@
     "r": {
       "r": "valiant (英勇的)",
       "f": [
-        "valid (有效的)",
+        "valid (有效的、正当的)",
         "evaluate (评价)"
       ]
     },
@@ -15471,12 +15463,7 @@
         "The manuscripts have never been systematically catalogued.",
         "一直没有系统地为这些手稿编过目录。"
       ]
-    ],
-    "r": {
-      "f": [
-        "legein (说)"
-      ]
-    }
+    ]
   },
   {
     "w": "council",
@@ -16802,7 +16789,7 @@
     ],
     "r": {
       "f": [
-        "mechanistic (形容词)"
+        "mechanistic (机械的、机械论的)"
       ]
     }
   },
@@ -16879,8 +16866,8 @@
     "r": {
       "r": "domin (支配)",
       "f": [
-        "dominator (名词)",
-        "dominate (动词)"
+        "dominator (统治者、支配者)",
+        "dominate (支配、统治)"
       ]
     }
   },
@@ -17077,8 +17064,7 @@
     ],
     "r": {
       "f": [
-        "out (外面)",
-        "line (线)"
+        "out (外面)"
       ]
     }
   },
@@ -17239,8 +17225,8 @@
     "r": {
       "r": "en (紧)",
       "f": [
-        "lengthen (使)",
-        "whiten (使)"
+        "lengthen (使变长)",
+        "whiten (使变白)"
       ]
     }
   },
@@ -18022,8 +18008,8 @@
     "r": {
       "r": "cat (小猫)",
       "f": [
-        "catering (名词)",
-        "caterer (名词)"
+        "catering (餐饮服务、酒席承办)",
+        "caterer (酒席承办人)"
       ]
     }
   },
@@ -18752,7 +18738,7 @@
     "r": {
       "f": [
         "feed (供给)",
-        "back (回)"
+        "back (支持、后退)"
       ]
     }
   },
@@ -19292,7 +19278,7 @@
     "r": {
       "r": "ignorare (不知道)",
       "f": [
-        "ignorance (无知)",
+        "ignorance (无知、愚昧)",
         "ignorant (无知的)"
       ]
     }
@@ -21126,7 +21112,7 @@
     ],
     "r": {
       "f": [
-        "struggler (名词)"
+        "struggler (奋斗者、挣扎者)"
       ]
     }
   },
@@ -24275,8 +24261,8 @@
     "r": {
       "r": "ad- (去、朝向、加强)",
       "f": [
-        "appoint (动词)",
-        "appointed (形容词)"
+        "appoint (任命、指定)",
+        "appointed (约定的、指定的)"
       ]
     },
     "c": [
@@ -24683,8 +24669,8 @@
     "r": {
       "r": "crim (区分)",
       "f": [
-        "discriminate (动词)",
-        "discriminating (形容词)"
+        "discriminate (歧视、区别)",
+        "discriminating (有辨别力的)"
       ]
     }
   },
@@ -25032,8 +25018,8 @@
     ],
     "r": {
       "f": [
-        "ignorance (名词)",
-        "ignorantly (副词)"
+        "ignorance (无知、愚昧)",
+        "ignorantly (无知地)"
       ]
     }
   },
@@ -25286,7 +25272,7 @@
       "r": "iunctus (连接点)",
       "f": [
         "junction (连接点)",
-        "conjunction (连词)"
+        "conjunction (连接词、联合)"
       ]
     }
   },
@@ -25451,8 +25437,8 @@
     ],
     "r": {
       "f": [
-        "aggressively (副词)",
-        "aggressiveness (名词)"
+        "aggressively (侵略性地、进取地)",
+        "aggressiveness (攻击性、进取心)"
       ]
     }
   },
@@ -26050,7 +26036,7 @@
     "r": {
       "r": "interpret (解释者，译员)",
       "f": [
-        "interpreter (解释者)",
+        "interpreter (口译员、解释者)",
         "misinterpret (误解)"
       ]
     }
@@ -26430,8 +26416,7 @@
     "r": {
       "r": "tractus (拉)",
       "f": [
-        "traces (单数)",
-        "tracing (基本形式)"
+        "traces (单数)"
       ]
     }
   },
@@ -26833,7 +26818,6 @@
     "r": {
       "r": "weak (弱、软弱)",
       "f": [
-        "weakening (副词形式)",
         "weakness (弱点)"
       ]
     }

@@ -209,7 +209,7 @@
     "r": {
       "r": "ced / ceed (走、前行)",
       "f": [
-        "precede (领先)",
+        "precede (在...之前、先于)",
         "recede (后退)"
       ]
     }
@@ -432,7 +432,7 @@
     ],
     "r": {
       "f": [
-        "mechanistic (形容词)"
+        "mechanistic (机械的、机械论的)"
       ]
     }
   },
@@ -2793,12 +2793,7 @@
         "Gemma was reading.",
         "吉玛正在看书。"
       ]
-    ],
-    "r": {
-      "f": [
-        "being (现在进行式)"
-      ]
-    }
+    ]
   },
   {
     "w": "elite",
@@ -3593,8 +3588,8 @@
     "r": {
       "r": "electr (琥珀、电)",
       "f": [
-        "electronically (副词)",
-        "electronics (名词)"
+        "electronically (电子地)",
+        "electronics (电子学、电子器件)"
       ]
     }
   },
@@ -5865,12 +5860,7 @@
         "The old machine used to make an awful racket .",
         "这台旧机器以前噪音大得吓人。"
       ]
-    ],
-    "r": {
-      "f": [
-        "rackets (名词)"
-      ]
-    }
+    ]
   },
   {
     "w": "flaw",
@@ -6972,8 +6962,7 @@
     ],
     "r": {
       "f": [
-        "out (外面)",
-        "line (线)"
+        "out (外面)"
       ]
     }
   },
@@ -7175,12 +7164,7 @@
         "an online catalogue",
         "网上目录"
       ]
-    ],
-    "r": {
-      "f": [
-        "legein (说)"
-      ]
-    }
+    ]
   },
   {
     "w": "abrasion",
@@ -7216,8 +7200,8 @@
     "r": {
       "r": "ag / act / agit (驱动、搅动、煽动)",
       "f": [
-        "agitate (动词)",
-        "agitated (形容词)"
+        "agitate (煽动、搅动)",
+        "agitated (激动的、不安的)"
       ]
     }
   },
@@ -7890,11 +7874,7 @@
       ]
     ],
     "r": {
-      "r": "templum (观察)",
-      "f": [
-        "contemplates (他)",
-        "contemplated (我)"
-      ]
+      "r": "templum (观察)"
     }
   },
   {
@@ -7957,8 +7937,8 @@
     ],
     "r": {
       "f": [
-        "unfortunate (形容词)",
-        "unfortunately (副词)"
+        "unfortunate (不幸的)",
+        "unfortunately (不幸地)"
       ]
     }
   },
@@ -9940,8 +9920,8 @@
     "r": {
       "r": "oikos (家)",
       "f": [
-        "ecological (形容词)",
-        "ecologist (名词)"
+        "ecological (生态的)",
+        "ecologist (生态学家)"
       ]
     }
   },
@@ -11618,9 +11598,9 @@
       ]
     ],
     "r": {
-      "r": "robustness (名词，强健)",
+      "r": "robust (强壮、坚固)",
       "f": [
-        "robustly (副词)"
+        "robustly (强健地、坚固地)"
       ]
     }
   },
@@ -12806,7 +12786,7 @@
     "s": [
       [
         "statistics for earnings by different age groups",
-        ""
+        "不同年龄组收入的统计数据"
       ]
     ],
     "r": {
@@ -13373,8 +13353,7 @@
     "r": {
       "r": "tractus (拉)",
       "f": [
-        "traces (单数)",
-        "tracing (基本形式)"
+        "traces (单数)"
       ]
     }
   },
@@ -14456,8 +14435,7 @@
     "r": {
       "r": "fin (终点)",
       "f": [
-        "confinement (限制)",
-        "confines (现在时)"
+        "confinement (限制)"
       ]
     }
   },
@@ -15065,11 +15043,7 @@
       ]
     ],
     "r": {
-      "r": "spiritus (呼吸)",
-      "f": [
-        "spiritually (副词形式)",
-        "spirituality (名词形式)"
-      ]
+      "r": "spiritus (呼吸)"
     }
   },
   {
@@ -18382,7 +18356,7 @@
       ]
     ],
     "r": {
-      "r": "un- + rest (否定的前缀)"
+      "r": "un- (否定) + rest (休息、安宁)"
     }
   },
   {
@@ -21394,8 +21368,8 @@
     "r": {
       "r": "interpres (翻译者或解释者)",
       "f": [
-        "interpreter (名词)",
-        "interpretation (名词)"
+        "interpreter (口译员、解释者)",
+        "interpretation (解释、阐释)"
       ]
     }
   },
@@ -22498,8 +22472,8 @@
     ],
     "r": {
       "f": [
-        "aggressively (副词)",
-        "aggressiveness (名词)"
+        "aggressively (侵略性地、进取地)",
+        "aggressiveness (攻击性、进取心)"
       ]
     }
   },
@@ -24490,8 +24464,8 @@
     "r": {
       "r": "person (面具、人)",
       "f": [
-        "personality (名词)",
-        "personally (副词)"
+        "personality (个性、人格)",
+        "personally (亲自、就个人而言)"
       ]
     }
   },
@@ -24548,7 +24522,6 @@
     "r": {
       "r": "lin (线)",
       "f": [
-        "line (线)",
         "lingerie (内衣)"
       ]
     }
@@ -25496,7 +25469,12 @@
       ]
     ],
     "r": {
-      "r": "press (否定或强调的前缀)"
+      "r": "press (压、按、压迫)",
+      "f": [
+        "impression (印象)",
+        "impress (给...留下印象)",
+        "impressively (令人难忘地)"
+      ]
     }
   },
   {
@@ -26886,7 +26864,7 @@
     ],
     "r": {
       "f": [
-        "colonize (在)"
+        "colonize (开拓殖民地)"
       ]
     }
   },
@@ -27097,7 +27075,6 @@
     "r": {
       "r": "com- (共同、完全)",
       "f": [
-        "composites (复合词)",
         "compositely (复合式地)"
       ]
     }
@@ -30106,8 +30083,8 @@
     "r": {
       "r": "syn (一起)",
       "f": [
-        "symmetrical (形容词)",
-        "symmetrically (副词)"
+        "symmetrical (对称的)",
+        "symmetrically (对称地)"
       ]
     }
   },
@@ -30234,7 +30211,7 @@
     "r": {
       "f": [
         "draw (拉、拽)",
-        "back (后退、返回)"
+        "back (支持、后退)"
       ]
     }
   },
@@ -34584,7 +34561,7 @@
     ],
     "r": {
       "f": [
-        "crippled (使)",
+        "crippled (残疾的、受损的)",
         "crippling (令人瘸腿的)"
       ]
     }
@@ -35216,8 +35193,8 @@
     ],
     "r": {
       "f": [
-        "erode (动词)",
-        "eroded (形容词)"
+        "erode (侵蚀、腐蚀)",
+        "eroded (被侵蚀的)"
       ]
     }
   },
@@ -37996,7 +37973,7 @@
     "r": {
       "r": "mitt (承认)",
       "f": [
-        "commit (犯)",
+        "commit (承诺、犯下)",
         "transmit (传送)"
       ]
     }
@@ -38283,7 +38260,7 @@
     "r": {
       "r": "optimal (最好的)",
       "f": [
-        "optimize (使)"
+        "optimize (使最优化)"
       ]
     }
   },
@@ -39734,7 +39711,7 @@
     "r": {
       "r": "loirre (猎鸟诱饵)",
       "f": [
-        "luringly (副词)"
+        "luringly (诱惑地、诱人地)"
       ]
     }
   },
@@ -40328,7 +40305,7 @@
     "r": {
       "r": "spittan (吐出)",
       "f": [
-        "spitful (形容词)"
+        "spitful (怀恨的、恶意的)"
       ]
     }
   },
@@ -40877,8 +40854,8 @@
     "r": {
       "r": "ad- (去、朝向、加强)",
       "f": [
-        "appoint (动词)",
-        "appointed (形容词)"
+        "appoint (任命、指定)",
+        "appointed (约定的、指定的)"
       ]
     },
     "c": [
@@ -41377,7 +41354,7 @@
     ],
     "r": {
       "f": [
-        "back (削减)"
+        "back (支持、后退)"
       ]
     }
   },
@@ -42535,10 +42512,7 @@
       ]
     ],
     "r": {
-      "r": "exceed (走出)",
-      "f": [
-        "exceeds (动词单数形式)"
-      ]
+      "r": "exceed (走出)"
     }
   },
   {
@@ -43035,7 +43009,7 @@
       "r": "vocare (声音)",
       "f": [
         "vocal (发声的)",
-        "evocative (形容词)"
+        "evocative (唤起...的、引起共鸣的)"
       ]
     }
   },
@@ -43061,8 +43035,8 @@
     "r": {
       "r": "clarus (清楚的)",
       "f": [
-        "clear (形容词)",
-        "clearly (副词)"
+        "clear (清楚的、明白的)",
+        "clearly (清楚地、显然)"
       ]
     }
   },
@@ -44274,7 +44248,7 @@
     "s": [
       [
         "to make amends",
-        ""
+        "赔偿、补偿"
       ]
     ]
   },
@@ -45810,8 +45784,8 @@
     "r": {
       "r": "valide (强有力的)",
       "f": [
-        "valid (形容词)",
-        "validate (动词)"
+        "valid (有效的、正当的)",
+        "validate (证实、验证)"
       ]
     }
   },
@@ -49111,12 +49085,7 @@
         "Oil prices have tumbled.",
         "石油价格猛跌。"
       ]
-    ],
-    "r": {
-      "f": [
-        "tumbles (三单形式)"
-      ]
-    }
+    ]
   },
   {
     "w": "sink",
@@ -49569,7 +49538,7 @@
     ],
     "r": {
       "f": [
-        "tragedize (将)",
+        "tragedize (使悲剧化)",
         "tragic (悲剧的)"
       ]
     }
@@ -50943,7 +50912,7 @@
     "r": {
       "r": "concedere (完全)",
       "f": [
-        "precede (在)",
+        "precede (在...之前、先于)",
         "recede (后退)"
       ]
     }
@@ -51353,7 +51322,7 @@
       "r": "cyn (犬、犬儒、愤世嫉俗)",
       "f": [
         "cynicism (愤世嫉俗)",
-        "cynically (副词)"
+        "cynically (愤世嫉俗地)"
       ]
     }
   },
@@ -52462,7 +52431,7 @@
     ],
     "r": {
       "f": [
-        "nourishing (形容词)"
+        "nourishing (滋养的、有营养的)"
       ]
     }
   },
@@ -52929,8 +52898,8 @@
     "r": {
       "r": "en (紧)",
       "f": [
-        "lengthen (使)",
-        "whiten (使)"
+        "lengthen (使变长)",
+        "whiten (使变白)"
       ]
     }
   },
@@ -54510,8 +54479,8 @@
     "r": {
       "r": "whole (全体或完整)",
       "f": [
-        "wholesomely (副词)",
-        "wholesomeness (名词)"
+        "wholesomely (健康地)",
+        "wholesomeness (健康、有益身心)"
       ]
     }
   },
@@ -58065,7 +58034,7 @@
     "r": {
       "r": "optio (选择)",
       "f": [
-        "optional (形容词)"
+        "optional (可选择的、选修的)"
       ]
     }
   },
@@ -60182,7 +60151,7 @@
     "r": {
       "f": [
         "feed (供给)",
-        "back (回)"
+        "back (支持、后退)"
       ]
     }
   },
@@ -64123,8 +64092,8 @@
     "r": {
       "r": "cata- (向下、完全、催化)",
       "f": [
-        "catalyze (动词)",
-        "catalytic (形容词)"
+        "catalyze (催化、促进)",
+        "catalytic (催化的)"
       ]
     }
   },
@@ -65642,7 +65611,7 @@
     ],
     "r": {
       "f": [
-        "dominate (主导)",
+        "dominate (支配、统治)",
         "dominion (领土)"
       ]
     }
@@ -66782,8 +66751,7 @@
     ],
     "r": {
       "f": [
-        "trndna (古挪威语中的转动)",
-        "trends (名词)"
+        "trndna (古挪威语中的转动)"
       ]
     }
   },
@@ -69668,7 +69636,7 @@
     "r": {
       "r": "valiant (英勇的)",
       "f": [
-        "valid (有效的)",
+        "valid (有效的、正当的)",
         "evaluate (评价)"
       ]
     },
@@ -70216,7 +70184,7 @@
     ],
     "r": {
       "f": [
-        "deafness (名词)"
+        "deafness (耳聋)"
       ]
     }
   },
@@ -71806,8 +71774,8 @@
     "r": {
       "r": "cat (小猫)",
       "f": [
-        "catering (名词)",
-        "caterer (名词)"
+        "catering (餐饮服务、酒席承办)",
+        "caterer (酒席承办人)"
       ]
     }
   }
