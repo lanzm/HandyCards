@@ -21,4 +21,4 @@ export interface WordBookMeta {
     count: number;              // 词书词汇量
 }
 
-export type DetailSectionKey = 'definitions' | 'examples' | 'collocations' | 'confusing' | 'secondary' | 'anatomy';
+export type DetailSectionKey = 'definitions' | 'examples' | 'collocations' | 'confusing' | 'secondary' | 'roots';

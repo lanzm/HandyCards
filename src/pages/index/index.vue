@@ -21,12 +21,6 @@ const updateNavBarColor = () => {
     setNavigationBarTheme(isDark.value);
 };
 
-const updateNavBarTitle = () => {
-    uni.setNavigationBarTitle({
-        title: i18n.value.appTitle,
-    });
-};
-
 const setTheme = (theme: 'dark' | 'light') => {
     isDark.value = theme;
     uni.setStorageSync('theme', theme);
@@ -36,14 +30,14 @@ const setTheme = (theme: 'dark' | 'light') => {
 const setLang = (newLang: Language) => {
     lang.value = newLang;
     uni.setStorageSync('lang', newLang);
-    updateNavBarTitle();
 };
 
+// 单一真相源：监听多语言标题变化统一设置小程序原生标题栏
 watch(() => i18n.value.appTitle, (newTitle) => {
     if (newTitle) {
         uni.setNavigationBarTitle({ title: newTitle });
     }
-});
+}, { immediate: true });
 
 // Audio TTS
 const { playFlag, playWord, stopAudio } = useWordAudio();
@@ -78,7 +72,7 @@ const createDefaultDetailSections = (): Record<DetailSectionKey, boolean> => ({
     collocations: false,
     confusing: false,
     secondary: false,
-    anatomy: false
+    roots: false
 });
 const detailSections = ref<Record<DetailSectionKey, boolean>>(createDefaultDetailSections());
 
@@ -217,7 +211,6 @@ const initData = () => {
     ttsDisabled.value = savedTtsDisabled === true || savedTtsDisabled === 'true';
 
     updateNavBarColor();
-    updateNavBarTitle();
     loadWordBook();
 };
 

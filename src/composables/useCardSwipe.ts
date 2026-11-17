@@ -66,6 +66,10 @@ export function useCardSwipe(options: UseCardSwipeOptions) {
         }
     };
 
+    onUnmounted(() => {
+        clearSwipeTimers();
+    });
+
     const cardStyle = computed(() => {
         if (isSwiping.value) {
             if (cardY.value < 0) {

@@ -87,30 +87,31 @@ const commonUtil = {
         try {
             if (typeof wx !== 'undefined' && wx.getFileSystemManager && wx.env && wx.env.USER_DATA_PATH) {
                 const fs = wx.getFileSystemManager();
-                const targetPath = `${wx.env.USER_DATA_PATH}/handycards_share_cover.jpg`;
-                let exists = false;
+                const targetPath = `${wx.env.USER_DATA_PATH}/handycards_share_cover_v3.jpg`;
+                let existingSize = -1;
                 try {
-                    fs.accessSync(targetPath);
-                    exists = true;
+                    const stat = fs.statSync(targetPath);
+                    existingSize = stat?.size ?? -1;
                 } catch {
-                    exists = false;
+                    existingSize = -1;
                 }
-                if (!exists) {
-                    const candidatePaths = ['static/share-cover.jpg', '/static/share-cover.jpg'];
-                    for (const p of candidatePaths) {
-                        try {
-                            const buf = fs.readFileSync(p);
-                            if (buf) {
+
+                const candidatePaths = ['static/share-cover.jpg', '/static/share-cover.jpg'];
+                for (const p of candidatePaths) {
+                    try {
+                        const buf = fs.readFileSync(p);
+                        if (buf) {
+                            if (existingSize !== buf.byteLength) {
                                 fs.writeFileSync(targetPath, buf);
-                                exists = true;
-                                break;
                             }
-                        } catch {
-                            // try next
+                            return targetPath;
                         }
+                    } catch {
+                        // try next
                     }
                 }
-                if (exists) {
+
+                if (existingSize > 0) {
                     return targetPath;
                 }
             }

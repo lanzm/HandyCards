@@ -16,7 +16,7 @@ import {
     getPosIcon, 
     formatDefinitionPos, 
     formatDefinitionContent 
-} from '@/utils/anatomy';
+} from '@/utils/posUtil';
 
 const props = withDefaults(defineProps<{
     word: WordItem | null;
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<{
         collocations: false,
         confusing: false,
         secondary: false,
-        anatomy: false
+        roots: false
     })
 });
 
@@ -502,11 +502,11 @@ const wordFontSizeClass = computed(() => {
 
                     <!-- Word Roots & Cognates Section -->
                     <view class="detail-section mb-3" v-if="parsedRoot || parsedFamily.length > 0">
-                        <view class="detail-section-header" @click.stop="emit('toggle-section', 'anatomy')">
+                        <view class="detail-section-header" @click.stop="emit('toggle-section', 'roots')">
                             <text class="section-header-title">{{ i18n.wordRootTitle }}</text>
-                            <view class="section-toggle-icon" :class="{ 'is-open': detailSections.anatomy }"></view>
+                            <view class="section-toggle-icon" :class="{ 'is-open': detailSections.roots }"></view>
                         </view>
-                        <view v-if="detailSections.anatomy" class="detail-section-body">
+                        <view v-if="detailSections.roots" class="detail-section-body">
                             <view class="example-list">
                                 <!-- Core Root -->
                                 <view class="example-item" v-if="parsedRoot">
