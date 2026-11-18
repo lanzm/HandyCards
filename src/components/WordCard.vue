@@ -234,13 +234,15 @@ const wordFontSizeClass = computed(() => {
           @touchmove="!isBackground ? emit('touch-move', $event) : undefined"
           @touchend="!isBackground ? emit('touch-end') : undefined"
         >
-            <view class="flex flex-col gap-1">
+            <view 
+              class="flex flex-col gap-1 cursor-pointer"
+              @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
+            >
                 <!-- Word & Top-Right Sequence Badge Row -->
                 <view class="flex justify-between items-start gap-2">
                     <text 
                       class="word-large-text flex-1 min-w-0 pr-1" 
                       :class="wordFontSizeClass"
-                      @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
                     >{{ word.w }}</text>
 
                     <!-- Top-right minimalist card sequence badge with smooth heat interpolation easter egg -->
@@ -250,10 +252,7 @@ const wordFontSizeClass = computed(() => {
                 </view>
 
                 <!-- Phonetic Audio Row -->
-                <view 
-                  class="inline-flex flex-wrap items-center gap-2" 
-                  @click.stop="!isBackground && !ttsDisabled && emit('play-audio')"
-                >
+                <view class="inline-flex flex-wrap items-center gap-2">
                     <text class="phonetic-small-text">/{{ word.p }}/</text>
                     <view 
                       v-if="!ttsDisabled" 
