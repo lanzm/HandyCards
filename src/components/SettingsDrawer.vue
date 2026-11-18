@@ -27,13 +27,10 @@ const closeDrawer = () => {
     emit('update:show', false);
 };
 
-const qrCodeUrl = '/static/wechat-mp-qrcode.jpg';
 const GITHUB_URL = 'https://github.com/lanzm/HandyCards';
 const GITHUB_ICON_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZmZmZiI+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMiAyQzYuNDc3IDIgMiA2LjQ4NCAyIDEyLjAxN2MwIDQuNDI1IDIuODY1IDguMTggNi44MzkgOS41MDQuNS4wOTIuNjgyLS4yMTcuNjgyLS40ODMgMC0uMjM3LS4wMDgtLjg2OC0uMDEzLTEuNzAzLTIuNzgyLjYwNS0zLjM2OS0xLjM0My0zLjM2OS0xLjM0My0uNDU0LTEuMTU4LTEuMTEtMS40NjYtMS4xMS0xLjQ2Ni0uOTA4LS42Mi4wNjktLjYwOC4wNjktLjYwOCAxLjAwMy4wNyAxLjUzIDEuMDMyIDEuNTMgMS4wMzIuODkyIDEuNTMgMi4zNDEgMS4wODggMi45MS44MzIuMDkyLS42NDcuMzUtMS4wODguNjM2LTEuMzM4LTIuMjItLjI1My00LjU1NS0xLjExMy00LjU1NS00Ljk1MSAwLTEuMDkzLjM5LTEuOTg4IDEuMDI5LTIuNjg4LS4xMDMtLjI1My0uNDQ2LTEuMjcyLjA5OC0yLjY1IDAgMCAuODQtLjI3IDIuNzUgMS4wMjZBOS41NjQgOS41NjQgMCAwMTEyIDYuODQ0Yy44NS4wMDQgMS43MDUuMTE1IDIuNTA0LjMzNyAxLjkwOS0xLjI5NiAyLjc0Ny0xLjAyNyAyLjc0Ny0xLjAyNy41NDYgMS4zNzkuMjAyIDIuMzk4LjEgMi42NTEuNjQuNyAxLjAyOCAxLjU5NSAxLjAyOCAyLjY4OCAwIDMuODQ4LTIuMzM5IDQuNjk1LTQuNTY2IDQuOTQzLjM1OS4zMDkuNjc4LjkyLjY3OCAxLjg1NSAwIDEuMzM4LS4wMTIgMi40MTktLjAxMiAyLjc0NyAwIC4yNjguMTguNTguNjg4LjQ4MkExMC4wMTkgMTAuMDE5IDAgMDAyMiAxMi4wMTdDMjIgNi40ODQgMTcuNTIyIDIgMTIgMnoiLz48L3N2Zz4=';
-
-const handlePreviewQrCode = () => {
-    commonUtil.previewLocalImage(qrCodeUrl, 'handycards_qr_preview.jpg');
-};
+const WECHAT_ICON_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZmZmZiI+PHBhdGggZD0iTTguNjkxIDIuMTg4QzMuODkxIDIuMTg4IDAgNS40NzggMCA5LjUzYzAgMi4yMTIgMS4xNyA0LjIwMyAzLjAwMiA1LjU1YS41OS41OSAwIDAgMSAuMjEzLjY2NWwtLjM5IDEuNDhjLS4wMTkuMDctLjA0OC4xNDEtLjA0OC4yMTMgMCAuMTYzLjEzLjI5NS4yOS4yOTVhLjMyNi4zMjYgMCAwIDAgLjE1MS0uMDRsMS45OC0xLjAyYS43MjIuNzIyIDAgMCAxIC40OS0uMDdjMS4wMDIuMjUgMi4wMTIuMzggMy4wNDIuMzguMyAwIC42LS4wMS44OS0uMDRhNi4wNyA2LjA3IDAgMCAxLS4yMi0xLjYxYzAtMy41MiAzLjMyLTYuMzggNy40MS02LjM4LjQxIDAgLjgxLjAzIDEuMjEuMDlDMTcuMDYgNS44NiAxMy4yIDIuMTg4IDguNjkgMi4xODh6bS0yLjYgNC4zODJjLjU3IDAgMS4wNC40NyAxLjA0IDEuMDQgMCAuNTgtLjQ3IDEuMDUtMS4wNCAxLjA1LS41OCAwLTEuMDUtLjQ3LTEuMDUtMS4wNSAwLS41Ny40Ny0xLjA0IDEuMDUtMS4wNHptNS4yIDBjLjU4IDAgMS4wNS40NyAxLjA1IDEuMDQgMCAuNTgtLjQ3IDEuMDUtMS4wNSAxLjA1LS41NyAwLTEuMDQtLjQ3LTEuMDQtMS4wNSAwLS41Ny40Ny0xLjA0IDEuMDQtMS4wNHptNC44MiA0LjE0OGMtMy42IDAtNi41MiAyLjQ3LTYuNTIgNS41MiAwIDMuMDUgMi45MiA1LjUyIDYuNTIgNS41Mi43OCAwIDEuNTQtLjExIDIuMjYtLjMxYS41OC41OCAwIDAgMSAuNDEuMDVsMS41My43OWEuMjUuMjUgMCAwIDAgLjEyLjAzYy4xMiAwIC4yMi0uMS4yMi0uMjMgMC0uMDUtLjAyLS4xMS0uMDQtLjE2bC0uMy0xLjE1YS40Ni40NiAwIDAgMSAuMTYtLjUxYzEuNDItMS4wNCAyLjMzLTIuNTggMi4zMy00LjI5IDAtMy4wNS0yLjkyLTUuNTItNi41Mi01LjUyem0tMi4wOCAzLjM4Yy40NSAwIC44MS4zNi44MS44MSAwIC40NC0uMzYuODEtLjgxLjgxYS44MS44MSAwIDAgMS0uODEtLjgxYzAtLjQ1LjM2LS44MS44MS0uODF6bTQuMTYgMGMuNDQgMCAuODEuMzYuODEuODEgMCAuNDQtLjM3LjgxLS44MS44MWEuODEuODEgMCAwIDEtLjgxLS44MWMwLS40NS4zNy0uODEuODEtLjgxeiIvPjwvc3ZnPg==';
+const FEEDBACK_ICON_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIxIDExLjVhOC4zOCA4LjM4IDAgMCAxLS45IDMuOCA4LjUgOC41IDAgMCAxLTcuNiA0LjcgOC4zOCA4LjM4IDAgMCAxLTMuOC0uOUwzIDIxbDEuOS01LjdhOC4zOCA4LjM4IDAgMCAxLS45LTMuOCA4LjUgOC41IDAgMCAxIDQuNy03LjYgOC4zOCA4LjM4IDAgMCAxIDMuOC0uOWguNWE4LjQ4IDguNDggMCAwIDEgOCA4di41eiIvPjxsaW5lIHgxPSIxMiIgeTE9IjgiIHgyPSIxMiIgeTI9IjEyIi8+PGxpbmUgeDE9IjEyIiB5MT0iMTYiIHgyPSIxMi4wMSIgeTI9IjE2Ii8+PC9zdmc+';
 
 const handleCopyGithub = () => {
     commonUtil.copyText(GITHUB_URL, props.i18n.githubCopiedMsg || '已复制链接');
@@ -180,42 +177,59 @@ const handleTtsSwitch = (e: Event) => {
                             </view>
                         </view>
 
-                        <!-- Option 2.7: Open Source & Share -->
+                        <!-- Option 2.7: Open Source & About -->
                         <view class="mb-4">
                             <text class="section-label-style text-[var(--ej-text-muted)]">{{ i18n.shareLabel }}</text>
                             
                             <view class="flex flex-col gap-2.5">
-                                <!-- 1. Mini Program QR Code -->
-                                <view class="share-recommend-card" @click="handlePreviewQrCode">
-                                    <image 
-                                        :src="qrCodeUrl" 
-                                        class="share-qr-thumb" 
-                                        mode="aspectFit"
-                                    />
+                                <!-- 1. Share with Friends (Native open-type="share") -->
+                                <button class="drawer-action-btn" open-type="share">
+                                    <view class="action-icon-box wechat-bg">
+                                        <image :src="WECHAT_ICON_SVG" class="action-svg-icon" mode="aspectFit" />
+                                    </view>
                                     <view class="flex flex-col gap-0.5 flex-1 min-w-0">
                                         <view class="flex items-center gap-1.5 flex-nowrap">
-                                            <text class="text-sm font-semibold text-[var(--ej-text-primary)] truncate">{{ i18n.shareCardTitle }}</text>
-                                            <text class="share-badge">{{ i18n.shareBadgeText }}</text>
+                                            <text class="text-sm font-semibold text-[var(--ej-text-primary)] truncate">{{ i18n.shareFriendsTitle }}</text>
+                                            <text class="badge-tag share-tag">{{ i18n.shareFriendsBadge }}</text>
                                         </view>
-                                        <text class="text-[11px] text-[var(--ej-text-muted)] leading-tight">{{ i18n.shareCardDesc }}</text>
+                                        <text class="text-[11px] text-[var(--ej-text-muted)] truncate leading-tight">{{ i18n.shareFriendsDesc }}</text>
                                     </view>
-                                    <text class="share-arrow text-[var(--ej-text-sub)]">›</text>
-                                </view>
+                                    <view class="action-pill share-pill">
+                                        <text class="text-[11px] font-semibold text-[#07C160]">{{ i18n.shareFriendsAction }}</text>
+                                    </view>
+                                </button>
 
-                                <!-- 2. GitHub Open Source Card (Click to copy) -->
-                                <view class="github-repo-card" @click="handleCopyGithub">
-                                    <view class="github-icon-box">
-                                        <image :src="GITHUB_ICON_SVG" class="github-octo-svg" mode="aspectFit" />
+                                <!-- 2. Official Feedback (Native open-type="feedback") -->
+                                <button class="drawer-action-btn" open-type="feedback">
+                                    <view class="action-icon-box feedback-bg">
+                                        <image :src="FEEDBACK_ICON_SVG" class="action-svg-icon" mode="aspectFit" />
+                                    </view>
+                                    <view class="flex flex-col gap-0.5 flex-1 min-w-0">
+                                        <view class="flex items-center gap-1.5 flex-nowrap">
+                                            <text class="text-sm font-semibold text-[var(--ej-text-primary)] truncate">{{ i18n.feedbackTitle }}</text>
+                                            <text class="badge-tag feedback-tag">{{ i18n.feedbackBadge }}</text>
+                                        </view>
+                                        <text class="text-[11px] text-[var(--ej-text-muted)] truncate leading-tight">{{ i18n.feedbackDesc }}</text>
+                                    </view>
+                                    <view class="action-pill feedback-pill">
+                                        <text class="text-[11px] font-semibold text-[#6366F1]">{{ i18n.feedbackAction }}</text>
+                                    </view>
+                                </button>
+
+                                <!-- 3. GitHub Open Source Card (Click to copy) -->
+                                <view class="drawer-action-btn" @click="handleCopyGithub">
+                                    <view class="action-icon-box github-bg">
+                                        <image :src="GITHUB_ICON_SVG" class="action-svg-icon" mode="aspectFit" />
                                     </view>
                                     <view class="flex flex-col gap-0.5 flex-1 min-w-0">
                                         <view class="flex items-center gap-1.5 flex-nowrap">
                                             <text class="text-sm font-semibold text-[var(--ej-text-primary)] truncate">{{ i18n.githubCardTitle }}</text>
-                                            <text class="github-star-badge">{{ i18n.githubBadgeText }}</text>
+                                            <text class="badge-tag github-tag">{{ i18n.githubBadgeText }}</text>
                                         </view>
                                         <text class="text-[11px] text-[var(--ej-text-muted)] truncate leading-tight">github.com/lanzm/HandyCards</text>
                                     </view>
-                                    <view class="copy-action-pill">
-                                        <text class="text-[11px] font-semibold text-[var(--ej-color-brand)]">{{ i18n.copyLinkText }}</text>
+                                    <view class="action-pill github-pill">
+                                        <text class="text-[11px] font-semibold">{{ i18n.copyLinkText }}</text>
                                     </view>
                                 </view>
                             </view>
@@ -391,114 +405,131 @@ const handleTtsSwitch = (e: Event) => {
     margin-right: -4px;
 }
 
-.share-recommend-card {
+.drawer-action-btn {
     display: flex;
     align-items: center;
     gap: 12px;
+    width: 100%;
     padding: 12px 14px;
+    margin: 0;
     border-radius: 12px;
     border: 1px solid var(--ej-border);
     background-color: var(--ej-bg-sub);
     cursor: pointer;
     transition: all 0.2s;
     box-sizing: border-box;
+    font-size: inherit;
+    text-align: left;
+    line-height: inherit;
+    color: inherit;
+    outline: none;
+    font-family: inherit;
 }
 
-.share-recommend-card:active {
+.drawer-action-btn::after {
+    border: none;
+}
+
+.drawer-action-btn:active {
     background-color: var(--ej-color-brand-subtle);
     border-color: var(--ej-color-brand);
 }
 
-.share-qr-thumb {
-    width: 44px;
-    height: 44px;
-    border-radius: 6px;
-    background-color: #FFFFFF;
-    border: 1px solid var(--ej-border);
-    flex-shrink: 0;
-}
-
-.share-badge {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background-color: var(--ej-color-brand-light);
-    color: var(--ej-color-brand);
-    white-space: nowrap;
-    flex-shrink: 0;
-    line-height: 1.2;
-}
-
-.share-arrow {
-    font-size: 20px;
-    line-height: 1;
-    font-weight: 400;
-    flex-shrink: 0;
-    align-self: center;
-}
-
-.github-repo-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--ej-border);
-    background-color: var(--ej-bg-sub);
-    cursor: pointer;
-    transition: all 0.2s;
-    box-sizing: border-box;
-}
-
-.github-repo-card:active {
-    background-color: var(--ej-color-brand-subtle);
-    border-color: var(--ej-color-brand);
-}
-
-.github-icon-box {
+.action-icon-box {
     width: 44px;
     height: 44px;
     border-radius: 8px;
-    background-color: #24292F;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
-.github-octo-svg {
+.action-icon-box.wechat-bg {
+    background-color: #07C160;
+}
+
+.action-icon-box.feedback-bg {
+    background-color: #6366F1;
+}
+
+.action-icon-box.github-bg {
+    background-color: #24292F;
+}
+
+.action-svg-icon {
     width: 24px;
     height: 24px;
     display: block;
 }
 
-.github-star-badge {
+.badge-tag {
     font-size: 10px;
     font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #10B981;
     white-space: nowrap;
     flex-shrink: 0;
     line-height: 1.2;
 }
 
-.copy-action-pill {
+.badge-tag.share-tag {
+    background-color: rgba(7, 193, 96, 0.1);
+    color: #07C160;
+}
+
+.badge-tag.feedback-tag {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: #6366F1;
+}
+
+.badge-tag.github-tag {
+    background-color: rgba(36, 41, 47, 0.08);
+    color: #24292F;
+}
+
+.dark .badge-tag.github-tag {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #E2E8F0;
+}
+
+.action-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     height: 28px;
     padding: 0 12px;
     border-radius: 6px;
-    background-color: var(--ej-color-brand-light);
     flex-shrink: 0;
     align-self: center;
     box-sizing: border-box;
 }
 
-.copy-action-pill text {
+.action-pill.share-pill {
+    background-color: rgba(7, 193, 96, 0.1);
+}
+
+.action-pill.feedback-pill {
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+.action-pill.github-pill {
+    background-color: rgba(36, 41, 47, 0.08);
+}
+
+.action-pill.github-pill text {
+    color: #24292F;
+}
+
+.dark .action-pill.github-pill {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .action-pill.github-pill text {
+    color: #E2E8F0;
+}
+
+.action-pill text {
     line-height: 1;
     display: block;
 }

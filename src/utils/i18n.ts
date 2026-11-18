@@ -30,10 +30,15 @@ export interface Translations {
     lightModeText: string;
     darkModeText: string;
     shareLabel: string;
-    shareCardTitle: string;
     shareTimelineTitle: string;
-    shareCardDesc: string;
-    shareBadgeText: string;
+    shareFriendsTitle: string;
+    shareFriendsBadge: string;
+    shareFriendsDesc: string;
+    shareFriendsAction: string;
+    feedbackTitle: string;
+    feedbackBadge: string;
+    feedbackDesc: string;
+    feedbackAction: string;
     githubCardTitle: string;
     githubBadgeText: string;
     copyLinkText: string;
@@ -84,12 +89,17 @@ export const getTranslations = (lang: Language): Translations => {
         ttsDisabledHint: isZh ? '已关闭，不请求在线发音' : 'Off. No online pronunciation request',
         lightModeText: isZh ? '☀️ 明亮模式' : '☀️ Light Mode',
         darkModeText: isZh ? '🌙 暗黑模式' : '🌙 Dark Mode',
-        shareLabel: isZh ? '开源与分享' : 'Open Source & Share',
-        shareCardTitle: isZh ? '微信分享二维码' : 'WeChat Share QR Code',
+        shareLabel: isZh ? '关于与交流' : 'About & Connect',
         shareTimelineTitle: isZh ? '随手词卡 · 不搞花里胡哨，纯粹离线翻卡背单词' : 'HandyCards · Pure & Offline Flashcard Vocabulary',
-        shareCardDesc: isZh ? '点击查看高清大图，长按可识别或转发' : 'Tap to preview QR code, long press to scan or share',
-        shareBadgeText: isZh ? '二维码' : 'QR Code',
-        githubCardTitle: isZh ? 'GitHub 开源项目' : 'GitHub Repo',
+        shareFriendsTitle: isZh ? '推荐给背词好友' : 'Share with Friends',
+        shareFriendsBadge: isZh ? '结伴刷词' : 'Study Together',
+        shareFriendsDesc: isZh ? '纯粹离线 · 无广无登录 · 打开即背' : 'Pure offline, no ads, no login',
+        shareFriendsAction: isZh ? '去分享' : 'Share',
+        feedbackTitle: isZh ? '功能建议与反馈' : 'Feedback & Ideas',
+        feedbackBadge: isZh ? '官方通道' : 'Official',
+        feedbackDesc: isZh ? '词书需求、纠错与体验想法' : 'Feature ideas, word corrections & bug reports',
+        feedbackAction: isZh ? '去反馈' : 'Feedback',
+        githubCardTitle: isZh ? '项目开源地址' : 'Open Source Repo',
         githubBadgeText: isZh ? 'CC 非商用' : 'CC BY-NC 4.0',
         copyLinkText: isZh ? '复制链接' : 'Copy',
         githubCopiedMsg: isZh ? '已复制链接' : 'Link copied',

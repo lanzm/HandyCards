@@ -33,7 +33,7 @@ Logo 采用两张微倾斜交错叠放的抽认卡（Flashcards）形态，前�
 ## 3. 官方小程序码 (Mini Program QR Code)
 
 - **高清展示原图**：[`docs/images/wechat-mp-qrcode.jpg`](images/wechat-mp-qrcode.jpg) (860×860 高清，用于 GitHub README 与 在线大图预览)
-- **本地包内资源**：[`src/static/wechat-mp-qrcode.jpg`](../src/static/wechat-mp-qrcode.jpg) (480×480，体积仅 31KB，守护小程序 2MB 主包上限)
+- **小程序内优化**：已从主包静态资源中移除，全面采用微信原生 5:4 卡片分享（`onShareAppMessage` / `onShareTimeline`），主包节省 31KB 并提升抽屉视觉纯度。
 
 ---
 
