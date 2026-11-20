@@ -219,9 +219,8 @@ const wordFontSizeClass = computed(() => {
             <view class="skeleton-shimmer w-[140px] h-4 rounded"></view>
         </view>
 
-        <view class="flex gap-3 w-full mt-auto pb-1">
-            <view class="skeleton-shimmer h-[48px] rounded-xl flex-[3]"></view>
-            <view class="skeleton-shimmer h-[48px] rounded-xl flex-[7]"></view>
+        <view class="w-full mt-auto pb-1">
+            <view class="skeleton-shimmer h-[48px] rounded-xl w-full"></view>
         </view>
     </view>
 

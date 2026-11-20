@@ -124,7 +124,6 @@ const wordDeck = useWordDeck({
     isRevealing,
     i18n,
     onWordChange: (word) => {
-        resetCardScrollTop();
         playWord(word?.w, ttsDisabled.value);
     }
 });
@@ -161,7 +160,6 @@ const cardSwipe = useCardSwipe({
     syncBgCard: wordDeck.syncBgCard,
     updatePreloadedNextWord: wordDeck.updatePreloadedNextWord,
     onSwipeDownSuccess: () => {
-        resetCardScrollTop();
         playWord(wordDeck.wordObj.value?.w, ttsDisabled.value);
     }
 });
