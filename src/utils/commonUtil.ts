@@ -4,22 +4,22 @@ declare const wx: any;
 
 const wordBookList: WordBookMeta[] = [
     {
-        label: '四级词汇',
+        label: '四级核心',
         value: 'CET4luan_1',
         count: 1162,
     },
     {
-        label: '六级词汇',
+        label: '六级核心',
         value: 'CET6luan_1',
         count: 1228,
     },
     {
-        label: '考研词汇',
+        label: '考研核心',
         value: 'KaoYanluan_1',
         count: 1340,
     },
     {
-        label: '雅思词汇',
+        label: '雅思核心',
         value: 'IELTSluan_2',
         count: 3427,
     },

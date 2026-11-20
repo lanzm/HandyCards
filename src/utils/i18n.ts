@@ -116,10 +116,10 @@ export const getTranslations = (lang: Language): Translations => {
         // Additional formatting & dictionary lists
         wordBookCountText: (count: number) => isZh ? `${count} 词` : `${count} words`,
         wordBookLabels: {
-            'CET4luan_1': isZh ? '四级词汇' : 'CET-4 Vocab',
-            'CET6luan_1': isZh ? '六级词汇' : 'CET-6 Vocab',
-            'KaoYanluan_1': isZh ? '考研词汇' : 'Postgrad Vocab',
-            'IELTSluan_2': isZh ? '雅思词汇' : 'IELTS Vocab'
+            'CET4luan_1': isZh ? '四级核心' : 'CET-4 Core',
+            'CET6luan_1': isZh ? '六级核心' : 'CET-6 Core',
+            'KaoYanluan_1': isZh ? '考研核心' : 'Postgrad Core',
+            'IELTSluan_2': isZh ? '雅思核心' : 'IELTS Core'
         }
     };
 };

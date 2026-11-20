@@ -80,7 +80,7 @@ const handleTtsSwitch = (e: Event) => {
                                     :class="{ 'active': currentBookValue === item.value }"
                                     @click="emit('change-book', item)"
                                 >
-                                    <text class="text-sm font-medium text-center">{{ i18n.wordBookLabels[item.value] || item.label }}</text>
+                                    <text class="book-card-title">{{ i18n.wordBookLabels[item.value] || item.label }}</text>
                                     <text class="book-card-count">{{ i18n.wordBookCountText(item.count) }}</text>
                                 </view>
                             </view>
@@ -320,34 +320,50 @@ const handleTtsSwitch = (e: Event) => {
 
 .book-card {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 3px;
     border-radius: 12px;
-    padding: 12px;
+    padding: 10px 8px;
     border: 1px solid var(--ej-border);
     background-color: var(--ej-bg-sub);
     text-align: center;
     transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.book-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .book-card.active {
     border-color: var(--ej-color-brand);
     background-color: var(--ej-color-brand-subtle);
     color: var(--ej-color-brand);
+}
+
+.book-card.active .book-card-title {
     font-weight: 600;
+    color: var(--ej-color-brand);
 }
 
 .book-card-count {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 400;
+    line-height: 1.2;
     text-align: center;
     color: var(--ej-text-muted);
+    white-space: nowrap;
 }
 
 .book-card.active .book-card-count {
     color: var(--ej-color-brand);
+    opacity: 0.85;
 }
 
 .theme-switch-option {
