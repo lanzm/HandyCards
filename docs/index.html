@@ -199,51 +199,90 @@
           </p>
         </div>
 
-        <!-- Showcase: Physical Index Card & Titanium Device Mockup -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-stretch justify-center max-w-4xl mx-auto">
-          
-          <!-- Left: Real Mobile Device Mockup (6 Cols) -->
-          <div class="md:col-span-6 flex flex-col items-center justify-center">
+        <!-- Showcase: Dual Real-Device Mockups / 真实双机实录对比 (6 Cols + 6 Cols) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center justify-center max-w-3xl mx-auto mb-10 sm:mb-12">
+
+          <!-- Device 1: 物理翻卡 -->
+          <div class="flex flex-col items-center">
             <div class="relative w-full max-w-[280px]">
-              
+
               <!-- Ambient Shadow -->
               <div class="absolute -inset-2 bg-stone-300/40 dark:bg-black/60 rounded-[2.8rem] blur-xl -z-10"></div>
 
               <!-- Refined Titanium Device Frame -->
               <div class="bg-[#F3F2ED] dark:bg-darkbg-card p-3 rounded-[2.8rem] border border-stone-300/80 dark:border-darkbg-border shadow-card-lift">
                 <!-- Inner Screen Container -->
-                <div class="overflow-hidden rounded-[2.1rem] bg-black shadow-inner aspect-[360/631]">
+                <div class="overflow-hidden rounded-[2.1rem] bg-black shadow-inner aspect-[280/603]">
                   <img src="images/demo-flip.gif" alt="随手词卡 真实翻卡刷词操作实录" class="w-full h-full object-cover block" />
                 </div>
               </div>
 
               <!-- Caption -->
-              <div class="text-center mt-3 text-xs text-ink-muted dark:text-stone-500 font-sans flex items-center justify-center gap-2">
+              <div class="text-center mt-3 text-xs text-ink-muted dark:text-stone-400 font-sans flex items-center justify-center gap-1.5">
                 <span class="text-stone-400 dark:text-stone-600">❖</span>
-                <span data-i18n="hero_caption">真机实录 · 3D 立体翻卡与顺畅切词</span>
+                <span data-i18n="hero_dev1_caption">物理翻卡 · 即时自测与折叠例句</span>
                 <span class="text-stone-400 dark:text-stone-600">❖</span>
               </div>
             </div>
           </div>
 
-          <!-- Right: Handcrafted Library Index Card / 实体藏书票式接入卡 (6 Cols) -->
-          <div id="qrcode" class="md:col-span-6 flex flex-col items-center justify-center">
-            <div class="w-full max-w-sm bg-white dark:bg-darkbg-card border border-paper-border dark:border-darkbg-border rounded-3xl p-7 sm:p-8 shadow-paper dark:shadow-none text-center group hover:shadow-paper-hover transition-all">
-              
-              <!-- High-res QR Code styled as an Embossed Stamp -->
-              <div class="p-3 bg-paper-100 dark:bg-white rounded-2xl border border-paper-border dark:border-stone-200 inline-block mb-4 shadow-sm group-hover:scale-[1.02] transition-transform">
-                <img src="images/wechat-mp-qrcode.jpg" alt="随手词卡 微信小程序码" class="w-44 h-44 rounded-xl object-contain block mix-blend-multiply" />
+          <!-- Device 2: 词库与设置 -->
+          <div class="flex flex-col items-center">
+            <div class="relative w-full max-w-[280px]">
+
+              <!-- Ambient Shadow -->
+              <div class="absolute -inset-2 bg-stone-300/40 dark:bg-black/60 rounded-[2.8rem] blur-xl -z-10"></div>
+
+              <!-- Refined Titanium Device Frame -->
+              <div class="bg-[#F3F2ED] dark:bg-darkbg-card p-3 rounded-[2.8rem] border border-stone-300/80 dark:border-darkbg-border shadow-card-lift">
+                <!-- Inner Screen Container -->
+                <div class="overflow-hidden rounded-[2.1rem] bg-black shadow-inner aspect-[280/603]">
+                  <img src="images/demo-settings.gif" alt="随手词卡 多词库与多模式设置实录" class="w-full h-full object-cover block" />
+                </div>
               </div>
 
-              <h3 class="text-xl font-serif font-semibold text-ink-pure dark:text-white mb-1.5" data-i18n="card_title">随手词卡 · 微信小程序</h3>
-              <p id="card-desc" class="text-xs text-ink-secondary dark:text-stone-400 leading-relaxed font-sans">
-                用微信扫一扫，放进口袋随时翻两张。<br/>
-                零广告 · 免注册 · 纯离线全词库支持
+              <!-- Caption -->
+              <div class="text-center mt-3 text-xs text-ink-muted dark:text-stone-400 font-sans flex items-center justify-center gap-1.5">
+                <span class="text-stone-400 dark:text-stone-600">❖</span>
+                <span data-i18n="hero_dev2_caption">核心词库切换 · 暗黑与多模式</span>
+                <span class="text-stone-400 dark:text-stone-600">❖</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- QR Code Card / 黄金接入区（紧跟在双机正下方，不在最底部） -->
+        <div id="qrcode" class="max-w-2xl mx-auto">
+          <div class="bg-white dark:bg-darkbg-card border border-paper-border dark:border-darkbg-border rounded-3xl p-6 sm:p-7 shadow-paper dark:shadow-none flex flex-col sm:flex-row items-center gap-6 group hover:shadow-paper-hover transition-all">
+
+            <!-- High-res QR Code Stamp -->
+            <div class="p-3 bg-paper-100 dark:bg-white rounded-2xl border border-paper-border dark:border-stone-200 shrink-0 shadow-sm group-hover:scale-[1.02] transition-transform">
+              <img src="images/wechat-mp-qrcode.jpg" alt="随手词卡 微信小程序码" class="w-32 h-32 sm:w-36 sm:h-36 rounded-xl object-contain block mix-blend-multiply" />
+            </div>
+
+            <!-- Content & Actions -->
+            <div class="flex-1 text-center sm:text-left">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[11px] font-sans font-medium mb-2 border border-emerald-200 dark:border-emerald-900">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span data-i18n="card_pill">扫码即背 · 免登录</span>
+              </div>
+              <h3 class="text-lg sm:text-xl font-serif font-semibold text-ink-pure dark:text-white mb-1.5" data-i18n="card_title">随手词卡 · 微信小程序</h3>
+              <p id="card-desc" class="text-xs sm:text-sm text-ink-secondary dark:text-stone-400 leading-relaxed font-sans mb-3.5">
+                零商业广告，无打卡干扰，随时开启专注背词心流。
               </p>
 
+              <!-- Badges -->
+              <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs text-ink-muted dark:text-stone-400 font-mono">
+                <span data-i18n="badge_size">0.74MB 主包</span>
+                <span>•</span>
+                <span data-i18n="badge_books">4本核心词库</span>
+                <span>•</span>
+                <span data-i18n="badge_offline">纯离线运行</span>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
 
       </div>
@@ -671,9 +710,14 @@
         hero_pill: "开源 · 纯离线 · 零商业广告 · 开屏即背",
         hero_title: "回归抽认卡本质，<br /><span class='font-serif font-normal text-stone-600 dark:text-stone-400'>像刷短视频一样刷单词。</span>",
         hero_sub: "告别传统背单词软件的满屏弹窗、社交打卡与繁琐签到。<br class='hidden sm:block'/>上下滑动翻阅卡片，全部官方词库本地打包，随时随地开启沉浸式记忆心流。",
-        hero_caption: "真机实录 · 3D 立体翻卡与顺畅切词",
+        hero_dev1_caption: "物理翻卡 · 即时自测与折叠例句",
+        hero_dev2_caption: "核心词库切换 · 暗黑与多模式",
+        card_pill: "扫码即背 · 免登录",
         card_title: "随手词卡 · 微信小程序",
-        card_desc: "用微信扫一扫，放进口袋随时翻两张。<br/>零广告 · 免注册 · 纯离线全词库支持",
+        card_desc: "零商业广告，无打卡干扰，随时开启专注背词心流。",
+        badge_size: "0.74MB 主包",
+        badge_books: "4本核心词库",
+        badge_offline: "纯离线运行",
         philo_kicker: "Designed with Restraint",
         philo_title: "为专注心流而生的 6 项克制设计",
         philo_sub: "除去一切喧闹与功利，还给你原本沉静的记忆环境。",
@@ -750,9 +794,14 @@
         hero_pill: "Open Source · Fully Offline · Zero Ads · Instant Flow",
         hero_title: "Return to the Essence of Flashcards,<br /><span class='font-serif font-normal text-stone-600 dark:text-stone-400'>Swipe Words Just Like Short Videos.</span>",
         hero_sub: "Bid farewell to intrusive popups, social check-in pressure, and bloated signups.<br class='hidden sm:block'/>Effortlessly swipe cards with all official vocabulary packs locally bundled for uninterrupted memory flow.",
-        hero_caption: "Recorded on Real Device · 3D Flip & Smooth Swipe",
+        hero_dev1_caption: "3D Card Flip · Real Exam Citations",
+        hero_dev2_caption: "Offline Packs · Dark Mode & Config",
+        card_pill: "Scan & Study · No Signup",
         card_title: "HandyCards · WeChat Mini Program",
-        card_desc: "Scan with WeChat to put it in your pocket anytime.<br/>Zero Ads · No Signup · 100% Offline Ready",
+        card_desc: "Zero ads, zero social clutter. Enter pure vocabulary flow anytime.",
+        badge_size: "0.74MB Main",
+        badge_books: "4 Core Packs",
+        badge_offline: "Pure Offline Flow",
         philo_kicker: "Designed with Restraint",
         philo_title: "6 Restrained Designs for Pure Focus",
         philo_sub: "Stripping away all noise and commercial clutter to restore your tranquil learning environment.",
